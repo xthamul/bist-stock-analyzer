@@ -329,9 +329,8 @@ def main():
         st.info("Lütfen sol taraftaki menüden bir analiz modu seçip 'Analiz Et' butonuna tıklayın.")
 
 if __name__ == "__main__":
-<<<<<<< HEAD
+
     main()
         
-=======
-    main()
+
 
