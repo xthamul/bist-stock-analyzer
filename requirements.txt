@@ -1,13 +1,12 @@
 
-numpy==1.21.6
-pandas==1.4.4
-
-yfinance==0.2.12
-matplotlib==3.5.3
+numpy==1.26.4
+pandas==2.2.2
+yfinance==0.2.38
+matplotlib==3.7.1
 mplfinance==0.12.9b7
-scipy==1.7.3
-scikit-learn==1.0.2
-streamlit==1.10.0
-plotly==5.9.0
+scipy==1.10.1
+scikit-learn==1.2.2
+streamlit==1.22.0
+plotly==5.14.1
 backtesting==0.3.3
-setuptools==65.5.1
+setuptools==67.6.1
