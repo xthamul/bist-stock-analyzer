@@ -107,13 +107,14 @@ def generate_technical_summary(veri):
         summary.append(f"**ADX ({son_veri['adx_14']:.2f}):** Zayıf veya trendsiz bir piyasa yapısı. 횡")
 
     # Son Mum Formasyonu
-    candle_cols = [col for col in veri.columns if col.startswith('cdl_')]
-    last_pattern = veri[candle_cols].iloc[-1]
-    detected = last_pattern[last_pattern != 0]
-    if not detected.empty:
-        p_name = detected.index[0].replace("cdl_", "").replace("_", " ").title()
-        p_signal = "(Yükseliş ⬆️)" if detected.iloc[0] > 0 else "(Düşüş ⬇️)"
-        summary.append(f"**Son Mum Formasyonu:** {p_name} {p_signal}")
+    # Manuel hesaplamada mum formasyonu yok, bu kısmı kaldırıyoruz veya farklı bir yaklaşımla ekliyoruz.
+    # candle_cols = [col for col in veri.columns if col.startswith('cdl_')]
+    # last_pattern = veri[candle_cols].iloc[-1]
+    # detected = last_pattern[last_pattern != 0]
+    # if not detected.empty:
+    #     p_name = detected.index[0].replace("cdl_", "").replace("_", " ").title()
+    #     p_signal = "(Yükseliş ⬆️)" if detected.iloc[0] > 0 else "(Düşüş ⬇️)"
+    #     summary.append(f"**Son Mum Formasyonu:** {p_name} {p_signal}")
 
     return "\n\n".join(summary)
 

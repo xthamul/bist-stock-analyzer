@@ -43,10 +43,10 @@ def plot_analysis_plotly(veri, hisse_kodu, interval_display, analysis_type):
         # Ichimoku Bulutu
         fig.add_trace(go.Scatter(x=veri.index, y=veri['itsa_9_26_52'], name='Tenkan-sen', line=dict(color='#00bcd4', width=1)), row=1, col=1)
         fig.add_trace(go.Scatter(x=veri.index, y=veri['itsb_9_26_52'], name='Kijun-sen', line=dict(color='#ff9800', width=1.5)), row=1, col=1)
-        fig.add_trace(go.Scatter(x=veri.index, y=veri['is_9_26_52'].shift(26), name='Chikou Span', line=dict(color='#e91e63', width=1.5, dash='dot')), row=1, col=1)
+        fig.add_trace(go.Scatter(x=veri.index, y=veri['is_9_26_52'], name='Chikou Span', line=dict(color='#e91e63', width=1.5, dash='dot')), row=1, col=1)
         # Kumo Bulutu (Senkou Span A ve B arası)
-        fig.add_trace(go.Scatter(x=veri.index, y=veri['isa_9_26_52'], fill=None, mode='lines', line_color='rgba(0,255,0,0.1)', name='Senkou A'), row=1, col=1)
-        fig.add_trace(go.Scatter(x=veri.index, y=veri['isb_9_26_52'], fill='tonexty', mode='lines', line_color='rgba(255,0,0,0.1)', name='Senkou B'), row=1, col=1)
+        fig.add_trace(go.Scatter(x=veri.index, y=veri['senkou_a'], fill=None, mode='lines', line_color='rgba(0,255,0,0.1)', name='Senkou A'), row=1, col=1)
+        fig.add_trace(go.Scatter(x=veri.index, y=veri['senkou_b'], fill='tonexty', mode='lines', line_color='rgba(255,0,0,0.1)', name='Senkou B'), row=1, col=1)
 
         # RSI & StochRSI Paneli
         fig.add_trace(go.Scatter(x=veri.index, y=veri['rsi_14'], name='RSI'), row=3, col=1)

@@ -1,7 +1,7 @@
 
 numpy==1.21.6
 pandas==1.4.4
-pandas-ta==0.2.36b0
+
 yfinance==0.2.12
 matplotlib==3.5.3
 mplfinance==0.12.9b7

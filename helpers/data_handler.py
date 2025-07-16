@@ -2,8 +2,6 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-npNaN = np.NaN # pandas_ta'nın numpy.NaN'ı bulamaması sorununu çözmek için
-import pandas_ta as ta
 import streamlit as st
 
 @st.cache_data(ttl=3600) # Veriyi 1 saat boyunca cache'le
@@ -23,22 +21,112 @@ def get_stock_data(hisse_kodu, interval):
 
 def calculate_indicators(veri):
     """Gerekli tüm teknik göstergeleri hesaplar."""
-    veri.ta.ema(length=8, append=True, col_names=("EMA_8"))
-    veri.ta.ema(length=13, append=True, col_names=("EMA_13"))
-    veri.ta.ema(length=21, append=True, col_names=("EMA_21"))
-    veri.ta.ema(length=50, append=True, col_names=("EMA_50"))
-    veri.ta.ema(length=200, append=True, col_names=("EMA_200"))
-    veri.ta.bbands(length=20, append=True)
-    veri.ta.stochrsi(append=True)
-    veri.ta.macd(append=True)
-    veri.ta.rsi(append=True)
-    veri.ta.adx(append=True)
-    veri.ta.atr(append=True)
-    veri.ta.obv(append=True)
-    veri.ta.cdl_pattern(name="all", append=True)
-    veri.ta.vwap(append=True)
-    veri.ta.ichimoku(append=True)
+    def calculate_indicators(veri):
+    """Gerekli tüm teknik göstergeleri manuel olarak hesaplar."""
+    # EMA
+    veri['ema_8'] = veri['close'].ewm(span=8, adjust=False).mean()
+    veri['ema_13'] = veri['close'].ewm(span=13, adjust=False).mean()
+    veri['ema_21'] = veri['close'].ewm(span=21, adjust=False).mean()
+    veri['ema_50'] = veri['close'].ewm(span=50, adjust=False).mean()
+    veri['ema_200'] = veri['close'].ewm(span=200, adjust=False).mean()
+
+    # Bollinger Bantları
+    veri['bbm_20_2.0'] = veri['close'].rolling(window=20).mean()
+    veri['bb_std'] = veri['close'].rolling(window=20).std()
+    veri['bbu_20_2.0'] = veri['bbm_20_2.0'] + (veri['bb_std'] * 2)
+    veri['bbl_20_2.0'] = veri['bbm_20_2.0'] - (veri['bb_std'] * 2)
+    veri['bbb_20_2.0'] = (veri['bbu_20_2.0'] - veri['bbl_20_2.0']) / veri['bbm_20_2.0'] * 100 # Bollinger Band Genişliği
+
+    # RSI
+    delta = veri['close'].diff()
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+    avg_gain = gain.ewm(span=14, adjust=False).mean()
+    avg_loss = loss.ewm(span=14, adjust=False).mean()
+    rs = avg_gain / avg_loss
+    veri['rsi_14'] = 100 - (100 / (1 + rs))
+
+    # MACD
+    ema_12 = veri['close'].ewm(span=12, adjust=False).mean()
+    ema_26 = veri['close'].ewm(span=26, adjust=False).mean()
+    veri['macd_12_26_9'] = ema_12 - ema_26
+    veri['macds_12_26_9'] = veri['macd_12_26_9'].ewm(span=9, adjust=False).mean()
+    veri['macdh_12_26_9'] = veri['macd_12_26_9'] - veri['macds_12_26_9']
+
+    # ATR
+    high_low = veri['high'] - veri['low']
+    high_prev_close = abs(veri['high'] - veri['close'].shift())
+    low_prev_close = abs(veri['low'] - veri['close'].shift())
+    tr = pd.DataFrame({'hl': high_low, 'hpc': high_prev_close, 'lpc': low_prev_close}).max(axis=1)
+    veri['atr_14'] = tr.ewm(span=14, adjust=False).mean()
+    veri['atrr_14'] = (veri['atr_14'] / veri['close']) * 100 # ATR % olarak
+
+    # ADX
+    # DM (Directional Movement)
+    veri['up_move'] = veri['high'].diff()
+    veri['down_move'] = veri['low'].diff() * -1
+    veri['plus_dm'] = np.where((veri['up_move'] > veri['down_move']) & (veri['up_move'] > 0), veri['up_move'], 0)
+    veri['minus_dm'] = np.where((veri['down_move'] > veri['up_move']) & (veri['down_move'] > 0), veri['down_move'], 0)
+
+    # TR (True Range) - ATR hesaplamasından alınabilir
+    veri['tr'] = tr # ATR hesaplamasındaki tr'yi kullan
+
+    # Smooth DM ve TR
+    veri['plus_dm_14'] = veri['plus_dm'].ewm(span=14, adjust=False).mean()
+    veri['minus_dm_14'] = veri['minus_dm'].ewm(span=14, adjust=False).mean()
+    veri['tr_14'] = veri['tr'].ewm(span=14, adjust=False).mean()
+
+    # DI (Directional Indicator)
+    veri['pdi_14'] = (veri['plus_dm_14'] / veri['tr_14']) * 100
+    veri['mdi_14'] = (veri['minus_dm_14'] / veri['tr_14']) * 100
+
+    # DX (Directional Index)
+    veri['dx_14'] = abs(veri['pdi_14'] - veri['mdi_14']) / (veri['pdi_14'] + veri['mdi_14']) * 100
+
+    # ADX
+    veri['adx_14'] = veri['dx_14'].ewm(span=14, adjust=False).mean()
+    veri['dmp_14'] = veri['pdi_14'] # +DI
+    veri['dmn_14'] = veri['mdi_14'] # -DI
+
+    # OBV
+    veri['obv'] = (np.sign(veri['close'].diff()) * veri['volume']).fillna(0).cumsum()
+
+    # StochRSI
+    # RSI'ın kendisi üzerinde Stokastik hesapla
+    min_rsi = veri['rsi_14'].rolling(window=14).min()
+    max_rsi = veri['rsi_14'].rolling(window=14).max()
+    veri['stochrsi'] = (veri['rsi_14'] - min_rsi) / (max_rsi - min_rsi)
+    veri['stochrsik_14_14_3_3'] = veri['stochrsi'].rolling(window=3).mean() * 100
+    veri['stochrsid_14_14_3_3'] = veri['stochrsik_14_14_3_3'].rolling(window=3).mean()
+
+    # VWAP (Günlük VWAP)
+    # Her gün için ayrı ayrı hesaplama
+    veri['typical_price'] = (veri['high'] + veri['low'] + veri['close']) / 3
+    veri['tp_volume'] = veri['typical_price'] * veri['volume']
     
+    # Günlük bazda kümülatif toplamlar
+    veri['cum_tp_volume'] = veri.groupby(veri.index.date)['tp_volume'].cumsum()
+    veri['cum_volume'] = veri.groupby(veri.index.date)['volume'].cumsum()
+    veri['vwap_d'] = veri['cum_tp_volume'] / veri['cum_volume']
+
+    # Ichimoku Bulutu
+    high_9 = veri['high'].rolling(window=9).max()
+    low_9 = veri['low'].rolling(window=9).min()
+    veri['itsa_9_26_52'] = (high_9 + low_9) / 2 # Tenkan-sen
+
+    high_26 = veri['high'].rolling(window=26).max()
+    low_26 = veri['low'].rolling(window=26).min()
+    veri['itsb_9_26_52'] = (high_26 + low_26) / 2 # Kijun-sen
+
+    veri['senkou_a'] = ((veri['itsa_9_26_52'] + veri['itsb_9_26_52']) / 2).shift(26) # Senkou Span A
+
+    high_52 = veri['high'].rolling(window=52).max()
+    low_52 = veri['low'].rolling(window=52).min()
+    veri['senkou_b'] = ((high_52 + low_52) / 2).shift(26) # Senkou Span B
+
+    veri['is_9_26_52'] = veri['close'].shift(-26) # Chikou Span
+
+    # Sütun adlarını küçük harfe çevirerek tutarlılık sağla
     veri.columns = [col.lower() for col in veri.columns]
     return veri
 
