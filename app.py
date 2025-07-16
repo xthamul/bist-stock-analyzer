@@ -334,4 +334,4 @@ if __name__ == "__main__":
         
 =======
     main()
->>>>>>> 62c586e (Fix: Syntax error in backtest button label)
+
