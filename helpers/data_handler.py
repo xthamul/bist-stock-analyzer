@@ -2,6 +2,7 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
+npNaN = np.NaN # pandas_ta'nın numpy.NaN'ı bulamaması sorununu çözmek için
 import pandas_ta as ta
 import streamlit as st
 
