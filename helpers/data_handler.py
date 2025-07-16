@@ -2,7 +2,6 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from numpy import NaN as npNaN
 import pandas_ta as ta
 import streamlit as st
 
