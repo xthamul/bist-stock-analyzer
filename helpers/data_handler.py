@@ -20,8 +20,6 @@ def get_stock_data(hisse_kodu, interval):
     return veri
 
 def calculate_indicators(veri):
-    """Gerekli tüm teknik göstergeleri hesaplar."""
-    def calculate_indicators(veri):
     """Gerekli tüm teknik göstergeleri manuel olarak hesaplar."""
     # EMA
     veri['ema_8'] = veri['close'].ewm(span=8, adjust=False).mean()
