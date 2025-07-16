@@ -235,7 +235,7 @@ def display_backtesting(veri, hisse_kodu_yf):
         # Form elemanları
         initial_cash = st.number_input("Başlangıç Nakiti", min_value=1000, value=100000, step=1000)
         commission = st.slider("Komisyon Oranı (%)", min_value=0.0, max_value=1.0, value=0.2, step=0.01) / 100
-        submit_button = st.form_submit_button(label='Backtest'i Çalıştır')
+        submit_button = st.form_submit_button(label="Backtest'i Çalıştır")
 
     if submit_button:
         with st.spinner("Strateji geçmiş veriler üzerinde test ediliyor..."):
@@ -327,8 +327,6 @@ def main():
 
     else:
         st.info("Lütfen sol taraftaki menüden bir analiz modu seçip 'Analiz Et' butonuna tıklayın.")
-    else:
-        st.info("Lütfen sol taraftaki menüden analiz etmek istediğiniz hisseyi ve ayarları seçip 'Analiz Et' butonuna tıklayın.")
 
 if __name__ == "__main__":
 <<<<<<< HEAD

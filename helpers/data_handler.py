@@ -14,6 +14,9 @@ def get_stock_data(hisse_kodu, interval):
     if isinstance(veri.columns, pd.MultiIndex):
         veri.columns = veri.columns.droplevel(1)
     veri.columns = [col.lower() for col in veri.columns]
+    # İndeksi zaman dilimi bilgisinden arındır (VWAP uyarısını gidermek için)
+    if veri.index.tz is not None:
+        veri.index = veri.index.tz_localize(None)
     return veri
 
 def calculate_indicators(veri):
