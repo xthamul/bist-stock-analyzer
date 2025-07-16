@@ -1,8 +1,8 @@
 
-numpy
-pandas
+numpy==1.26.4
+pandas==2.2.2
 pandas-ta==0.3.14b0
-yfinance
+yfinance==0.2.38
 matplotlib
 mplfinance
 scipy
