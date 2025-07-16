@@ -148,3 +148,4 @@ Collecting pandas==2.2.2 (from -r /mount/src/bist-stock-analyzer/requirements.tx
   Installing backend dependencies: started
   Installing backend dependencies: finished with status 'done'
   Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): still running...
