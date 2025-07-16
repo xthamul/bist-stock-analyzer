@@ -1,0 +1,150 @@
+
+[     UTC     ] Logs for bist-stock-analyzer-xnbp8trhkdasxnxixtpvdg.streamlit.app/
+────────────────────────────────────────────────────────────────────────────────────────
+[22:45:28] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
+[22:45:28] 🐙 Cloning repository...
+[22:45:28] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
+
+[22:45:28] 🐙 Cloned repository!
+[22:45:28] 🐙 Pulling code changes from Github...
+[22:45:29] 📦 Processing dependencies...
+
+──────────────────────────────────────── uv ───────────────────────────────────────────
+
+Using uv pip install.
+Using Python 3.13.5 environment at /home/adminuser/venv
+Resolved 75 packages in 712ms
+  × Failed to download and build `numpy==1.21.6`
+  ├─▶ Build backend failed to determine requirements with `build_wheel()`
+  │   (exit status: 1)
+
+  │   [stderr]
+  │   Traceback (most recent call last):
+  │     File "<string>", line 8, in <module>
+  │       from setuptools.build_meta import __legacy__ as backend
+  │     File
+  │   "/home/adminuser/.cache/uv/builds-v0/.tmpeHzl42/lib/python3.13/site-packages/setuptools/__init__.py",
+  │   line 10, in <module>
+  │       import distutils.core
+  │   ModuleNotFoundError: No module named 'distutils'
+
+  ╰─▶ distutils was removed from the standard library in Python 3.12. Consider
+      adding a constraint (like `numpy >1.21.6`) to avoid building a version
+      of numpy that depends on distutils.
+Checking if Streamlit is installed
+Installing rich for an improved exception logging
+Using uv pip install.
+Using Python 3.13.5 environment at /home/adminuser/venv
+Resolved 4 packages in 3ms
+Installed 4 packages in 14ms
+ + markdown-it-py==3.0.0
+ + mdurl==0.1.2[2025-07-16 22:45:34.959875] 
+ + pygments==2.19.2
+ + rich==14.0.0
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+──────────────────────────────────────── pip ───────────────────────────────────────────
+
+Using standard pip install.
+ERROR: Ignored the following versions that require a different python version: 1.21.2 Requires-Python >=3.7,<3.11; 1.21.3 Requires-Python >=3.7,<3.11; 1.21.4 Requires-Python >=3.7,<3.11; 1.21.5 Requires-Python >=3.7,<3.11; 1.21.6 Requires-Python >=3.7,<3.11; 1.26.0 Requires-Python <3.13,>=3.9; 1.26.1 Requires-Python <3.13,>=3.9
+ERROR: Could not find a version that satisfies the requirement numpy==1.21.6 (from versions: 1.3.0, 1.4.1, 1.5.0, 1.5.1, 1.6.0, 1.6.1, 1.6.2, 1.7.0, 1.7.1, 1.7.2, 1.8.0, 1.8.1, 1.8.2, 1.9.0, 1.9.1, 1.9.2, 1.9.3, 1.10.0.post2, 1.10.1, 1.10.2, 1.10.4, 1.11.0, 1.11.1, 1.11.2, 1.11.3, 1.12.0, 1.12.1, 1.13.0, 1.13.1, 1.13.3, 1.14.0, 1.14.1, 1.14.2, 1.14.3, 1.14.4, 1.14.5, 1.14.6, 1.15.0, 1.15.1, 1.15.2, 1.15.3, 1.15.4, 1.16.0, 1.16.1, 1.16.2, 1.16.3, 1.16.4, 1.16.5, 1.16.6, 1.17.0, 1.17.1, 1.17.2, 1.17.3, 1.17.4, 1.17.5, 1.18.0, 1.18.1, 1.18.2, 1.18.3, 1.18.4, 1.18.5, 1.19.0, 1.19.1, 1.19.2, 1.19.3, 1.19.4, 1.19.5, 1.20.0, 1.20.1, 1.20.2, 1.20.3, 1.21.0, 1.21.1, 1.22.0, 1.22.1, 1.22.2, 1.22.3, 1.22.4, 1.23.0, 1.23.1, 1.23.2, 1.23.3, 1.23.4, 1.23.5, 1.24.0, 1.24.1, 1.24.2, 1.24.3, 1.24.4, 1.25.0, 1.25.1, 1.25.2, 1.26.2, 1.26.3, 1.26.4, 2.0.0, 2.0.1, 2.0.2, 2.1.0, 2.1.1, 2.1.2, 2.1.3, 2.2.0rc1, 2.2.0, 2.2.1, 2.2.2, 2.2.3, 2.2.4, 2.2.5, 2.2.6, 2.3.0rc1, 2.3.0, 2.3.1)
+ERROR: No matching distribution found for numpy==1.21.6
+
+[notice] A new release of pip is available: 24.0 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
+Checking if Streamlit is installed
+Installing rich for an improved exception logging
+Using standard pip install.
+Collecting rich>=10.14.0
+  Downloading rich-14.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=10.14.0)
+  Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=10.14.0)
+  Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=10.14.0)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading rich-14.0.0-py3-none-any.whl (243 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.2/243.2 kB 11.3 MB/s eta 0:00:00[2025-07-16 22:45:37.459128] 
+Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.5/87.5 kB 130.5 MB/s eta 0:00:00[2025-07-16 22:45:37.474868] 
+Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 67.5 MB/s eta 0:00:00[2025-07-16 22:45:37.507889] 
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Installing collected packages: pygments, mdurl, markdown-it-py, rich
+  Attempting uninstall: pygments
+    Found existing installation: Pygments 2.19.2
+    Uninstalling Pygments-2.19.2:
+      Successfully uninstalled Pygments-2.19.2
+  Attempting uninstall: mdurl
+    Found existing installation: mdurl 0.1.2
+    Uninstalling mdurl-0.1.2:
+      Successfully uninstalled mdurl-0.1.2
+  Attempting uninstall: markdown-it-py
+    Found existing installation: markdown-it-py 3.0.0
+    Uninstalling markdown-it-py-3.0.0:
+      Successfully uninstalled markdown-it-py-3.0.0
+  Attempting uninstall: rich
+    Found existing installation: rich 14.0.0
+    Uninstalling rich-14.0.0:
+      Successfully uninstalled rich-14.0.0
+Successfully installed markdown-it-py-3.0.0 mdurl-0.1.2 pygments-2.19.2 rich-14.0.0
+
+[notice] A new release of pip is available: 24.0 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+[22:45:40] ❗️ installer returned a non-zero exit code
+[22:45:40] ❗️ Error during processing dependencies! Please fix the error and push an update, or try restarting the app.
+[22:48:03] 🐙 Pulling code changes from Github...
+[22:48:03] 📦 Processing dependencies...
+
+──────────────────────────────────────── uv ───────────────────────────────────────────
+
+Using uv pip install.
+Using Python 3.13.5 environment at /home/adminuser/venv
+Resolved 75 packages in 1.28s
+  × Failed to download and build `scipy==1.10.1`[2025-07-16 22:48:38.720312] 
+  ╰─▶ Build backend failed to build wheel through `[2025-07-16 22:48:38.721281] build_wheel[2025-07-16 22:48:38.721517] ` (exit status:
+      1)
+
+      [stdout]
+      meson-python: error: Unsupported Python version 3.13.5, expected
+      <3.12,>=3.8
+
+Checking if Streamlit is installed
+Installing rich for an improved exception logging
+Using uv pip install.
+Using Python 3.13.5 environment at /home/adminuser/venv
+Audited 1 package in 9ms
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+──────────────────────────────────────── pip ───────────────────────────────────────────
+
+Using standard pip install.
+Collecting numpy==1.26.4 (from -r /mount/src/bist-stock-analyzer/requirements.txt (line 2))
+  Downloading numpy-1.26.4.tar.gz (15.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.8/15.8 MB 11.5 MB/s eta 0:00:00[2025-07-16 22:48:44.009759] 
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): still running...
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting pandas==2.2.2 (from -r /mount/src/bist-stock-analyzer/requirements.txt (line 3))
+  Downloading pandas-2.2.2.tar.gz (4.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 134.4 MB/s eta 0:00:00[2025-07-16 22:50:56.535118] 
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
