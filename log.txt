@@ -1,40 +1,124 @@
 
 [     UTC     ] Logs for bist-stock-analyzer-xnbp8trhkdasxnxixtpvdg.streamlit.app/
 ────────────────────────────────────────────────────────────────────────────────────────
-[23:19:04] 🖥 Provisioning machine...
-[23:19:04] 🎛 Preparing system...
-[23:19:04] ⛓ Spinning up manager process...
-[23:10:41] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
-[23:10:41] 🐙 Cloning repository...
-[23:10:41] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
+[23:22:55] 🖥 Provisioning machine...
+[23:22:55] 🎛 Preparing system...
+[23:22:55] ⛓ Spinning up manager process...
+[23:21:15] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
+[23:21:15] 🐙 Cloning repository...
+[23:21:15] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
 
-[23:10:41] 🐙 Cloned repository!
-[23:10:41] 🐙 Pulling code changes from Github...
-[23:10:42] 📦 Processing dependencies...
+[23:21:15] 🐙 Cloned repository!
+[23:21:15] 🐙 Pulling code changes from Github...
+[23:21:16] 📦 Processing dependencies...
 
 ──────────────────────────────────────── uv ───────────────────────────────────────────
 
 Using uv pip install.
 Using Python 3.13.5 environment at /home/adminuser/venv
-Resolved 68 packages in 1.72s
-  × Failed to download and build `scikit-learn==1.4.2`
-  ├─▶ Failed to resolve requirements from `build-system.requires`
-  ├─▶ No solution found when resolving: `setuptools`, `wheel`,
-  │   `cython>=3.0.8`, `numpy==2.0.0rc1`, `scipy>=1.6.0`
-  ╰─▶ Because there is no version of numpy==2.0.0rc1 and you require
-      numpy==2.0.0rc1, we can conclude that your requirements are
-      unsatisfiable.
+Resolved 68 packages in 2.03s
+  × Failed to download and build `scipy==1.13.1`[2025-07-16 23:22:08.923840] 
+  ╰─▶ Build backend failed to build wheel through `build_wheel` (exit status:
+      1)
+
+      [stdout]
+      + meson setup
+      /home/adminuser/.cache/uv/sdists-v6/pypi/scipy/1.13.1/4YFyeKmqu6RfKeVV3ZeQB/src
+      /home/adminuser/.cache/uv/sdists-v6/pypi/scipy/1.13.1/4YFyeKmqu6RfKeVV3ZeQB/src/.mesonpy-7pd3f46l
+      -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md
+      --native-file=/home/adminuser/.cache/uv/sdists-v6/pypi/scipy/1.13.1/4YFyeKmqu6RfKeVV3ZeQB/src/.mesonpy-7pd3f46l/meson-python-native-file.ini
+      The Meson build system
+      Version: 1.8.2
+      Source dir:
+      /home/adminuser/.cache/uv/sdists-v6/pypi/scipy/1.13.1/4YFyeKmqu6RfKeVV3ZeQB/src
+      Build dir:
+      /home/adminuser/.cache/uv/sdists-v6/pypi/scipy/1.13.1/4YFyeKmqu6RfKeVV3ZeQB/src/.mesonpy-7pd3f46l
+      Build type: native build
+      Project name: scipy
+      Project version: 1.13.1
+      C compiler for the host machine: cc (gcc 10.2.1 "cc (Debian 10.2.1-6)
+      10.2.1 20210110")
+      C linker for the host machine: cc ld.bfd 2.35.2
+      C++ compiler for the host machine: c++ (gcc 10.2.1 "c++ (Debian
+      10.2.1-6) 10.2.1 20210110")
+      C++ linker for the host machine: c++ ld.bfd 2.35.2
+      Cython compiler for the host machine: cython (cython 3.0.12)
+      Host machine cpu family: x86_64
+      Host machine cpu: x86_64
+      Program python found: YES
+      (/home/adminuser/.cache/uv/builds-v0/.tmp6MrAfU/bin/python)
+      Did not find pkg-config by name 'pkg-config'
+      Found pkg-config: NO
+      Run-time dependency python found: YES 3.13
+      Program cython found: YES
+      (/home/adminuser/.cache/uv/builds-v0/.tmp6MrAfU/bin/cython)
+      Compiler for C supports arguments -Wno-unused-but-set-variable: YES
+      Compiler for C supports arguments -Wno-unused-function: YES
+      Compiler for C supports arguments -Wno-conversion: YES
+      Compiler for C supports arguments -Wno-misleading-indentation: YES
+      Library m found: YES
+
+      ../meson.build:78:0: ERROR: Unknown compiler(s): [['gfortran'],
+      ['flang-new'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'],
+      ['ifx'], ['g95']]
+      The following exception(s) were encountered:
+      Running `gfortran --help` gave "[Errno 2] No such file or directory:
+      'gfortran'"
+      Running `gfortran --version` gave "[Errno 2] No such file or directory:
+      'gfortran'"
+      Running `gfortran -V` gave "[Errno 2] No such file or directory:
+      'gfortran'"
+      Running `flang-new --help` gave "[Errno 2] No such file or directory:
+      'flang-new'"
+      Running `flang-new --version` gave "[Errno 2] No such file or directory:
+      'flang-new'"
+      Running `flang-new -V` gave "[Errno 2] No such file or directory:
+      'flang-new'"
+      Running `flang --help` gave "[Errno 2] No such file or directory:
+      'flang'"
+      Running `flang --version` gave "[Errno 2] No such file or directory:
+      'flang'"
+      Running `flang -V` gave "[Errno 2] No such file or directory: 'flang'"
+      Running `nvfortran --help` gave "[Errno 2] No such file or directory:
+      'nvfortran'"
+      Running `nvfortran --version` gave "[Errno 2] No such file or directory:
+      'nvfortran'"
+      Running `nvfortran -V` gave "[Errno 2] No such file or directory:
+      'nvfortran'"
+      Running `pgfortran --help` gave "[Errno 2] No such file or directory:
+      'pgfortran'"
+      Running `pgfortran --version` gave "[Errno 2] No such file or directory:
+      'pgfortran'"
+      Running `pgfortran -V` gave "[Errno 2] No such file or directory:
+      'pgfortran'"
+      Running `ifort --help` gave "[Errno 2] No such file or directory:
+      'ifort'"
+      Running `ifort --version` gave "[Errno 2] No such file or directory:
+      'ifort'"
+      Running `ifort -V` gave "[Errno 2] No such file or directory: 'ifort'"
+      Running `ifx --help` gave "[Errno 2] No such file or directory: 'ifx'"
+      Running `ifx --version` gave "[Errno 2] No such file or directory:
+      'ifx'"
+      Running `ifx -V` gave "[Errno 2] No such file or directory: 'ifx'"
+      Running `g95 --help` gave "[Errno 2] No such file or directory: 'g95'"
+      Running `g95 --version` gave "[Errno 2] No such file or directory:
+      'g95'"
+      Running `g95 -V` gave "[Errno 2] No such file or directory: 'g95'"
+
+      A full log can be found at
+      /home/adminuser/.cache/uv/sdists-v6/pypi/scipy/1.13.1/4YFyeKmqu6RfKeVV3ZeQB/src/.mesonpy-7pd3f46l/meson-logs/meson-log.txt
+
 Checking if Streamlit is installed
 Installing rich for an improved exception logging
 Using uv pip install.
 Using Python 3.13.5 environment at /home/adminuser/venv
-Resolved 4 packages in 43ms
-Prepared 1 package in 46ms
-Installed 4 packages in 16ms
+Resolved 4 packages in 548ms
+Prepared [2025-07-16 23:22:10.057261] 1 package[2025-07-16 23:22:10.057666]  [2025-07-16 23:22:10.058084] in 254ms[2025-07-16 23:22:10.058465] 
+Installed [2025-07-16 23:22:10.196600] 4 packages[2025-07-16 23:22:10.196922]  in 136ms
  + markdown-it-py==3.0.0
  + mdurl==0.1.2
  + pygments==2.19.2
- + [2025-07-16 23:10:48.404418] rich==14.0.0
+ + rich==14.0.0
 
 ────────────────────────────────────────────────────────────────────────────────────────
 
@@ -44,7 +128,7 @@ Installed 4 packages in 16ms
 Using standard pip install.
 Collecting numpy==1.26.4 (from -r /mount/src/bist-stock-analyzer/requirements.txt (line 2))
   Downloading numpy-1.26.4.tar.gz (15.8 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.8/15.8 MB 126.8 MB/s eta 0:00:00[2025-07-16 23:10:50.746060] 
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.8/15.8 MB 18.4 MB/s eta 0:00:00[2025-07-16 23:22:18.807381] 
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
   Getting requirements to build wheel: started
@@ -52,16 +136,3 @@ Collecting numpy==1.26.4 (from -r /mount/src/bist-stock-analyzer/requirements.tx
   Installing backend dependencies: started
   Installing backend dependencies: finished with status 'done'
   Preparing metadata (pyproject.toml): started
-  Preparing metadata (pyproject.toml): still running...
-  Preparing metadata (pyproject.toml): finished with status 'done'
-Collecting pandas==2.2.2 (from -r /mount/src/bist-stock-analyzer/requirements.txt (line 3))
-  Downloading pandas-2.2.2.tar.gz (4.4 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 134.7 MB/s eta 0:00:00[2025-07-16 23:12:59.082927] 
-  Installing build dependencies: started
-  Installing build dependencies: finished with status 'done'
-  Getting requirements to build wheel: started
-  Getting requirements to build wheel: finished with status 'done'
-  Installing backend dependencies: started
-  Installing backend dependencies: finished with status 'done'
-  Preparing metadata (pyproject.toml): started
-  Preparing metadata (pyproject.toml): still running...
