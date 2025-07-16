@@ -57,7 +57,15 @@ def get_fundamental_data(hisse_kodu):
 
 def filter_data_by_date(veri, start_date, end_date):
     """Veriyi seçilen tarih aralığına göre filtreler."""
-    return veri[(veri.index >= pd.to_datetime(start_date)) & (veri.index <= pd.to_datetime(end_date))].copy()
+    # DataFrame indeksinin zaman dilimi bilgisini kaldır (karşılaştırma için)
+    if veri.index.tz is not None:
+        veri.index = veri.index.tz_localize(None)
+
+    # start_date ve end_date'i zaman dilimi bilgisi olmayan Timestamps'e dönüştür
+    start_ts = pd.to_datetime(start_date)
+    end_ts = pd.to_datetime(end_date)
+
+    return veri[(veri.index >= start_ts) & (veri.index <= end_ts)].copy()
 
 @st.cache_data(ttl=86400) # Günde bir kez cache'le
 def get_sector_peers(hisse_kodu):

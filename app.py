@@ -331,5 +331,9 @@ def main():
         st.info("Lütfen sol taraftaki menüden analiz etmek istediğiniz hisseyi ve ayarları seçip 'Analiz Et' butonuna tıklayın.")
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     main()
         
+=======
+    main()
+>>>>>>> 62c586e (Fix: Syntax error in backtest button label)
