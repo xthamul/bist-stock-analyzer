@@ -3,14 +3,16 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import streamlit as st
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 @st.cache_data(ttl=3600) # Veriyi 1 saat boyunca cache'le
+@retry(stop_after_attempt(3), wait=wait_fixed(2))
 def get_stock_data(hisse_kodu, interval):
     """Belirtilen hisse senedi için yfinance'ten veri çeker."""
     period = "2y" if interval in ["1h", "4h"] else "max"
     veri = yf.download(hisse_kodu, period=period, interval=interval, progress=False, auto_adjust=False)
     if veri.empty:
-        return None
+        raise ValueError(f"No data found for {hisse_kodu}") # Hata fırlat ki retry çalışsın
     if isinstance(veri.columns, pd.MultiIndex):
         veri.columns = veri.columns.droplevel(1)
     veri.columns = [col.lower() for col in veri.columns]
