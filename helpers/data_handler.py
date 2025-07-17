@@ -3,8 +3,6 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import streamlit as st
-import time # Added
-import traceback # Added
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 @st.cache_data(ttl=3600) # Veriyi 1 saat boyunca cache'le
@@ -147,9 +145,7 @@ def get_fundamental_data(hisse_kodu):
             "balance_sheet": balance_sheet,
             "cashflow": cashflow
         }
-    except Exception as e:
-        st.error(f"Error fetching fundamental data for {hisse_kodu}: {e}")
-        st.code(traceback.format_exc())
+    except Exception:
         return None
 
 def filter_data_by_date(veri, start_date, end_date):
@@ -193,15 +189,10 @@ def get_sector_peers(hisse_kodu):
             if peer_ticker != hisse_kodu.split('.')[0]:
                 try:
                     peer_info = yf.Ticker(f"{peer_ticker}.IS").info
-                    time.sleep(0.1) # Add a small delay to avoid rate limiting
                     if peer_info.get('sector') == sector:
                         peers.append(peer_ticker)
-                except Exception as e:
-                    st.warning(f"Could not fetch data for peer {peer_ticker}.IS: {e}")
-                    # st.code(traceback.format_exc()) # Uncomment for detailed debugging
+                except Exception:
                     continue # Peer verisi alınamazsa atla
         return sector, peers
-    except Exception as e:
-        st.error(f"Error fetching sector peers for {hisse_kodu}: {e}")
-        st.code(traceback.format_exc())
+    except Exception:
         return None, None

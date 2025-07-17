@@ -1,17 +1,14 @@
 
 [     UTC     ] Logs for bist-stock-analyzer-xnbp8trhkdasxnxixtpvdg.streamlit.app/
 ────────────────────────────────────────────────────────────────────────────────────────
-[19:28:04] 🖥 Provisioning machine...
-[19:28:04] 🎛 Preparing system...
-[19:28:04] ⛓ Spinning up manager process...
-[19:27:30] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
-[19:27:30] 🐙 Cloning repository...
-[19:27:31] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
+[19:31:16] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
+[19:31:16] 🐙 Cloning repository...
+[19:31:16] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
 
-[19:27:31] 🐙 Cloned repository!
-[19:27:31] 🐙 Pulling code changes from Github...
-[19:27:31] 📦 Processing dependencies...
-[19:27:31] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
+[19:31:17] 🐙 Cloned repository!
+[19:31:17] 🐙 Pulling code changes from Github...
+[19:31:17] 📦 Processing dependencies...
+[19:31:17] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
 Hit:1 http://deb.debian.org/debian bullseye InRelease
 Get:2 http://deb.debian.org/debian-security bullseye-security InRelease [27.2 kB]
 Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.0 kB]
@@ -19,11 +16,11 @@ Get:4 https://packages.microsoft.com/debian/11/prod bullseye InRelease [3650 B]
 Get:5 http://deb.debian.org/debian-security bullseye-security/main amd64 Packages [384 kB]
 Get:6 https://packages.microsoft.com/debian/11/prod bullseye/main amd64 Packages [200 kB]
 Get:7 https://packages.microsoft.com/debian/11/prod bullseye/main arm64 Packages [49.3 kB]
-Fetched 708 kB in 1s (1106 kB/s)
-Reading package lists...[2025-07-17 19:27:33.595943] 
-Reading package lists...[2025-07-17 19:27:34.411420] 
-Building dependency tree...[2025-07-17 19:27:34.619863] 
-Reading state information...[2025-07-17 19:27:34.620232] 
+Fetched 708 kB in 1s (828 kB/s)
+Reading package lists...[2025-07-17 19:31:19.358891] 
+Reading package lists...[2025-07-17 19:31:19.954965] 
+Building dependency tree...[2025-07-17 19:31:20.136618] 
+Reading state information...[2025-07-17 19:31:20.137043] 
 build-essential is already the newest version (12.9).
 The following additional packages will be installed:
   gfortran-10 libblas-dev libblas3 libgfortran-10-dev libgfortran5 liblapack3
@@ -52,9 +49,9 @@ Get:11 http://deb.debian.org/debian bullseye/main amd64 libopenblas0 amd64 0.3.1
 Get:12 http://deb.debian.org/debian bullseye/main amd64 libopenblas-dev amd64 0.3.13+ds-3+deb11u1 [44.2 kB]
 Get:13 http://deb.debian.org/debian bullseye/main amd64 pkg-config amd64 0.29.2-1 [65.1 kB]
 debconf: delaying package configuration, since apt-utils is not installed
-Fetched 28.3 MB in 0s (73.2 MB/s)
+Fetched 28.3 MB in 0s (84.0 MB/s)
 Selecting previously unselected package libgfortran5:amd64.
-(Reading database ... [2025-07-17 19:27:36.134694] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%[2025-07-17 19:27:36.146656] (Reading database ... 65%[2025-07-17 19:27:36.175718] (Reading database ... 70%(Reading database ... 75%[2025-07-17 19:27:36.233490] (Reading database ... 80%[2025-07-17 19:27:36.298880] (Reading database ... 85%[2025-07-17 19:27:36.336315] (Reading database ... 90%[2025-07-17 19:27:36.389869] (Reading database ... 95%[2025-07-17 19:27:36.415660] (Reading database ... 100%[2025-07-17 19:27:36.416391] (Reading database ... [2025-07-17 19:27:36.416872] 22039 files and directories currently installed.)
+(Reading database ... [2025-07-17 19:31:21.053685] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%[2025-07-17 19:31:21.092514] (Reading database ... 65%[2025-07-17 19:31:21.094848] (Reading database ... 70%[2025-07-17 19:31:21.095913] (Reading database ... 75%[2025-07-17 19:31:21.111893] (Reading database ... 80%[2025-07-17 19:31:21.121882] (Reading database ... 85%[2025-07-17 19:31:21.125260] (Reading database ... 90%[2025-07-17 19:31:21.131105] (Reading database ... 95%[2025-07-17 19:31:21.141819] (Reading database ... 100%(Reading database ... 22039 files and directories currently installed.)
 Preparing to unpack .../00-libgfortran5_10.2.1-6_amd64.deb ...
 Unpacking libgfortran5:amd64 (10.2.1-6) ...
 Selecting previously unselected package libgfortran-10-dev:amd64.
@@ -94,7 +91,7 @@ Selecting previously unselected package pkg-config.
 Preparing to unpack .../12-pkg-config_0.29.2-1_amd64.deb ...
 Unpacking pkg-config (0.29.2-1) ...
 Setting up libblas3:amd64 (3.9.0-3+deb11u1) ...
-update-alternatives: [2025-07-17 19:27:40.855665] using /usr/lib/x86_64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode[2025-07-17 19:27:40.856144] 
+update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
 Setting up pkg-config (0.29.2-1) ...
 Setting up libgfortran5:amd64 (10.2.1-6) ...
 Setting up libgfortran-10-dev:amd64 (10.2.1-6) ...
@@ -111,12 +108,12 @@ update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so to prov
 Setting up gfortran-10 (10.2.1-6) ...
 Setting up libopenblas0:amd64 (0.3.13+ds-3+deb11u1) ...
 Setting up libopenblas-pthread-dev:amd64 (0.3.13+ds-3+deb11u1) ...
-update-alternatives: [2025-07-17 19:27:41.278639] using /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so to provide /usr/lib/x86_64-linux-gnu/libblas.so (libblas.so-x86_64-linux-gnu) in auto mode
-update-alternatives: [2025-07-17 19:27:41.284141] using /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so to provide /usr/lib/x86_64-linux-gnu/liblapack.so (liblapack.so-x86_64-linux-gnu) in auto mode
-update-alternatives: [2025-07-17 19:27:41.289429] using /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblas.so to provide /usr/lib/x86_64-linux-gnu/libopenblas.so (libopenblas.so-x86_64-linux-gnu) in auto mode[2025-07-17 19:27:41.289909] 
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so to provide /usr/lib/x86_64-linux-gnu/libblas.so (libblas.so-x86_64-linux-gnu) in auto mode
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so to provide /usr/lib/x86_64-linux-gnu/liblapack.so (liblapack.so-x86_64-linux-gnu) in auto mode
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblas.so to provide /usr/lib/x86_64-linux-gnu/libopenblas.so (libopenblas.so-x86_64-linux-gnu) in auto mode
 Setting up gfortran (4:10.2.1-1) ...
 update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f95 (f95) in auto mode
-update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f77 (f77) in auto mode[2025-07-17 19:27:41.334368] 
+update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f77 (f77) in auto mode
 Setting up libopenblas-dev:amd64 (0.3.13+ds-3+deb11u1) ...
 Processing triggers for libc-bin (2.31-13+deb11u13) ...
 
@@ -124,10 +121,10 @@ Processing triggers for libc-bin (2.31-13+deb11u13) ...
 
 Using uv pip install.
 Using Python 3.10.18 environment at /home/adminuser/venv
-Resolved 67 packages in 2.40s
-Prepared 67 packages in 12.57s
-Uninstalled 1 package in 58ms
-Installed 67 packages in 877ms
+Resolved 67 packages in 2.05s
+Prepared 67 packages in 6.75s
+Uninstalled 1 package in 62ms
+Installed 67 packages in 823ms
  + altair==5.5.0
  + appdirs==1.4.4
  + attrs==25.3.0
@@ -136,7 +133,7 @@ Installed 67 packages in 877ms
  + blinker==1.9.0
  + bokeh==2.4.3
  + cachetools==5.5.2
- + certifi==2025.7.14
+ + certifi==2025.7.14[2025-07-17 19:31:36.251714] 
  + charset-normalizer==3.4.2
  + click==8.2.1
  + contourpy==1.3.2
@@ -151,7 +148,7 @@ Installed 67 packages in 877ms
  + joblib==1.5.1
  + jsonschema==4.24.1
  + jsonschema-specifications==2025.4.1
- + kiwisolver==1.4.8
+ + kiwisolver==[2025-07-17 19:31:36.252479] 1.4.8
  + lxml==6.0.0
  + markdown-it-py==3.0.0
  + markupsafe==3.0.2
@@ -161,14 +158,14 @@ Installed 67 packages in 877ms
  + multitasking==0.0.11
  + narwhals==1.47.1
  + numpy==1.23.5
- + packaging==24.2
+ [2025-07-17 19:31:36.253048] + packaging==24.2
  + pandas==2.2.2
  + peewee==3.18.2
  + pillow==10.4.0
  + plotly==5.22.0
  + protobuf==4.25.8
  + pyarrow==20.0.0
- + pydeck==0.9.1
+ + pydeck[2025-07-17 19:31:36.253392] ==0.9.1
  + pygments==2.19.2
  + pyparsing==3.2.3
  + python-dateutil==2.9.0.post0
@@ -177,23 +174,23 @@ Installed 67 packages in 877ms
  + referencing==0.36.2
  + requests==2.32.4
  + rich==13.9.4
- + rpds-py==0.26.0
+ + rpds-py==[2025-07-17 19:31:36.253645] 0.26.0
  + scikit-learn==1.2.2
  + scipy==1.13.1
  - setuptools==80.3.1
  + setuptools==69.5.1
  + six==1.17.0
  + smmap==5.0.2
- + soupsieve==2.7
+ + soupsieve==2.7[2025-07-17 19:31:36.253888] 
  + streamlit==1.34.0
  + tenacity==8.5.0
  + threadpoolctl==3.6.0
  + toml==0.10.2
- + tornado==6.5.1
+ +[2025-07-17 19:31:36.254226]  tornado==6.5.1
  + typing-extensions==4.14.1
  + tzdata==2025.2
  + urllib3==2.5.0
- + watchdog==6.0.0
+ +[2025-07-17 19:31:36.254542]  watchdog==6.0.0
  + webencodings==0.5.1
  + yfinance==0.2.38
 Checking if Streamlit is installed
@@ -205,9 +202,9 @@ Audited 1 package in 5ms
 
 ────────────────────────────────────────────────────────────────────────────────────────
 
-[19:28:01] 🐍 Python dependencies were installed from /mount/src/bist-stock-analyzer/requirements.txt using uv.
+[19:31:37] 🐍 Python dependencies were installed from /mount/src/bist-stock-analyzer/requirements.txt using uv.
 Check if streamlit is installed
 Streamlit is already installed
-[19:28:03] 📦 Processed dependencies!
+[19:31:39] 📦 Processed dependencies!
 
 
