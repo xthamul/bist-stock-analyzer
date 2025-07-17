@@ -350,8 +350,12 @@ def main():
         st.info("Lütfen sol taraftaki menüden bir analiz modu seçip 'Analiz Et' butonuna tıklayın.")
 
 if __name__ == "__main__":
-
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error("Uygulama başlatılırken beklenmedik bir hata oluştu.")
+        st.error(f"Hata Detayı: {e}")
+        st.code(traceback.format_exc())
         
 
 
