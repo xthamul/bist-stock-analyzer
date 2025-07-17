@@ -1,2 +1,4 @@
-
 log.txt
+*.pyc
+*.html
+__pycache__/
