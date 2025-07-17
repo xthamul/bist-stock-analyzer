@@ -1,3 +1,4 @@
+print("--- app.py başlangıcı ---")
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,13 +14,21 @@ from helpers.backtester import run_backtest
 # --- Sabitler ve Ayarlar ---
 HISSE_GRUPPARI = {
     "BIST 100 Hisseleri": [
-        "AKBNK", "GARAN", "ISCTR", "YKBNK", "VAKBN"
+        "AKBNK", "GARAN", "ISCTR", "YKBNK", "VAKBN", "THYAO", "ASELS", "TUPRS", "KCHOL", "BIMAS",
+        "FROTO", "SISE", "ENKAI", "PETKM", "KOZAL", "TOASO", "KRDMD", "SAHOL", "SASA", "EREGL",
+        "ARCLK", "PGSUS", "ALARK", "HEKTS", "TAVHL", "TCELL", "ODAS", "KORDS", "DOHOL", "ZOREN",
+        "GWIND", "AGHOL", "AKSA", "OYAKC", "CCOLA", "TRKCM", "ADEL", "ULKER", "LOGO", "ISGYO",
+        "MGROS", "GENIL", "ISDMR", "BRISA", "ALKIM", "AKGRT", "BANVT", "CIMSA", "ENJSA", "KARSN",
+        "TTRAK", "GOZDE", "SOKM", "ALFAS", "BIOEN", "QUAGR", "BURCE", "DGNMO", "EKGYO", "GUBRF",
+        "IZMDC", "MPARK", "NETAS", "PENTA", "TMSN", "TUCLK", "ULAS", "VERUS", "YUNSA"
     ],
     "BIST 30 Hisseleri": [
-        "AKBNK", "GARAN", "ISCTR"
+        "AKBNK", "GARAN", "ISCTR", "YKBNK", "VAKBN", "THYAO", "ASELS", "TUPRS", "KCHOL", "BIMAS",
+        "FROTO", "SISE", "ENKAI", "PETKM", "KOZAL", "TOASO", "KRDMD", "SAHOL", "SASA", "EREGL",
+        "ARCLK", "PGSUS", "TCELL", "ULKER", "ISDMR", "TAVHL", "KRDMA", "LOGO", "ODAS", "TRKCM"
     ],
     "Tüm Hisseler": [
-        "AKBNK", "GARAN", "ISCTR"
+        "QNBTR","ASELS","GARAN","KCHOL","THYAO","ISBTR","ISCTR","ISKUR","ENKAI","AKBNK","FROTO","BIMAS","TUPRS","VAKBN","YKBNK","TCELL","TTKOM","SAHOL","EREGL","HALKB","PKENT","KENT","CCOLA","SASA","PGSUS","DSTKF","OYAKC","KLRHO","SISE","ZRGYO","TOASO","ISDMR","TAVHL","AEFES","DOCO","ASTOR","MGROS","TURSG","GUBRF","KOZAL","ARCLK","ENJSA","AHGSLR","YBTAS","SRVGY","BINHO","HATSN","VAKKO","GSRAY","ARMGD","GLCVY","REEDR","ISFIN","SONME","HRKET","GARFA","IZFAS","AGROT","KARSN","AKENR","INGRM","KLGYO","BEGYO","TSPOR","GOKNR","NATEN","TRCAS","VAKFN","TNZTP","TARKM","CEMAS","VKGYO","BOSSA","BOBET","IZMDC","SURGY","INVEO","ATATP","IEYHO","SNPAM","ADEL","BULGS","EBEBK","ENDAE","KBORU","SUWEN","AKMGY","GENTS","ODAS","ASGYO","KMPUR","BASCM","DOKTA","MEGMT","EMKEL","KAREL","BMSTL","YIGIT","GOZDE","MOBTL","AYEN","PAGYO","DOBUR","PARSN","KOPOL","OFSYM","BIGEN","KARTN","ISKPL","NTGAZ","EKOS","PLTUR","GOLTS","USAK","PAPIL","A1CAP","PRKAB","TCKRC","MNDTR","ORGE","ERCB","ATAKP","KOCMT","MAALT","ALGYO","AFYON","ULUUN","ALKA","DMRGD","PENTA","CEMZY","MERIT","INDES","ALKIM","CEMTS","IHAAS","FORTE","BFREN","CATES","DESA","BORSK","ARDYZ","ALKLC","PEKGY","EGEGY","MHRGY","GOODY","TKNSA","HOROZ","BARMA","KZGYO","BIGCH","DCTTR","DYOBY","ANELE","ELITE","CGCAM","ORMA","ALVES","KRVGD","DERHL","TSGYO","SOKE","KAPLM","FMIZP","ALCTL","KONKA","MERCN","DAGHL","METUR","SEGMN","YATAS","ARSAN","AHSGY","BAGFS","GSDHO","EGEPO","SERNT","LRSHO","YAPRK","ONRYT","AZTEK","SAFKR","MACKO","MEDTR","HUNER","EKSUN","CMBTN","HURGZ","TURGG","GEREL","TEKTU","INTEM","BRKVY","KNFRT","SAYAS","KGYO","INTEK","OSMEN","OTTO","FENER","BVSAN","BRLSM","TRILC","SEGYO","IHLAS","ERBOS","ARENA","LKMNH","KUTPO","NETAS","MARBL","ISSEN","MNDRS","SANKO","K","ORCAY","OZRDN","ULAS","ERSU","ATAGY","OYAYO","VKFYO","EKIZ","ATSYH","AVTUR","RODRG","HUBVC","SANEL","CASA","MMCAS","IDGYO","GRNYO","ATLAS","MTRYO","ETYAT","DIRIT","BRMEN","EUKYO","EUYO"
     ]
 }
 ZAMAN_ARALIKLARI = {
@@ -28,6 +37,7 @@ ZAMAN_ARALIKLARI = {
 }
 
 # --- Sayfa Konfigürasyonu ---
+print("--- st.set_page_config öncesi ---")
 st.set_page_config(
     page_title="BIST Hisse Senedi Analiz Platformu",
     page_icon="📊",
@@ -250,103 +260,101 @@ def display_backtesting(veri, hisse_kodu_yf):
 
 # --- Ana Uygulama Akışı ---
 def main():
-    st.title("Merhaba Dünya!")
+    print("--- main() fonksiyonu başladı ---")
+    st.title("📊 BIST Hisse Senedi Analiz Platformu")
+
     # --- Kenar Çubuğu (Sidebar) ---
-    # with st.sidebar:
-    #     st.header("Kontrol Paneli")
+    with st.sidebar:
+        st.header("Kontrol Paneli")
         
-    #     # Analiz Modu Seçimi
-    #     analysis_mode = st.radio("Analiz Modu", ["Tekil Hisse Analizi", "İzleme Listesi"], horizontal=True)
+        # Analiz Modu Seçimi
+        analysis_mode = st.radio("Analiz Modu", ["Tekil Hisse Analizi", "İzleme Listesi"], horizontal=True)
 
-    #     if analysis_mode == "Tekil Hisse Analizi":
-    #         grup_secim = st.selectbox("Hisse Grubu:", list(HISSE_GRUPPARI.keys()), index=0)
-    #         hisseler = sorted(HISSE_GRUPPARI.get(grup_secim, []))
-    #         default_index = hisseler.index("GARAN") if "GARAN" in hisseler else 0
-    #         hisse_secim = st.selectbox("Hisse Senedi:", hisseler, index=default_index)
-    #     else: # İzleme Listesi
-    #         portfolio_input = st.text_area("İzleme Listesi (Hisseleri virgülle ayırın)", "GARAN, THYAO, EREGL, BIMAS")
-    #         hisseler = sorted(HISSE_GRUPPARI.get("Tüm Hisseler", []))
-    #         hisse_secim = None # Tekil hisse seçimi bu modda yok
+        if analysis_mode == "Tekil Hisse Analizi":
+            grup_secim = st.selectbox("Hisse Grubu:", list(HISSE_GRUPPARI.keys()), index=0)
+            hisseler = sorted(HISSE_GRUPPARI.get(grup_secim, []))
+            default_index = hisseler.index("GARAN") if "GARAN" in hisseler else 0
+            hisse_secim = st.selectbox("Hisse Senedi:", hisseler, index=default_index)
+        else: # İzleme Listesi
+            portfolio_input = st.text_area("İzleme Listesi (Hisseleri virgülle ayırın)", "GARAN, THYAO, EREGL, BIMAS")
+            hisseler = sorted(HISSE_GRUPPARI.get("Tüm Hisseler", []))
+            hisse_secim = None # Tekil hisse seçimi bu modda yok
 
-    #     interval_display = st.selectbox("Zaman Aralığı:", list(ZAMAN_ARALIKLARI.keys()), index=2) # 1 Günlük default
-    #     interval_code = ZAMAN_ARALIKLARI[interval_display]
+        interval_display = st.selectbox("Zaman Aralığı:", list(ZAMAN_ARALIKLARI.keys()), index=2) # 1 Günlük default
+        interval_code = ZAMAN_ARALIKLARI[interval_display]
         
-    #     # Tarih Aralığı Seçimi (Sadece Tekil Analizde Aktif)
-    #     if analysis_mode == "Tekil Hisse Analizi":
-    #         today = datetime.today()
-    #         start_date = st.date_input('Başlangıç Tarihi', today - timedelta(days=365))
-    #         end_date = st.date_input('Bitiş Tarihi', today)
-    #         analysis_type = st.selectbox("Analiz Tipi:", ["Detaylı", "Basit"], index=0)
+        # Tarih Aralığı Seçimi (Sadece Tekil Analizde Aktif)
+        if analysis_mode == "Tekil Hisse Analizi":
+            today = datetime.today()
+            start_date = st.date_input('Başlangıç Tarihi', today - timedelta(days=365))
+            end_date = st.date_input('Bitiş Tarihi', today)
+            analysis_type = st.selectbox("Analiz Tipi:", ["Detaylı", "Basit"], index=0)
         
-    #     analyze_button = st.button("Analiz Et", use_container_width=True, type="primary")
+        analyze_button = st.button("Analiz Et", use_container_width=True, type="primary")
 
-    # # --- Durum Yönetimi ---
-    # # Session state'i başlat
-    # if 'analysis_requested' not in st.session_state:
-    #     st.session_state.analysis_requested = False
-    # if 'last_analysis_mode' not in st.session_state:
-    #     st.session_state.last_analysis_mode = analysis_mode
+    # --- Durum Yönetimi ---
+    # Session state'i başlat
+    if 'analysis_requested' not in st.session_state:
+        st.session_state.analysis_requested = False
+    if 'last_analysis_mode' not in st.session_state:
+        st.session_state.last_analysis_mode = analysis_mode
 
-    # # Kenar çubuğundaki bir widget değiştiğinde analizi sıfırla
-    # if st.session_state.last_analysis_mode != analysis_mode:
-    #     st.session_state.analysis_requested = False
-    #     st.session_state.last_analysis_mode = analysis_mode
+    # Kenar çubuğundaki bir widget değiştiğinde analizi sıfırla
+    if st.session_state.last_analysis_mode != analysis_mode:
+        st.session_state.analysis_requested = False
+        st.session_state.last_analysis_mode = analysis_mode
 
-    # if analyze_button:
-    #     st.session_state.analysis_requested = True
+    if analyze_button:
+        st.session_state.analysis_requested = True
 
-    # # --- Ana İçerik ---
-    # if st.session_state.analysis_requested:
-    #     if analysis_mode == "Tekil Hisse Analizi":
-    #         if start_date > end_date:
-    #             st.error("Hata: Başlangıç tarihi, bitiş tarihinden sonra olamaz.")
-    #             return
+    # --- Ana İçerik ---
+    if st.session_state.analysis_requested:
+        if analysis_mode == "Tekil Hisse Analizi":
+            if start_date > end_date:
+                st.error("Hata: Başlangıç tarihi, bitiş tarihinden sonra olamaz.")
+                return
 
-    #         hisse_kodu_yf = f"{hisse_secim}.IS"
+            hisse_kodu_yf = f"{hisse_secim}.IS"
             
-    #         with st.spinner(f'{hisse_kodu_yf} için veriler çekiliyor ve analiz ediliyor...'):
-    #             try:
-    #                 veri_raw = get_stock_data(hisse_kodu_yf, interval_code)
-    #                 if veri_raw is None: 
-    #                     st.error(f"Hata: {hisse_kodu_yf} için veri bulunamadı.")
-    #                 else:
-    #                     veri_hesaplanmis = calculate_indicators(veri_raw.copy())
-    #                     veri_filtrelenmis = filter_data_by_date(veri_hesaplanmis, start_date, end_date)
-    #                     if veri_filtrelenmis.empty: 
-    #                         st.warning("Seçilen tarih aralığı için veri bulunamadı.")
-    #                     else:
-    #                         st.success(f"{hisse_kodu_yf} analizi tamamlandı.")
-    #                         ana_tab, karsilastirma_tab, temel_tab, backtest_tab = st.tabs(["📈 Teknik Analiz", "🆚 Hisse Karşılaştırma", "🏢 Temel Analiz", "🧪 Strateji Testi"])
-    #                         with ana_tab: 
-    #                             display_technical_analysis(veri_filtrelenmis, hisse_kodu_yf, interval_display, analysis_type)
-    #                         with karsilastirma_tab: 
-    #                             display_comparison(hisseler, hisse_secim, interval_code, start_date, end_date)
-    #                         with temel_tab: 
-    #                             display_fundamental_analysis(hisse_kodu_yf)
-    #                         with backtest_tab: 
-    #                             display_backtesting(veri_filtrelenmis, hisse_kodu_yf)
-    #             except Exception as e:
-    #                 st.error(f"Analiz sırasında beklenmedik bir hata oluştu: {e}")
-    #                 st.code(traceback.format_exc())
+            with st.spinner(f'{hisse_kodu_yf} için veriler çekiliyor ve analiz ediliyor...'):
+                try:
+                    veri_raw = get_stock_data(hisse_kodu_yf, interval_code)
+                    if veri_raw is None: 
+                        st.error(f"Hata: {hisse_kodu_yf} için veri bulunamadı.")
+                    else:
+                        veri_hesaplanmis = calculate_indicators(veri_raw.copy())
+                        veri_filtrelenmis = filter_data_by_date(veri_hesaplanmis, start_date, end_date)
+                        if veri_filtrelenmis.empty: 
+                            st.warning("Seçilen tarih aralığı için veri bulunamadı.")
+                        else:
+                            st.success(f"{hisse_kodu_yf} analizi tamamlandı.")
+                            ana_tab, karsilastirma_tab, temel_tab, backtest_tab = st.tabs(["📈 Teknik Analiz", "🆚 Hisse Karşılaştırma", "🏢 Temel Analiz", "🧪 Strateji Testi"])
+                            with ana_tab: 
+                                display_technical_analysis(veri_filtrelenmis, hisse_kodu_yf, interval_display, analysis_type)
+                            with karsilastirma_tab: 
+                                display_comparison(hisseler, hisse_secim, interval_code, start_date, end_date)
+                            with temel_tab: 
+                                display_fundamental_analysis(hisse_kodu_yf)
+                            with backtest_tab: 
+                                display_backtesting(veri_filtrelenmis, hisse_kodu_yf)
+                except Exception as e:
+                    st.error(f"Analiz sırasında beklenmedik bir hata oluştu: {e}")
+                    st.code(traceback.format_exc())
         
-    #     elif analysis_mode == "İzleme Listesi":
-    #         portfolio_tickers = [ticker.strip() for ticker in portfolio_input.split(",") if ticker.strip()]
-    #         if portfolio_tickers:
-    #             with st.spinner("İzleme listesi analiz ediliyor..."):
-    #                 display_portfolio_summary(portfolio_tickers, interval_code)
-    #         else:
-    #             st.warning("Lütfen izleme listesine en az bir hisse senedi girin.")
+        elif analysis_mode == "İzleme Listesi":
+            portfolio_tickers = [ticker.strip() for ticker in portfolio_input.split(",") if ticker.strip()]
+            if portfolio_tickers:
+                with st.spinner("İzleme listesi analiz ediliyor..."):
+                    display_portfolio_summary(portfolio_tickers, interval_code)
+            else:
+                st.warning("Lütfen izleme listesine en az bir hisse senedi girin.")
 
-    # else:
-    #     st.info("Lütfen sol taraftaki menüden bir analiz modu seçip 'Analiz Et' butonuna tıklayın.")
+    else:
+        st.info("Lütfen sol taraftaki menüden bir analiz modu seçip 'Analiz Et' butonuna tıklayın.")
 
-if __name__ == "__main__":
-    try:
+if __name__ == "__main__":    print("--- __name__ == "__main__" bloğu başladı ---")    try:
         main()
     except Exception as e:
         st.error("Uygulama başlatılırken beklenmedik bir hata oluştu.")
         st.error(f"Hata Detayı: {e}")
         st.code(traceback.format_exc())
-        
-
-
