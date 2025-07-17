@@ -5,36 +5,48 @@ import pandas as pd
 
 # Strateji Tanımı
 class EmaCross(Strategy):
-    # Strateji parametreleri
-    n1 = 50  # Hızlı EMA periyodu
-    n2 = 200 # Yavaş EMA periyodu
+    n1 = 50
+    n2 = 200
 
     def init(self):
-        # Strateji başlatıldığında çalışır
         close = self.data.Close
-        # İki EMA göstergesini hesapla
-        self.ema1 = self.I(lambda x: pd.Series(x).ewm(span=self.n1, adjust=False).mean(), close)
-        self.ema2 = self.I(lambda x: pd.Series(x).ewm(span=self.n2, adjust=False).mean(), close)
+        # EMA'ları backtesting kütüphanesinin kendi gösterge fonksiyonuyla (self.I) tanımla
+        # Bu, veri serisini doğru şekilde işlemesini sağlar.
+        self.ema1 = self.I(lambda x: pd.Series(x).ewm(span=self.n1, adjust=False).mean(), self.data.Close)
+        self.ema2 = self.I(lambda x: pd.Series(x).ewm(span=self.n2, adjust=False).mean(), self.data.Close)
 
     def next(self):
-        # Her bir veri noktası (mum) için çalışır
-        # Eğer hızlı EMA, yavaş EMA'yı yukarı keserse (Golden Cross)
         if crossover(self.ema1, self.ema2):
-            self.buy() # Alım yap
-        # Eğer hızlı EMA, yavaş EMA'yı aşağı keserse (Death Cross)
+            self.buy()
         elif crossover(self.ema2, self.ema1):
-            self.sell() # Satım yap
+            self.sell()
 
 def run_backtest(data, cash=100000, commission=.002):
     """ 
     Verilen veri üzerinde EMA Cross stratejisini test eder ve sonuçları döndürür.
+    Gelen veriyi her zaman günlük frekansa dönüştürür.
     """
-    # Backtesting için veri formatını hazırla (Sütun adları büyük harfle başlamalı)
-    bt_data = data.copy()
-    bt_data.columns = [col.capitalize() for col in bt_data.columns]
+    # --- Veriyi Günlük Frekansa Çevirme ---
+    # Gelen verinin zaman damgasını (index) datetime nesnesine dönüştür
+    daily_data = data.copy()
+    daily_data.index = pd.to_datetime(daily_data.index)
+
+    # Veriyi günlük olarak yeniden örnekle (resample)
+    # Her günün Kapanış (Close) fiyatını o günün son fiyatı olarak al
+    # Açılış (Open), En Yüksek (High), En Düşük (Low) ve Hacim (Volume) için de uygun birleştirme yöntemleri kullan
+    daily_data = daily_data.resample('D').agg({
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'volume': 'sum'
+    }).dropna() # Veri olmayan günleri (hafta sonları vb.) kaldır
+
+    # Backtesting için sütun adlarını büyük harfle başlat
+    daily_data.columns = [col.capitalize() for col in daily_data.columns]
     
     # Backtest nesnesini oluştur
-    bt = Backtest(bt_data, EmaCross, cash=cash, commission=commission)
+    bt = Backtest(daily_data, EmaCross, cash=cash, commission=commission)
     
     # Testi çalıştır ve sonuçları al
     stats = bt.run()
