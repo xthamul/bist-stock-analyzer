@@ -352,7 +352,7 @@ def main():
     else:
         st.info("Lütfen sol taraftaki menüden bir analiz modu seçip 'Analiz Et' butonuna tıklayın.")
 
-if __name__ == "__main__":    print("--- __name__ == "__main__" bloğu başladı ---")    try:
+if __name__ == "__main__":    print("--- __name__ == '__main__' bloğu başladı ---")    try:
         main()
     except Exception as e:
         st.error("Uygulama başlatılırken beklenmedik bir hata oluştu.")
