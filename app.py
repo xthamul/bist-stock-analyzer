@@ -289,8 +289,23 @@ def main():
         
         analyze_button = st.button("Analiz Et", use_container_width=True, type="primary")
 
-    # --- Ana İçerik ---
+    # --- Durum Yönetimi ---
+    # Session state'i başlat
+    if 'analysis_requested' not in st.session_state:
+        st.session_state.analysis_requested = False
+    if 'last_analysis_mode' not in st.session_state:
+        st.session_state.last_analysis_mode = analysis_mode
+
+    # Kenar çubuğundaki bir widget değiştiğinde analizi sıfırla
+    if st.session_state.last_analysis_mode != analysis_mode:
+        st.session_state.analysis_requested = False
+        st.session_state.last_analysis_mode = analysis_mode
+
     if analyze_button:
+        st.session_state.analysis_requested = True
+
+    # --- Ana İçerik ---
+    if st.session_state.analysis_requested:
         if analysis_mode == "Tekil Hisse Analizi":
             if start_date > end_date:
                 st.error("Hata: Başlangıç tarihi, bitiş tarihinden sonra olamaz.")
@@ -300,20 +315,25 @@ def main():
             
             with st.spinner(f'{hisse_kodu_yf} için veriler çekiliyor ve analiz ediliyor...'):
                 try:
-                    # ... (Mevcut tekil analiz kodu) ...
                     veri_raw = get_stock_data(hisse_kodu_yf, interval_code)
-                    if veri_raw is None: st.error(f"Hata: {hisse_kodu_yf} için veri bulunamadı.")
+                    if veri_raw is None: 
+                        st.error(f"Hata: {hisse_kodu_yf} için veri bulunamadı.")
                     else:
                         veri_hesaplanmis = calculate_indicators(veri_raw.copy())
                         veri_filtrelenmis = filter_data_by_date(veri_hesaplanmis, start_date, end_date)
-                        if veri_filtrelenmis.empty: st.warning("Seçilen tarih aralığı için veri bulunamadı.")
+                        if veri_filtrelenmis.empty: 
+                            st.warning("Seçilen tarih aralığı için veri bulunamadı.")
                         else:
                             st.success(f"{hisse_kodu_yf} analizi tamamlandı.")
                             ana_tab, karsilastirma_tab, temel_tab, backtest_tab = st.tabs(["📈 Teknik Analiz", "🆚 Hisse Karşılaştırma", "🏢 Temel Analiz", "🧪 Strateji Testi"])
-                            with ana_tab: display_technical_analysis(veri_filtrelenmis, hisse_kodu_yf, interval_display, analysis_type)
-                            with karsilastirma_tab: display_comparison(hisseler, hisse_secim, interval_code, start_date, end_date)
-                            with temel_tab: display_fundamental_analysis(hisse_kodu_yf)
-                            with backtest_tab: display_backtesting(veri_filtrelenmis, hisse_kodu_yf)
+                            with ana_tab: 
+                                display_technical_analysis(veri_filtrelenmis, hisse_kodu_yf, interval_display, analysis_type)
+                            with karsilastirma_tab: 
+                                display_comparison(hisseler, hisse_secim, interval_code, start_date, end_date)
+                            with temel_tab: 
+                                display_fundamental_analysis(hisse_kodu_yf)
+                            with backtest_tab: 
+                                display_backtesting(veri_filtrelenmis, hisse_kodu_yf)
                 except Exception as e:
                     st.error(f"Analiz sırasında beklenmedik bir hata oluştu: {e}")
                     st.code(traceback.format_exc())
