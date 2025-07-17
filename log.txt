@@ -1,26 +1,26 @@
 
 [     UTC     ] Logs for bist-stock-analyzer-xnbp8trhkdasxnxixtpvdg.streamlit.app/
 ────────────────────────────────────────────────────────────────────────────────────────
-[19:31:16] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
-[19:31:16] 🐙 Cloning repository...
-[19:31:16] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
+[19:44:51] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
+[19:44:51] 🐙 Cloning repository...
+[19:44:51] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
 
-[19:31:17] 🐙 Cloned repository!
-[19:31:17] 🐙 Pulling code changes from Github...
-[19:31:17] 📦 Processing dependencies...
-[19:31:17] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
+[19:44:51] 🐙 Cloned repository!
+[19:44:51] 🐙 Pulling code changes from Github...
+[19:44:52] 📦 Processing dependencies...
+[19:44:52] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
 Hit:1 http://deb.debian.org/debian bullseye InRelease
 Get:2 http://deb.debian.org/debian-security bullseye-security InRelease [27.2 kB]
 Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.0 kB]
 Get:4 https://packages.microsoft.com/debian/11/prod bullseye InRelease [3650 B]
 Get:5 http://deb.debian.org/debian-security bullseye-security/main amd64 Packages [384 kB]
-Get:6 https://packages.microsoft.com/debian/11/prod bullseye/main amd64 Packages [200 kB]
-Get:7 https://packages.microsoft.com/debian/11/prod bullseye/main arm64 Packages [49.3 kB]
-Fetched 708 kB in 1s (828 kB/s)
-Reading package lists...[2025-07-17 19:31:19.358891] 
-Reading package lists...[2025-07-17 19:31:19.954965] 
-Building dependency tree...[2025-07-17 19:31:20.136618] 
-Reading state information...[2025-07-17 19:31:20.137043] 
+Get:6 https://packages.microsoft.com/debian/11/prod bullseye/main arm64 Packages [49.3 kB]
+Get:7 https://packages.microsoft.com/debian/11/prod bullseye/main amd64 Packages [200 kB]
+Fetched 708 kB in 1s (988 kB/s)
+Reading package lists...[2025-07-17 19:44:53.748832] 
+Reading package lists...[2025-07-17 19:44:54.383471] 
+Building dependency tree...[2025-07-17 19:44:54.586205] 
+Reading state information...[2025-07-17 19:44:54.586695] 
 build-essential is already the newest version (12.9).
 The following additional packages will be installed:
   gfortran-10 libblas-dev libblas3 libgfortran-10-dev libgfortran5 liblapack3
@@ -49,9 +49,9 @@ Get:11 http://deb.debian.org/debian bullseye/main amd64 libopenblas0 amd64 0.3.1
 Get:12 http://deb.debian.org/debian bullseye/main amd64 libopenblas-dev amd64 0.3.13+ds-3+deb11u1 [44.2 kB]
 Get:13 http://deb.debian.org/debian bullseye/main amd64 pkg-config amd64 0.29.2-1 [65.1 kB]
 debconf: delaying package configuration, since apt-utils is not installed
-Fetched 28.3 MB in 0s (84.0 MB/s)
+Fetched 28.3 MB in 0s (84.4 MB/s)
 Selecting previously unselected package libgfortran5:amd64.
-(Reading database ... [2025-07-17 19:31:21.053685] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%[2025-07-17 19:31:21.092514] (Reading database ... 65%[2025-07-17 19:31:21.094848] (Reading database ... 70%[2025-07-17 19:31:21.095913] (Reading database ... 75%[2025-07-17 19:31:21.111893] (Reading database ... 80%[2025-07-17 19:31:21.121882] (Reading database ... 85%[2025-07-17 19:31:21.125260] (Reading database ... 90%[2025-07-17 19:31:21.131105] (Reading database ... 95%[2025-07-17 19:31:21.141819] (Reading database ... 100%(Reading database ... 22039 files and directories currently installed.)
+(Reading database ... [2025-07-17 19:44:55.549536] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%[2025-07-17 19:44:55.550222] (Reading database ... 65%[2025-07-17 19:44:55.553360] (Reading database ... 70%[2025-07-17 19:44:55.554860] (Reading database ... 75%[2025-07-17 19:44:55.557937] (Reading database ... 80%[2025-07-17 19:44:55.559862] (Reading database ... 85%[2025-07-17 19:44:55.561050] (Reading database ... 90%[2025-07-17 19:44:55.563065] (Reading database ... 95%[2025-07-17 19:44:55.565495] (Reading database ... 100%(Reading database ... [2025-07-17 19:44:55.565822] 22039 files and directories currently installed.)
 Preparing to unpack .../00-libgfortran5_10.2.1-6_amd64.deb ...
 Unpacking libgfortran5:amd64 (10.2.1-6) ...
 Selecting previously unselected package libgfortran-10-dev:amd64.
@@ -120,319 +120,214 @@ Processing triggers for libc-bin (2.31-13+deb11u13) ...
 ──────────────────────────────────────── uv ───────────────────────────────────────────
 
 Using uv pip install.
-Using Python 3.10.18 environment at /home/adminuser/venv
-Resolved 67 packages in 2.05s
-Prepared 67 packages in 6.75s
-Uninstalled 1 package in 62ms
-Installed 67 packages in 823ms
- + altair==5.5.0
- + appdirs==1.4.4
- + attrs==25.3.0
- + backtesting==0.3.3
- + beautifulsoup4==4.13.4
- + blinker==1.9.0
- + bokeh==2.4.3
- + cachetools==5.5.2
- + certifi==2025.7.14[2025-07-17 19:31:36.251714] 
- + charset-normalizer==3.4.2
- + click==8.2.1
- + contourpy==1.3.2
- + cycler==0.12.1
- + fonttools==4.59.0
- + frozendict==2.4.6
- + gitdb==4.0.12
- + gitpython==3.1.44
- + html5lib==1.1
- + idna==3.10
- + jinja2==3.1.6
- + joblib==1.5.1
- + jsonschema==4.24.1
- + jsonschema-specifications==2025.4.1
- + kiwisolver==[2025-07-17 19:31:36.252479] 1.4.8
- + lxml==6.0.0
+Using Python 3.13.5 environment at /home/adminuser/venv
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of numpy are available:
+          numpy<=2.1.3
+          numpy>=2.2.0,<=2.2.6
+          numpy>=2.3.0
+      and pandas==2.2.2 depends on numpy>=1.26.0, we can conclude that
+      pandas==2.2.2 depends on one of:
+          numpy>=1.26.0,<=2.1.3
+          numpy>=2.2.0,<=2.2.6
+          numpy>=2.3.0
+
+      And because you require numpy==1.23.5 and pandas==2.2.2, we can conclude
+      that your requirements are unsatisfiable.
+Checking if Streamlit is installed
+Installing rich for an improved exception logging
+Using uv pip install.
+Using Python 3.13.5 environment at /home/adminuser/venv
+Resolved 4 packages in 139ms
+Prepared 4 packages in 146ms
+Installed 4 packages in 19ms
  + markdown-it-py==3.0.0
- + markupsafe==3.0.2
- + matplotlib==3.8.4
  + mdurl==0.1.2
- + mplfinance==0.12.9b7
- + multitasking==0.0.11
- + narwhals==1.47.1
- + numpy==1.23.5
- [2025-07-17 19:31:36.253048] + packaging==24.2
- + pandas==2.2.2
- + peewee==3.18.2
- + pillow==10.4.0
- + plotly==5.22.0
- + protobuf==4.25.8
- + pyarrow==20.0.0
- + pydeck[2025-07-17 19:31:36.253392] ==0.9.1
  + pygments==2.19.2
- + pyparsing==3.2.3
- + python-dateutil==2.9.0.post0
- + pytz==2025.2
- + pyyaml==6.0.2
- + referencing==0.36.2
- + requests==2.32.4
- + rich==13.9.4
- + rpds-py==[2025-07-17 19:31:36.253645] 0.26.0
- + scikit-learn==1.2.2
- + scipy==1.13.1
- - setuptools==80.3.1
- + setuptools==69.5.1
- + six==1.17.0
- + smmap==5.0.2
- + soupsieve==2.7[2025-07-17 19:31:36.253888] 
- + streamlit==1.34.0
- + tenacity==8.5.0
- + threadpoolctl==3.6.0
- + toml==0.10.2
- +[2025-07-17 19:31:36.254226]  tornado==6.5.1
- + typing-extensions==4.14.1
- + tzdata==2025.2
- + urllib3==2.5.0
- +[2025-07-17 19:31:36.254542]  watchdog==6.0.0
- + webencodings==0.5.1
- + yfinance==0.2.38
-Checking if Streamlit is installed
-Found Streamlit version 1.34.0 in the environment
-Installing rich for an improved exception logging
-Using uv pip install.
-Using Python 3.10.18 environment at /home/adminuser/venv
-Audited 1 package in 5ms
+ + rich==14.0.0
 
 ────────────────────────────────────────────────────────────────────────────────────────
 
-[19:31:37] 🐍 Python dependencies were installed from /mount/src/bist-stock-analyzer/requirements.txt using uv.
-Check if streamlit is installed
-Streamlit is already installed
-[19:31:39] 📦 Processed dependencies!
+
+──────────────────────────────────────── pip ───────────────────────────────────────────
+
+Using standard pip install.
+Collecting numpy==1.23.5 (from -r /mount/src/bist-stock-analyzer/requirements.txt (line 1))
+  Downloading numpy-1.23.5.tar.gz (10.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.7/10.7 MB 121.0 MB/s eta 0:00:00[2025-07-17 19:45:03.705884] 
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+ERROR: Exception:
+Traceback (most recent call last):
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/cli/base_command.py", line 180, in exc_logging_wrapper
+    status = run_func(*args)
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/cli/req_command.py", line 245, in wrapper
+    return func(self, options, args)
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/commands/install.py", line 377, in run
+    requirement_set = resolver.resolve(
+        reqs, check_supported_wheels=not options.target_dir
+    )
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/resolver.py", line 95, in resolve
+    result = self._result = resolver.resolve(
+                            ~~~~~~~~~~~~~~~~^
+        collected.requirements, max_rounds=limit_how_complex_resolution_can_be
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/resolvers.py", line 546, in resolve
+    state = resolution.resolve(requirements, max_rounds=max_rounds)
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/resolvers.py", line 397, in resolve
+    self._add_to_criteria(self.state.criteria, r, parent=None)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/resolvers.py", line 173, in _add_to_criteria
+    if not criterion.candidates:
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/resolvelib/structs.py", line 156, in __bool__
+    return bool(self._sequence)
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/found_candidates.py", line 155, in __bool__
+    return any(self)
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/found_candidates.py", line 143, in <genexpr>
+    return (c for c in iterator if id(c) not in self._incompatible_ids)
+                       ^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/found_candidates.py", line 47, in _iter_built
+    candidate = func()
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/factory.py", line 182, in _make_candidate_from_link
+    base: Optional[BaseCandidate] = self._make_base_candidate_from_link(
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        link, template, name, version
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/factory.py", line 228, in _make_base_candidate_from_link
+    self._link_candidate_cache[link] = LinkCandidate(
+                                       ~~~~~~~~~~~~~^
+        link,
+        ^^^^^
+    ...<3 lines>...
+        version=version,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/candidates.py", line 290, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        link=link,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        version=version,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/candidates.py", line 156, in __init__
+    self.dist = self._prepare()
+                ~~~~~~~~~~~~~^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/candidates.py", line 222, in _prepare
+    dist = self._prepare_distribution()
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/resolution/resolvelib/candidates.py", line 301, in _prepare_distribution
+    return preparer.prepare_linked_requirement(self._ireq, parallel_builds=True)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/operations/prepare.py", line 525, in prepare_linked_requirement
+    return self._prepare_linked_requirement(req, parallel_builds)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/operations/prepare.py", line 640, in _prepare_linked_requirement
+    dist = _get_prepared_distribution(
+        req,
+    ...<3 lines>...
+        self.check_build_deps,
+    )
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/operations/prepare.py", line 71, in _get_prepared_distribution
+    abstract_dist.prepare_distribution_metadata(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        finder, build_isolation, check_build_deps
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/distributions/sdist.py", line 54, in prepare_distribution_metadata
+    self._install_build_reqs(finder)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/distributions/sdist.py", line 124, in _install_build_reqs
+    build_reqs = self._get_build_requires_wheel()
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/distributions/sdist.py", line 101, in _get_build_requires_wheel
+    return backend.get_requires_for_build_wheel()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_internal/utils/misc.py", line 745, in get_requires_for_build_wheel
+    return super().get_requires_for_build_wheel(config_settings=cs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_impl.py", line 166, in get_requires_for_build_wheel
+    return self._call_hook('get_requires_for_build_wheel', {
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'config_settings': config_settings
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_impl.py", line 321, in _call_hook
+    raise BackendUnavailable(data.get('traceback', ''))
+pip._vendor.pyproject_hooks._impl.BackendUnavailable: Traceback (most recent call last):
+  File "/home/adminuser/venv/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 77, in _build_backend
+    obj = import_module(mod_path)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/tmp/pip-build-env-mns_r3w3/overlay/lib/python3.13/site-packages/setuptools/__init__.py", line 10, in <module>
+    import distutils.core
+ModuleNotFoundError: No module named 'distutils'
 
 
-
-2025-07-17 19:37:18.084 503 GET /script-health-check (127.0.0.1) 60080.78ms
-2025-07-17 19:38:18.620 503 GET /script-health-check (127.0.0.1) 60060.00ms
-2025-07-17 19:39:19.079 503 GET /script-health-check (127.0.0.1) 60119.24ms
-[19:40:11] 🐙 Pulling code changes from Github...
-[19:40:11] 📦 Processing dependencies...
-[19:40:11] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
-[19:40:11] 📦 Processed dependencies!
-[19:40:13] 🔄 Updated app!
-[19:40:58] 🔌 Disconnecting...
-[19:41:04] 🖥 Provisioning machine...
-[19:40:59] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
-[19:40:59] 🐙 Cloning repository...
-[19:41:00] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
-
-[19:41:00] 🐙 Cloned repository!
-[19:41:00] 🐙 Pulling code changes from Github...
-[19:41:00] 📦 Processing dependencies...
-[19:41:00] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
-Hit:1 http://deb.debian.org/debian bullseye InRelease
-Get:2 http://deb.debian.org/debian-security bullseye-security InRelease [27.2 kB]
-Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.0 kB]
-Get:4 https://packages.microsoft.com/debian/11/prod bullseye InRelease [3650 B]
-Get:5 http://deb.debian.org/debian-security bullseye-security/main amd64 Packages [384 kB]
-[19:41:05] 🎛 Preparing system...
-[19:41:05] ⛓ Spinning up manager process...
-Get:6 https://packages.microsoft.com/debian/11/prod bullseye/main amd64 Packages [200 kB]
-Get:7 https://packages.microsoft.com/debian/11/prod bullseye/main arm64 Packages [49.3 kB]
-Fetched 708 kB in 1s (704 kB/s)
-Reading package lists...[2025-07-17 19:41:02.903215] 
-Reading package lists...[2025-07-17 19:41:03.631697] 
-Building dependency tree...[2025-07-17 19:41:03.927372] 
-Reading state information...[2025-07-17 19:41:03.929584] 
-build-essential is already the newest version (12.9).
-The following additional packages will be installed:
-  gfortran-10 libblas-dev libblas3 libgfortran-10-dev libgfortran5 liblapack3
-  libopenblas-pthread-dev libopenblas0 libopenblas0-pthread
-Suggested packages:
-  gfortran-multilib gfortran-doc gfortran-10-multilib gfortran-10-doc
-  libcoarrays-dev liblapack-doc
-The following NEW packages will be installed:
-  gfortran gfortran-10 libblas-dev libblas3 libgfortran-10-dev libgfortran5
-  liblapack-dev liblapack3 libopenblas-dev libopenblas-pthread-dev
-  libopenblas0 libopenblas0-pthread pkg-config
-0 upgraded, 13 newly installed, 0 to remove and 1 not upgraded.
-Need to get 28.3 MB of archives.
-After this operation, 173 MB of additional disk space will be used.
-Get:1 http://deb.debian.org/debian bullseye/main amd64 libgfortran5 amd64 10.2.1-6 [727 kB]
-Get:2 http://deb.debian.org/debian bullseye/main amd64 libgfortran-10-dev amd64 10.2.1-6 [769 kB]
-Get:3 http://deb.debian.org/debian bullseye/main amd64 gfortran-10 amd64 10.2.1-6 [9447 kB]
-Get:4 http://deb.debian.org/debian bullseye/main amd64 gfortran amd64 4:10.2.1-1 [1428 B]
-Get:5 http://deb.debian.org/debian bullseye/main amd64 libblas3 amd64 3.9.0-3+deb11u1 [153 kB]
-Get:6 http://deb.debian.org/debian bullseye/main amd64 libblas-dev amd64 3.9.0-3+deb11u1 [161 kB]
-Get:7 http://deb.debian.org/debian bullseye/main amd64 libopenblas0-pthread amd64 0.3.13+ds-3+deb11u1 [6016 kB]
-Get:8 http://deb.debian.org/debian bullseye/main amd64 liblapack3 amd64 3.9.0-3+deb11u1 [2166 kB]
-Get:9 http://deb.debian.org/debian bullseye/main amd64 libopenblas-pthread-dev amd64 0.3.13+ds-3+deb11u1 [4450 kB]
-Get:10 http://deb.debian.org/debian bullseye/main amd64 liblapack-dev amd64 3.9.0-3+deb11u1 [4246 kB]
-Get:11 http://deb.debian.org/debian bullseye/main amd64 libopenblas0 amd64 0.3.13+ds-3+deb11u1 [32.9 kB]
-Get:12 http://deb.debian.org/debian bullseye/main amd64 libopenblas-dev amd64 0.3.13+ds-3+deb11u1 [44.2 kB]
-Get:13 http://deb.debian.org/debian bullseye/main amd64 pkg-config amd64 0.29.2-1 [65.1 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 28.3 MB in 0s (74.2 MB/s)
-Selecting previously unselected package libgfortran5:amd64.
-(Reading database ... [2025-07-17 19:41:05.034903] (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%[2025-07-17 19:41:05.037317] (Reading database ... 65%[2025-07-17 19:41:05.040985] (Reading database ... 70%(Reading database ... 75%[2025-07-17 19:41:05.041970] (Reading database ... 80%[2025-07-17 19:41:05.043760] (Reading database ... 85%[2025-07-17 19:41:05.046047] (Reading database ... 90%[2025-07-17 19:41:05.048840] (Reading database ... 95%[2025-07-17 19:41:05.050322] (Reading database ... 100%(Reading database ... 22039 files and directories currently installed.)
-Preparing to unpack .../00-libgfortran5_10.2.1-6_amd64.deb ...
-Unpacking libgfortran5:amd64 (10.2.1-6) ...
-Selecting previously unselected package libgfortran-10-dev:amd64.
-Preparing to unpack .../01-libgfortran-10-dev_10.2.1-6_amd64.deb ...
-Unpacking libgfortran-10-dev:amd64 (10.2.1-6) ...
-Selecting previously unselected package gfortran-10.
-Preparing to unpack .../02-gfortran-10_10.2.1-6_amd64.deb ...
-Unpacking gfortran-10 (10.2.1-6) ...
-Selecting previously unselected package gfortran.
-Preparing to unpack .../03-gfortran_4%3a10.2.1-1_amd64.deb ...
-Unpacking gfortran (4:10.2.1-1) ...
-Selecting previously unselected package libblas3:amd64.
-Preparing to unpack .../04-libblas3_3.9.0-3+deb11u1_amd64.deb ...
-Unpacking libblas3:amd64 (3.9.0-3+deb11u1) ...
-Selecting previously unselected package libblas-dev:amd64.
-Preparing to unpack .../05-libblas-dev_3.9.0-3+deb11u1_amd64.deb ...
-Unpacking libblas-dev:amd64 (3.9.0-3+deb11u1) ...
-Selecting previously unselected package libopenblas0-pthread:amd64.
-Preparing to unpack .../06-libopenblas0-pthread_0.3.13+ds-3+deb11u1_amd64.deb ...
-Unpacking libopenblas0-pthread:amd64 (0.3.13+ds-3+deb11u1) ...
-Selecting previously unselected package liblapack3:amd64.
-Preparing to unpack .../07-liblapack3_3.9.0-3+deb11u1_amd64.deb ...
-Unpacking liblapack3:amd64 (3.9.0-3+deb11u1) ...
-Selecting previously unselected package libopenblas-pthread-dev:amd64.
-Preparing to unpack .../08-libopenblas-pthread-dev_0.3.13+ds-3+deb11u1_amd64.deb ...
-Unpacking libopenblas-pthread-dev:amd64 (0.3.13+ds-3+deb11u1) ...
-Selecting previously unselected package liblapack-dev:amd64.
-Preparing to unpack .../09-liblapack-dev_3.9.0-3+deb11u1_amd64.deb ...
-Unpacking liblapack-dev:amd64 (3.9.0-3+deb11u1) ...
-Selecting previously unselected package libopenblas0:amd64.
-Preparing to unpack .../10-libopenblas0_0.3.13+ds-3+deb11u1_amd64.deb ...
-Unpacking libopenblas0:amd64 (0.3.13+ds-3+deb11u1) ...
-Selecting previously unselected package libopenblas-dev:amd64.
-Preparing to unpack .../11-libopenblas-dev_0.3.13+ds-3+deb11u1_amd64.deb ...
-Unpacking libopenblas-dev:amd64 (0.3.13+ds-3+deb11u1) ...
-Selecting previously unselected package pkg-config.
-Preparing to unpack .../12-pkg-config_0.29.2-1_amd64.deb ...
-Unpacking pkg-config (0.29.2-1) ...
-Setting up libblas3:amd64 (3.9.0-3+deb11u1) ...
-update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
-Setting up pkg-config (0.29.2-1) ...
-Setting up libgfortran5:amd64 (10.2.1-6) ...
-Setting up libgfortran-10-dev:amd64 (10.2.1-6) ...
-Setting up libblas-dev:amd64 (3.9.0-3+deb11u1) ...
-update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so to provide /usr/lib/x86_64-linux-gnu/libblas.so (libblas.so-x86_64-linux-gnu) in auto mode
-Setting up liblapack3:amd64 (3.9.0-3+deb11u1) ...
-update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3 to provide /usr/lib/x86_64-linux-gnu/liblapack.so.3 (liblapack.so.3-x86_64-linux-gnu) in auto mode
-Setting up libopenblas0-pthread:amd64 (0.3.13+ds-3+deb11u1) ...
-update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
-update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so.3 to provide /usr/lib/x86_64-linux-gnu/liblapack.so.3 (liblapack.so.3-x86_64-linux-gnu) in auto mode
-update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblas.so.0 to provide /usr/lib/x86_64-linux-gnu/libopenblas.so.0 (libopenblas.so.0-x86_64-linux-gnu) in auto mode
-Setting up liblapack-dev:amd64 (3.9.0-3+deb11u1) ...
-update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so to provide /usr/lib/x86_64-linux-gnu/liblapack.so (liblapack.so-x86_64-linux-gnu) in auto mode
-Setting up gfortran-10 (10.2.1-6) ...
-Setting up libopenblas0:amd64 (0.3.13+ds-3+deb11u1) ...
-Setting up libopenblas-pthread-dev:amd64 (0.3.13+ds-3+deb11u1) ...
-update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so to provide /usr/lib/x86_64-linux-gnu/libblas.so (libblas.so-x86_64-linux-gnu) in auto mode
-update-alternatives: [2025-07-17 19:41:09.302842] using /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so to provide /usr/lib/x86_64-linux-gnu/liblapack.so (liblapack.so-x86_64-linux-gnu) in auto mode
-update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblas.so to provide /usr/lib/x86_64-linux-gnu/libopenblas.so (libopenblas.so-x86_64-linux-gnu) in auto mode
-Setting up gfortran (4:10.2.1-1) ...
-update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f95 (f95) in auto mode
-update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f77 (f77) in auto mode
-Setting up libopenblas-dev:amd64 (0.3.13+ds-3+deb11u1) ...
-Processing triggers for libc-bin (2.31-13+deb11u13) ...
-
-──────────────────────────────────────── uv ───────────────────────────────────────────
-
-Using uv pip install.
-Using Python 3.10.18 environment at /home/adminuser/venv
-Resolved [2025-07-17 19:41:12.444405] 67 packages[2025-07-17 19:41:12.444848]  [2025-07-17 19:41:12.445252] in 2.26s[2025-07-17 19:41:12.450414] 
-Prepared 67 packages in 7.48s
-Uninstalled [2025-07-17 19:41:20.029959] 1 package[2025-07-17 19:41:20.030266]  [2025-07-17 19:41:20.032103] in 79ms[2025-07-17 19:41:20.033232] 
-Installed 67 packages in 737ms
- + altair==5.5.0
- + appdirs==1.4.4
- + attrs==25.3.0
- + backtesting==0.3.3
- + beautifulsoup4==4.13.4
- + blinker==1.9.0
- + bokeh==2.4.3
- + cachetools==5.5.2
- + certifi==2025.7.14[2025-07-17 19:41:20.768733] 
- + charset-normalizer==3.4.2
- + click==8.2.1
- + contourpy==1.3.2
- + cycler==0.12.1
- + fonttools==4.59.0
- + frozendict==2.4.6
- + gitdb==4.0.12
- + gitpython==3.1.44
- + html5lib==1.1
- [2025-07-17 19:41:20.769057] + idna==3.10
- + jinja2==3.1.6
- + joblib==1.5.1
- + jsonschema==4.24.1
- + jsonschema-specifications==2025.4.1
- + kiwisolver==1.4.8
- + lxml==6.0.0
- + markdown-it-py==3.0.0
- + markupsafe==3.0.2
- + matplotlib==3.8.4
- +[2025-07-17 19:41:20.769353]  mdurl==0.1.2
- + mplfinance==0.12.9b7
- + multitasking==0.0.11
- + narwhals==1.47.1
- + numpy==1.23.5
- + packaging==24.2
- + pandas==2.2.2[2025-07-17 19:41:20.769623] 
- + peewee==3.18.2
- + pillow==10.4.0
- + plotly==5.22.0
- + protobuf[2025-07-17 19:41:20.769790] ==4.25.8
- + pyarrow==20.0.0
- + pydeck==0.9.1
- + pygments==2.19.2
- [2025-07-17 19:41:20.769935] + pyparsing==3.2.3
- + python-dateutil==2.9.0.post0
- + pytz==2025.2
- + pyyaml==6.0.2
- + referencing==0.36.2
- + requests==[2025-07-17 19:41:20.770077] 2.32.4
- + rich==13.9.4
- + rpds-py==0.26.0
- + scikit-learn==1.2.2
- + scipy==1.13.1
- - setuptools[2025-07-17 19:41:20.770532] ==80.3.1
- + setuptools==69.5.1
- + six==1.17.0
- + smmap==5.0.2
- + soupsieve==2.7
- + streamlit==1.34.0
- +[2025-07-17 19:41:20.770682]  tenacity==8.5.0
- + threadpoolctl==3.6.0
- + toml==0.10.2
- + tornado==6.5.1
- + typing-extensions==4.14.1
- + tzdata==2025.2[2025-07-17 19:41:20.770822] 
- + urllib3==2.5.0
- + watchdog==6.0.0
- + webencodings==0.5.1
- + yfinance==0.2.38
+[notice] A new release of pip is available: 24.0 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
 Checking if Streamlit is installed
-Found Streamlit version 1.34.0 in the environment
 Installing rich for an improved exception logging
-Using uv pip install.
-Using Python 3.10.18 environment at /home/adminuser/venv
-Audited 1 package in 5ms
+Using standard pip install.
+Collecting rich>=10.14.0
+  Downloading rich-14.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=10.14.0)
+  Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=10.14.0)
+  Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=10.14.0)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading rich-14.0.0-py3-none-any.whl (243 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.2/243.2 kB 13.2 MB/s eta 0:00:00[2025-07-17 19:45:09.719067] 
+Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.5/87.5 kB 162.4 MB/s eta 0:00:00[2025-07-17 19:45:09.732363] 
+Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 63.7 MB/s eta 0:00:00[2025-07-17 19:45:09.764037] 
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Installing collected packages: pygments, mdurl, markdown-it-py, rich
+  Attempting uninstall: pygments
+    Found existing installation: Pygments 2.19.2
+    Uninstalling Pygments-2.19.2:
+      Successfully uninstalled Pygments-2.19.2
+  Attempting uninstall: mdurl
+    Found existing installation: mdurl 0.1.2
+    Uninstalling mdurl-0.1.2:
+      Successfully uninstalled mdurl-0.1.2
+  Attempting uninstall: markdown-it-py
+    Found existing installation: markdown-it-py 3.0.0
+    Uninstalling markdown-it-py-3.0.0:
+      Successfully uninstalled markdown-it-py-3.0.0
+  Attempting uninstall: rich
+    Found existing installation: rich 14.0.0
+    Uninstalling rich-14.0.0:
+      Successfully uninstalled rich-14.0.0
+Successfully installed markdown-it-py-3.0.0 mdurl-0.1.2 pygments-2.19.2 rich-14.0.0
+
+[notice] A new release of pip is available: 24.0 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
 
 ────────────────────────────────────────────────────────────────────────────────────────
 
-[19:41:22] 🐍 Python dependencies were installed from /mount/src/bist-stock-analyzer/requirements.txt using uv.
-Check if streamlit is installed
-Streamlit is already installed
-[19:41:24] 📦 Processed dependencies!
-
-
-
-
-  A new version of Streamlit is available.
-
-  See what's new at https://discuss.streamlit.io/c/announcements
-
-  Enter the following command to upgrade:
-  $ pip install streamlit --upgrade
+[19:45:12] ❗️ installer returned a non-zero exit code
+[19:45:12] ❗️ Error during processing dependencies! Please fix the error and push an update, or try restarting the app.
