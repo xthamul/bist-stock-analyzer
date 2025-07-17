@@ -5,8 +5,4 @@ headless = true
 gatherUsageStats = false
 
 [global]
-# Python sürümünü belirtin. Örneğin: 3.9
-# Streamlit Cloud varsayılan olarak en son Python sürümünü kullanır.
-# Eğer bağımlılıklarla ilgili sorunlar yaşıyorsanız, daha eski bir sürüm deneyebilirsiniz.
-# Örneğin: pythonVersion = "3.9"
-pythonVersion = "3.10"
+
