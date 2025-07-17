@@ -79,7 +79,7 @@ def display_sector_analysis(hisse_kodu_yf, info):
         return
 
     st.write(f"**{info.get('longName')}** şirketi **{sector}** sektöründe yer almaktadır.")
-    st.write(f"Bu sektördeki benzer şirketler: {", ".join(peers)}")
+    st.write(f"Bu sektördeki benzer şirketler: {(', '.join(peers))}")
 
     metrics = ['trailingPE', 'priceToBook', 'dividendYield', 'returnOnEquity', 'profitMargins']
     peer_data = []
