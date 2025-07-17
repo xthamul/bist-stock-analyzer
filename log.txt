@@ -1,54 +1,214 @@
 
 [     UTC     ] Logs for bist-stock-analyzer-xnbp8trhkdasxnxixtpvdg.streamlit.app/
 ────────────────────────────────────────────────────────────────────────────────────────
-[23:37:53] 🖥 Provisioning machine...
-[23:37:53] 🎛 Preparing system...
-[23:37:53] ⛓ Spinning up manager process...
-[23:37:09] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
-[23:37:09] 🐙 Cloning repository...
-[23:37:10] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
+[15:28:17] 🚀 Starting up repository: 'bist-stock-analyzer', branch: 'main', main module: 'app.py'
+[15:28:17] 🐙 Cloning repository...
+[15:28:17] 🐙 Cloning into '/mount/src/bist-stock-analyzer'...
 
-[23:37:10] 🐙 Cloned repository!
-[23:37:10] 🐙 Pulling code changes from Github...
-[23:37:10] 📦 Processing dependencies...
+[15:28:18] 🐙 Cloned repository!
+[15:28:18] 🐙 Pulling code changes from Github...
+[15:28:18] 📦 Processing dependencies...
+[15:28:18] 📦 Apt dependencies were installed from /mount/src/bist-stock-analyzer/packages.txt using apt-get.
+Hit:1 http://deb.debian.org/debian bullseye InRelease
+Get:2 http://deb.debian.org/debian-security bullseye-security InRelease [27.2 kB]
+Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.0 kB]
+Get:4 https://packages.microsoft.com/debian/11/prod bullseye InRelease [3650 B]
+Get:5 http://deb.debian.org/debian-security bullseye-security/main amd64 Packages [384 kB]
+Get:6 https://packages.microsoft.com/debian/11/prod bullseye/main amd64 Packages [199 kB]
+Get:7 https://packages.microsoft.com/debian/11/prod bullseye/main arm64 Packages [49.3 kB]
+Fetched 708 kB in 1s (642 kB/s)
+Reading package lists...[2025-07-17 15:28:20.841585] 
+Reading package lists...[2025-07-17 15:28:21.830344] 
+Building dependency tree...[2025-07-17 15:28:22.109200] 
+Reading state information...
+build-essential is already the newest version (12.9).
+The following additional packages will be installed:
+  gfortran-10 libblas-dev libblas3 libgfortran-10-dev libgfortran5 liblapack3
+  libopenblas-pthread-dev libopenblas0 libopenblas0-pthread
+Suggested packages:
+  gfortran-multilib gfortran-doc gfortran-10-multilib gfortran-10-doc
+  libcoarrays-dev liblapack-doc
+The following NEW packages will be installed:
+  gfortran gfortran-10 libblas-dev libblas3 libgfortran-10-dev libgfortran5
+  liblapack-dev liblapack3 libopenblas-dev libopenblas-pthread-dev
+  libopenblas0 libopenblas0-pthread pkg-config
+0 upgraded, 13 newly installed, 0 to remove and 1 not upgraded.
+Need to get 28.3 MB of archives.
+After this operation, 173 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bullseye/main amd64 libgfortran5 amd64 10.2.1-6 [727 kB]
+Get:2 http://deb.debian.org/debian bullseye/main amd64 libgfortran-10-dev amd64 10.2.1-6 [769 kB]
+Get:3 http://deb.debian.org/debian bullseye/main amd64 gfortran-10 amd64 10.2.1-6 [9447 kB]
+Get:4 http://deb.debian.org/debian bullseye/main amd64 gfortran amd64 4:10.2.1-1 [1428 B]
+Get:5 http://deb.debian.org/debian bullseye/main amd64 libblas3 amd64 3.9.0-3+deb11u1 [153 kB]
+Get:6 http://deb.debian.org/debian bullseye/main amd64 libblas-dev amd64 3.9.0-3+deb11u1 [161 kB]
+Get:7 http://deb.debian.org/debian bullseye/main amd64 libopenblas0-pthread amd64 0.3.13+ds-3+deb11u1 [6016 kB]
+Get:8 http://deb.debian.org/debian bullseye/main amd64 liblapack3 amd64 3.9.0-3+deb11u1 [2166 kB]
+Get:9 http://deb.debian.org/debian bullseye/main amd64 libopenblas-pthread-dev amd64 0.3.13+ds-3+deb11u1 [4450 kB]
+Get:10 http://deb.debian.org/debian bullseye/main amd64 liblapack-dev amd64 3.9.0-3+deb11u1 [4246 kB]
+Get:11 http://deb.debian.org/debian bullseye/main amd64 libopenblas0 amd64 0.3.13+ds-3+deb11u1 [32.9 kB]
+Get:12 http://deb.debian.org/debian bullseye/main amd64 libopenblas-dev amd64 0.3.13+ds-3+deb11u1 [44.2 kB]
+Get:13 http://deb.debian.org/debian bullseye/main amd64 pkg-config amd64 0.29.2-1 [65.1 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 28.3 MB in 1s (50.1 MB/s)
+Selecting previously unselected package libgfortran5:amd64.
+(Reading database ... [2025-07-17 15:28:23.365145] (Reading database ... 5%[2025-07-17 15:28:23.365930] (Reading database ... 10%[2025-07-17 15:28:23.366525] (Reading database ... 15%[2025-07-17 15:28:23.366954] (Reading database ... 20%[2025-07-17 15:28:23.367544] (Reading database ... 25%[2025-07-17 15:28:23.368070] (Reading database ... 30%[2025-07-17 15:28:23.368717] (Reading database ... 35%[2025-07-17 15:28:23.369180] (Reading database ... 40%[2025-07-17 15:28:23.369835] (Reading database ... 45%[2025-07-17 15:28:23.370324] (Reading database ... 50%[2025-07-17 15:28:23.371242] (Reading database ... 55%[2025-07-17 15:28:23.371674] (Reading database ... 60%[2025-07-17 15:28:23.373519] (Reading database ... 65%[2025-07-17 15:28:23.375847] (Reading database ... 70%[2025-07-17 15:28:23.377550] (Reading database ... 75%[2025-07-17 15:28:23.379535] (Reading database ... 80%[2025-07-17 15:28:23.382167] (Reading database ... 85%[2025-07-17 15:28:23.392997] (Reading database ... 90%[2025-07-17 15:28:23.397771] (Reading database ... 95%[2025-07-17 15:28:23.414395] (Reading database ... 100%[2025-07-17 15:28:23.414907] (Reading database ... [2025-07-17 15:28:23.419325] 22039 files and directories currently installed.)
+Preparing to unpack .../00-libgfortran5_10.2.1-6_amd64.deb ...
+Unpacking libgfortran5:amd64 (10.2.1-6) ...
+Selecting previously unselected package libgfortran-10-dev:amd64.
+Preparing to unpack .../01-libgfortran-10-dev_10.2.1-6_amd64.deb ...
+Unpacking libgfortran-10-dev:amd64 (10.2.1-6) ...
+Selecting previously unselected package gfortran-10.
+Preparing to unpack .../02-gfortran-10_10.2.1-6_amd64.deb ...
+Unpacking gfortran-10 (10.2.1-6) ...
+Selecting previously unselected package gfortran.
+Preparing to unpack .../03-gfortran_4%3a10.2.1-1_amd64.deb ...
+Unpacking gfortran (4:10.2.1-1) ...
+Selecting previously unselected package libblas3:amd64.
+Preparing to unpack .../04-libblas3_3.9.0-3+deb11u1_amd64.deb ...
+Unpacking libblas3:amd64 (3.9.0-3+deb11u1) ...
+Selecting previously unselected package libblas-dev:amd64.
+Preparing to unpack .../05-libblas-dev_3.9.0-3+deb11u1_amd64.deb ...
+Unpacking libblas-dev:amd64 (3.9.0-3+deb11u1) ...
+Selecting previously unselected package libopenblas0-pthread:amd64.
+Preparing to unpack .../06-libopenblas0-pthread_0.3.13+ds-3+deb11u1_amd64.deb ...
+Unpacking libopenblas0-pthread:amd64 (0.3.13+ds-3+deb11u1) ...
+Selecting previously unselected package liblapack3:amd64.
+Preparing to unpack .../07-liblapack3_3.9.0-3+deb11u1_amd64.deb ...
+Unpacking liblapack3:amd64 (3.9.0-3+deb11u1) ...
+Selecting previously unselected package libopenblas-pthread-dev:amd64.
+Preparing to unpack .../08-libopenblas-pthread-dev_0.3.13+ds-3+deb11u1_amd64.deb ...
+Unpacking libopenblas-pthread-dev:amd64 (0.3.13+ds-3+deb11u1) ...
+Selecting previously unselected package liblapack-dev:amd64.
+Preparing to unpack .../09-liblapack-dev_3.9.0-3+deb11u1_amd64.deb ...
+Unpacking liblapack-dev:amd64 (3.9.0-3+deb11u1) ...
+Selecting previously unselected package libopenblas0:amd64.
+Preparing to unpack .../10-libopenblas0_0.3.13+ds-3+deb11u1_amd64.deb ...
+Unpacking libopenblas0:amd64 (0.3.13+ds-3+deb11u1) ...
+Selecting previously unselected package libopenblas-dev:amd64.
+Preparing to unpack .../11-libopenblas-dev_0.3.13+ds-3+deb11u1_amd64.deb ...
+Unpacking libopenblas-dev:amd64 (0.3.13+ds-3+deb11u1) ...
+Selecting previously unselected package pkg-config.
+Preparing to unpack .../12-pkg-config_0.29.2-1_amd64.deb ...
+Unpacking pkg-config (0.29.2-1) ...
+Setting up libblas3:amd64 (3.9.0-3+deb11u1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
+Setting up pkg-config (0.29.2-1) ...
+Setting up libgfortran5:amd64 (10.2.1-6) ...
+Setting up libgfortran-10-dev:amd64 (10.2.1-6) ...
+Setting up libblas-dev:amd64 (3.9.0-3+deb11u1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so to provide /usr/lib/x86_64-linux-gnu/libblas.so (libblas.so-x86_64-linux-gnu) in auto mode
+Setting up liblapack3:amd64 (3.9.0-3+deb11u1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3 to provide /usr/lib/x86_64-linux-gnu/liblapack.so.3 (liblapack.so.3-x86_64-linux-gnu) in auto mode
+Setting up libopenblas0-pthread:amd64 (0.3.13+ds-3+deb11u1) ...
+update-alternatives: [2025-07-17 15:28:29.742163] using /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so.3 to provide /usr/lib/x86_64-linux-gnu/liblapack.so.3 (liblapack.so.3-x86_64-linux-gnu) in auto mode[2025-07-17 15:28:29.748281] 
+update-alternatives: [2025-07-17 15:28:29.774216] using /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblas.so.0 to provide /usr/lib/x86_64-linux-gnu/libopenblas.so.0 (libopenblas.so.0-x86_64-linux-gnu) in auto mode
+Setting up liblapack-dev:amd64 (3.9.0-3+deb11u1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so to provide /usr/lib/x86_64-linux-gnu/liblapack.so (liblapack.so-x86_64-linux-gnu) in auto mode
+Setting up gfortran-10 (10.2.1-6) ...
+Setting up libopenblas0:amd64 (0.3.13+ds-3+deb11u1) ...
+Setting up libopenblas-pthread-dev:amd64 (0.3.13+ds-3+deb11u1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so to provide /usr/lib/x86_64-linux-gnu/libblas.so (libblas.so-x86_64-linux-gnu) in auto mode
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so to provide /usr/lib/x86_64-linux-gnu/liblapack.so (liblapack.so-x86_64-linux-gnu) in auto mode
+update-alternatives: using /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblas.so to provide /usr/lib/x86_64-linux-gnu/libopenblas.so (libopenblas.so-x86_64-linux-gnu) in auto mode
+Setting up gfortran (4:10.2.1-1) ...
+update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f95 (f95) in auto mode
+update-alternatives: using /usr/bin/gfortran to provide /usr/bin/f77 (f77) in auto mode
+Setting up libopenblas-dev:amd64 (0.3.13+ds-3+deb11u1) ...
+Processing triggers for libc-bin (2.31-13+deb11u13) ...
 
 ──────────────────────────────────────── uv ───────────────────────────────────────────
 
 Using uv pip install.
-Using Python 3.13.5 environment at /home/adminuser/venv
-Resolved 68 packages in 4.59s
-  × Failed to download and build `scikit-learn==1.4.2`
-  ├─▶ Failed to resolve requirements from `build-system.requires`
-  ├─▶ No solution found when resolving: `setuptools`, `wheel`,
-  │   `cython>=3.0.8`, `numpy==2.0.0rc1`, `scipy>=1.6.0`
-  ╰─▶ Because there is no version of numpy==2.0.0rc1 and you require
-      numpy==2.0.0rc1, we can conclude that your requirements are
-      unsatisfiable.
+Using Python 3.10.18 environment at /home/adminuser/venv
+Resolved 67 packages in 2.86s
+Prepared 67 packages in 15.73s
+Uninstalled 1 package in 107ms
+Installed 67 packages in 1.73s
+ + altair==5.5.0
+ + appdirs==1.4.4
+ + attrs==25.3.0
+ + backtesting==0.3.3
+ + beautifulsoup4==4.13.4
+ + blinker==1.9.0
+ + bokeh==2.4.3
+ + cachetools==5.5.2
+ + certifi==2025.7.14
+ + charset-normalizer==3.4.2
+ + click==8.2.1
+ + contourpy==1.3.2
+ + cycler==0.12.1
+ + fonttools==4.59.0
+ + frozendict==2.4.6
+ +[2025-07-17 15:28:52.246345]  gitdb==4.0.12
+ + gitpython==3.1.44
+ + html5lib==1.1
+ + idna==3.10
+ + jinja2==3.1.6
+ + joblib==1.5.1
+ + jsonschema==4.24.1
+ + jsonschema-specifications==2025.4.1
+ + kiwisolver==1.4.8
+ + lxml==6.0.0
+ + markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + matplotlib[2025-07-17 15:28:52.247671] ==3.8.4
+ + mdurl==0.1.2
+ + mplfinance==0.12.9b7
+ + multitasking==0.0.11
+ + narwhals==1.47.0
+ + numpy==1.23.5
+ + packaging==24.2
+ + pandas==2.2.2
+ + peewee==3.18.2
+ + pillow==10.4.0
+ + plotly[2025-07-17 15:28:52.248487] ==5.22.0
+ + protobuf==4.25.8
+ + pyarrow==20.0.0
+ + pydeck==0.9.1[2025-07-17 15:28:52.248719] 
+ + pygments==2.19.2
+ + pyparsing==3.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + pyyaml==6.0.2
+ + referencing==0.36.2
+ + requests[2025-07-17 15:28:52.248953] ==2.32.4
+ + rich==13.9.4
+ + rpds-py==0.26.0
+ + scikit-learn==1.2.2
+ + scipy==1.13.1
+ - setuptools[2025-07-17 15:28:52.249171] ==80.3.1
+ + setuptools==69.5.1
+ + six==1.17.0
+ + smmap==5.0.2
+ + soupsieve==2.7
+ + streamlit==1.34.0
+ + tenacity==8.5.0
+ + threadpoolctl==3.6.0
+ + toml==0.10.2
+ + tornado==6.5.1
+ + typing-extensions==4.14.1
+ + tzdata==2025.2
+ + urllib3==2.5.0
+ + watchdog==6.0.0
+ + webencodings==0.5.1
+ + yfinance==0.2.38
 Checking if Streamlit is installed
+Found Streamlit version 1.34.0 in the environment
 Installing rich for an improved exception logging
 Using uv pip install.
-Using Python 3.13.5 environment at /home/adminuser/venv[2025-07-16 23:37:24.098259] 
-Resolved [2025-07-16 23:37:24.200869] 4 packages[2025-07-16 23:37:24.201311]  [2025-07-16 23:37:24.201757] in 98ms[2025-07-16 23:37:24.202249] 
-Prepared [2025-07-16 23:37:24.246919] 1 package[2025-07-16 23:37:24.247415]  [2025-07-16 23:37:24.248051] in 42ms[2025-07-16 23:37:24.248730] 
-Installed [2025-07-16 23:37:24.299238] 4 packages[2025-07-16 23:37:24.299585]  [2025-07-16 23:37:24.299926] in 49ms[2025-07-16 23:37:24.300235] 
- [2025-07-16 23:37:24.300944] +[2025-07-16 23:37:24.301258]  [2025-07-16 23:37:24.301648] markdown-it-py[2025-07-16 23:37:24.301999] ==[2025-07-16 23:37:24.302319] 3.0.0[2025-07-16 23:37:24.302666] 
- [2025-07-16 23:37:24.303341] +[2025-07-16 23:37:24.303693]  [2025-07-16 23:37:24.304021] mdurl[2025-07-16 23:37:24.304359] ==[2025-07-16 23:37:24.304645] 0.1.2[2025-07-16 23:37:24.304959] 
- [2025-07-16 23:37:24.305577] +[2025-07-16 23:37:24.305927]  [2025-07-16 23:37:24.306261] pygments[2025-07-16 23:37:24.306960] ==[2025-07-16 23:37:24.307298] 2.19.2[2025-07-16 23:37:24.307756] 
- [2025-07-16 23:37:24.308393] +[2025-07-16 23:37:24.309335]  rich==14.0.0
+Using Python 3.10.18 environment at /home/adminuser/venv
+Audited 1 package in 7ms
 
 ────────────────────────────────────────────────────────────────────────────────────────
 
+[15:28:56] 🐍 Python dependencies were installed from /mount/src/bist-stock-analyzer/requirements.txt using uv.
+Check if streamlit is installed
+Streamlit is already installed
+[15:28:59] 📦 Processed dependencies!
 
-──────────────────────────────────────── pip ───────────────────────────────────────────
 
-Using standard pip install.
-Collecting numpy==1.26.4 (from -r /mount/src/bist-stock-analyzer/requirements.txt (line 2))
-  Downloading numpy-1.26.4.tar.gz (15.8 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.8/15.8 MB 119.7 MB/s eta 0:00:00[2025-07-16 23:37:26.575813] 
-  Installing build dependencies: started
-  Installing build dependencies: finished with status 'done'
-  Getting requirements to build wheel: started
-  Getting requirements to build wheel: finished with status 'done'
-  Installing backend dependencies: started
-  Installing backend dependencies: finished with status 'done'
-  Preparing metadata (pyproject.toml): started
+
+2025-07-17 15:34:18.287 503 GET /script-health-check (127.0.0.1) 60071.40ms
+2025-07-17 15:35:19.012 503 GET /script-health-check (127.0.0.1) 60092.80ms
+2025-07-17 15:36:19.654 503 GET /script-health-check (127.0.0.1) 60131.04ms
