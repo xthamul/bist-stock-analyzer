@@ -1,4 +1,16 @@
-log.txt
-*.pyc
-*.html
+# Python
 __pycache__/
+*.pyc
+
+# Sanal Ortam
+venv/
+
+# Geçici Dosyalar ve Arşivler
+*.rar
+*.zip
+log.txt
+*.html
+
+# Test Dosyaları (isteğe bağlı)
+# temp_*
+# test_*

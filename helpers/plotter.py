@@ -1,6 +1,7 @@
-
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import mplfinance as mpf
+import pandas as pd
 
 def plot_analysis_plotly(veri, hisse_kodu, interval_display, analysis_type):
     """Ana teknik analiz grafiğini oluşturur."""
@@ -103,3 +104,63 @@ def plot_comparison_plotly(data1, data2, hisse1, hisse2):
     fig.update_yaxes(zeroline=True, zerolinewidth=2, zerolinecolor='Gray')
     
     return fig
+
+def plot_analysis_mpl(veri, hisse_kodu, interval_display, analysis_type):
+    """Matplotlib/mplfinance kullanarak teknik analiz grafiği oluşturur."""
+    veri.index.name = 'Date'
+    apds = [] # addplot listesi
+
+    # Panelleri ve oranları dinamik olarak ayarla
+    if analysis_type == "Basit":
+        apds.extend([
+            mpf.make_addplot(veri['ema_50'], color='orange', panel=0),
+            mpf.make_addplot(veri['ema_200'], color='purple', panel=0),
+            mpf.make_addplot(veri['volume'], panel=1, type='bar', color='gray', ylabel='Hacim'),
+            mpf.make_addplot(veri['rsi_14'], panel=2, color='blue', ylabel='RSI'),
+            mpf.make_addplot(pd.Series(70, index=veri.index), panel=2, color='gray', linestyle='--', width=0.7),
+            mpf.make_addplot(pd.Series(30, index=veri.index), panel=2, color='gray', linestyle='--', width=0.7)
+        ])
+        panel_ratios = (3, 1, 1)
+    else: # Detaylı
+        apds.extend([
+            # Panel 0: Fiyat ve Ortalamalar
+            mpf.make_addplot(veri['ema_8'], color='#007bff', panel=0),
+            mpf.make_addplot(veri['ema_13'], color='#6f42c1', panel=0),
+            mpf.make_addplot(veri['ema_21'], color='#fd7e14', panel=0),
+            mpf.make_addplot(veri['bbu_20_2.0'], color='#28a745', linestyle='--', panel=0),
+            mpf.make_addplot(veri['bbl_20_2.0'], color='#dc3545', linestyle='--', panel=0),
+            mpf.make_addplot(veri['vwap_d'], color='cyan', linestyle='-.', panel=0),
+            # Panel 1: Hacim
+            mpf.make_addplot(veri['volume'], panel=1, type='bar', color='gray', ylabel='Hacim'),
+            # Panel 2: RSI & StochRSI
+            mpf.make_addplot(veri['rsi_14'], panel=2, color='blue', ylabel='RSI/Stoch'),
+            mpf.make_addplot(pd.Series(70, index=veri.index), panel=2, color='gray', linestyle='--', width=0.7),
+            mpf.make_addplot(pd.Series(30, index=veri.index), panel=2, color='gray', linestyle='--', width=0.7),
+            mpf.make_addplot(veri['stochrsik_14_14_3_3'], panel=2, color='cyan'),
+            mpf.make_addplot(veri['stochrsid_14_14_3_3'], panel=2, color='magenta'),
+            # Panel 3: MACD
+            mpf.make_addplot(veri['macd_12_26_9'], panel=3, color='blue', ylabel='MACD'),
+            mpf.make_addplot(veri['macds_12_26_9'], panel=3, color='orange'),
+            mpf.make_addplot(veri['macdh_12_26_9'], type='bar', panel=3, color='gray'),
+            # Panel 4: ADX
+            mpf.make_addplot(veri['adx_14'], panel=4, color='#ffc107', ylabel='ADX'),
+            mpf.make_addplot(veri['dmp_14'], panel=4, color='#28a745'),
+            mpf.make_addplot(veri['dmn_14'], panel=4, color='#dc3545'),
+            # Panel 5: OBV
+            mpf.make_addplot(veri['obv'], panel=5, color='#ffc107', ylabel='OBV')
+        ])
+        panel_ratios = (6, 1, 2, 2, 2, 2)
+
+    s = mpf.make_mpf_style(base_mpf_style='yahoo', rc={'figure.facecolor': 'white'})
+    fig, axes = mpf.plot(veri,
+                         type='candle',
+                         style=s,
+                         title=f'{hisse_kodu} Teknik Analiz ({interval_display} - {analysis_type})',
+                         ylabel='Fiyat',
+                         volume=False, # Hacim ayrı panelde
+                         addplot=apds,
+                         panel_ratios=panel_ratios,
+                         figscale=1.5,
+                         returnfig=True,
+                         columns=['open', 'high', 'low', 'close', 'volume'])
+    return fig, axes
