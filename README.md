@@ -8,7 +8,7 @@ Bu proje, Borsa İstanbul'da (BIST) işlem gören hisse senetleri için kapsaml�
 
 ### 🖼️ Ekran Görüntüsü
 
-*(Buraya uygulamanızın ana sayfasından bir ekran görüntüsü eklemeniz projenizin tanıtımı için çok faydalı olacaktır. Örneğin: `![Uygulama Arayüzü](screenshot.png)`)*
+İlerde eklenecektir.
 
 ---
 
