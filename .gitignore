@@ -1,4 +1,21 @@
+# Genel
 log.txt
 *.pyc
 *.html
 __pycache__/
+
+# Arşivler
+*.rar
+*.zip
+
+# Sanal Ortam
+venv/
+.venv/
+
+# IDE ve Editör Dosyaları
+.idea/
+.vscode/
+
+# Geçici Dosyalar
+temp/
+tmp/
