@@ -1,16 +1,18 @@
 # Genel
 log.txt
-*.pyc
 *.html
-__pycache__/
 
-# Arşivler
-*.rar
-*.zip
+# Python
+*.pyc
+__pycache__/
 
 # Sanal Ortam
 venv/
 .venv/
+
+# Arşivler
+*.rar
+*.zip
 
 # IDE ve Editör Dosyaları
 .idea/
@@ -19,3 +21,7 @@ venv/
 # Geçici Dosyalar
 temp/
 tmp/
+
+# Test Dosyaları (isteğe bağlı)
+# temp_*
+# test_*
