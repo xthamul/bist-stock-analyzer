@@ -21,7 +21,10 @@ venv/
 # Geçici Dosyalar
 temp/
 tmp/
+temp_*
 
 # Test Dosyaları (isteğe bağlı)
-# temp_*
 # test_*
+
+# Application specific
+app.log

@@ -8,7 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import time
 
 # Proje yardımcı modüllerini içe aktar
-from helpers.data_handler import get_stock_data, calculate_indicators, get_fundamental_data, filter_data_by_date
+from helpers.data_handler import get_stock_data, get_fundamental_data, filter_data_by_date, calculate_indicators
 from helpers.plotter import plot_analysis_mpl
 from helpers.ui_components import generate_technical_summary, generate_fundamental_summary
 

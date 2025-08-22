@@ -8,6 +8,29 @@ from json import JSONDecodeError
 # Tenacity (retry) kütüphanesine olan bağımlılık kaldırıldı.
 # Bu fonksiyon artık sadece veri çekmeye odaklanıyor.
 # Tekrar deneme mantığı, bu fonksiyonu çağıran uygulamalar (app.py, analiz.py) tarafından yönetilmelidir.
+import yfinance as yf
+import pandas as pd
+import numpy as np
+import time
+from json import JSONDecodeError
+from helpers.exceptions import DataFetchError
+import pandas_ta as ta # pandas_ta eklendi
+from constants import HISSE_GRUPPARI # HISSE_GRUPPARI import edildi
+
+def _flatten_columns(df):
+    """
+    Flattens MultiIndex columns to a single level of strings.
+    """
+    new_columns = []
+    for col in df.columns:
+        if isinstance(col, tuple):
+            # Join tuple elements with '_' and remove any trailing underscores
+            new_columns.append('_'.join(filter(None, col)).strip('_'))
+        else:
+            new_columns.append(str(col))
+    df.columns = new_columns
+    return df
+
 def get_stock_data(hisse_kodu, interval, retries=3, delay=5):
     """Belirtilen hisse senedi için yfinance'ten veri çeker."""
     period = "2y" if interval in ["1h", "4h"] else "max"
@@ -30,75 +53,49 @@ def get_stock_data(hisse_kodu, interval, retries=3, delay=5):
             print(f"Attempt {i+1}/{retries} failed for {hisse_kodu}: {e}")
             if i < retries - 1:
                 time.sleep(delay)
-    raise ValueError(f"{hisse_kodu} için yfinance'ten veri bulunamadı.")
+    raise DataFetchError(f"{hisse_kodu} için yfinance'ten veri bulunamadı.")
 
 def calculate_indicators(veri):
-    """Gerekli tüm teknik göstergeleri manuel olarak hesaplar."""
-    # EMA
-    veri['ema_8'] = veri['close'].ewm(span=8, adjust=False).mean()
-    veri['ema_13'] = veri['close'].ewm(span=13, adjust=False).mean()
-    veri['ema_21'] = veri['close'].ewm(span=21, adjust=False).mean()
-    veri['ema_50'] = veri['close'].ewm(span=50, adjust=False).mean()
-    veri['ema_200'] = veri['close'].ewm(span=200, adjust=False).mean()
+    """Gerekli tüm teknik göstergeleri pandas_ta kullanarak hesaplar."""
+    # pandas_ta'nın beklediği sütun isimlerini kontrol et
+    # Zaten get_stock_data içinde küçük harfe çevriliyor.
+
+    # EMA'lar
+    veri.ta.ema(length=8, append=True)
+    veri.ta.ema(length=13, append=True)
+    veri.ta.ema(length=21, append=True)
+    veri.ta.ema(length=50, append=True)
+    veri.ta.ema(length=200, append=True)
 
     # Bollinger Bantları
-    veri['bbm_20_2.0'] = veri['close'].rolling(window=20).mean()
-    veri['bb_std'] = veri['close'].rolling(window=20).std()
-    veri['bbu_20_2.0'] = veri['bbm_20_2.0'] + (veri['bb_std'] * 2)
-    veri['bbl_20_2.0'] = veri['bbm_20_2.0'] - (veri['bb_std'] * 2)
-    veri['bbb_20_2.0'] = (veri['bbu_20_2.0'] - veri['bbl_20_2.0']) / veri['bbm_20_2.0'] * 100
+    veri.ta.bbands(length=20, append=True)
 
     # RSI
-    delta = veri['close'].diff()
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-    avg_gain = gain.ewm(span=14, adjust=False).mean()
-    avg_loss = loss.ewm(span=14, adjust=False).mean()
-    rs = avg_gain / avg_loss
-    veri['rsi_14'] = 100 - (100 / (1 + rs))
+    veri.ta.rsi(length=14, append=True)
 
     # MACD
-    ema_12 = veri['close'].ewm(span=12, adjust=False).mean()
-    ema_26 = veri['close'].ewm(span=26, adjust=False).mean()
-    veri['macd_12_26_9'] = ema_12 - ema_26
-    veri['macds_12_26_9'] = veri['macd_12_26_9'].ewm(span=9, adjust=False).mean()
-    veri['macdh_12_26_9'] = veri['macd_12_26_9'] - veri['macds_12_26_9']
+    veri.ta.macd(append=True)
 
     # ATR
     high_low = veri['high'] - veri['low']
     high_prev_close = abs(veri['high'] - veri['close'].shift())
     low_prev_close = abs(veri['low'] - veri['close'].shift())
     tr = pd.DataFrame({'hl': high_low, 'hpc': high_prev_close, 'lpc': low_prev_close}).max(axis=1)
-    veri['atr_14'] = tr.ewm(span=14, adjust=False).mean()
-    veri['atrr_14'] = (veri['atr_14'] / veri['close']) * 100
+    veri['ATR_14'] = tr.ewm(span=14, adjust=False).mean()
 
     # ADX
-    veri['up_move'] = veri['high'].diff()
-    veri['down_move'] = veri['low'].diff() * -1
-    veri['plus_dm'] = np.where((veri['up_move'] > veri['down_move']) & (veri['up_move'] > 0), veri['up_move'], 0)
-    veri['minus_dm'] = np.where((veri['down_move'] > veri['up_move']) & (veri['down_move'] > 0), veri['down_move'], 0)
-    veri['tr'] = tr
-    veri['plus_dm_14'] = veri['plus_dm'].ewm(span=14, adjust=False).mean()
-    veri['minus_dm_14'] = veri['minus_dm'].ewm(span=14, adjust=False).mean()
-    veri['tr_14'] = veri['tr'].ewm(span=14, adjust=False).mean()
-    veri['pdi_14'] = (veri['plus_dm_14'] / veri['tr_14']) * 100
-    veri['mdi_14'] = (veri['minus_dm_14'] / veri['tr_14']) * 100
-    veri['dx_14'] = abs(veri['pdi_14'] - veri['mdi_14']) / (veri['pdi_14'] + veri['mdi_14']) * 100
-    veri['adx_14'] = veri['dx_14'].ewm(span=14, adjust=False).mean()
-    veri['dmp_14'] = veri['pdi_14']
-    veri['dmn_14'] = veri['mdi_14']
+    veri.ta.adx(length=14, append=True)
 
     # OBV
-    veri['obv'] = (np.sign(veri['close'].diff()) * veri['volume']).fillna(0).cumsum()
+    veri.ta.obv(append=True)
 
     # StochRSI
-    min_rsi = veri['rsi_14'].rolling(window=14).min()
-    max_rsi = veri['rsi_14'].rolling(window=14).max()
-    veri['stochrsi'] = (veri['rsi_14'] - min_rsi) / (max_rsi - min_rsi)
-    veri['stochrsik_14_14_3_3'] = veri['stochrsi'].rolling(window=3).mean() * 100
-    veri['stochrsid_14_14_3_3'] = veri['stochrsik_14_14_3_3'].rolling(window=3).mean()
+    veri.ta.stochrsi(append=True)
 
-    # VWAP
+    # VWAP (Günlük VWAP için pandas_ta'da doğrudan bir fonksiyon yok, manuel tutalım)
+    # Ancak, app.py'deki prediction kısmında da VWAP kullanılıyor.
+    # Şimdilik manuel VWAP hesaplamasını koruyalım veya kaldırıp sadece app.py'de kullanalım.
+    # Mevcut manuel hesaplamayı koruyalım, çünkü pandas_ta'nın günlük VWAP'ı yok.
     veri['typical_price'] = (veri['high'] + veri['low'] + veri['close']) / 3
     veri['tp_volume'] = veri['typical_price'] * veri['volume']
     veri['cum_tp_volume'] = veri.groupby(veri.index.date)['tp_volume'].cumsum()
@@ -108,37 +105,50 @@ def calculate_indicators(veri):
     # Ichimoku
     high_9 = veri['high'].rolling(window=9).max()
     low_9 = veri['low'].rolling(window=9).min()
-    veri['itsa_9_26_52'] = (high_9 + low_9) / 2
+    veri['its_9'] = (high_9 + low_9) / 2
     high_26 = veri['high'].rolling(window=26).max()
     low_26 = veri['low'].rolling(window=26).min()
-    veri['itsb_9_26_52'] = (high_26 + low_26) / 2
-    veri['senkou_a'] = ((veri['itsa_9_26_52'] + veri['itsb_9_26_52']) / 2).shift(26)
+    veri['kjs_26'] = (high_26 + low_26) / 2
+    veri['isa_9'] = ((veri['its_9'] + veri['kjs_26']) / 2).shift(26)
     high_52 = veri['high'].rolling(window=52).max()
     low_52 = veri['low'].rolling(window=52).min()
-    veri['senkou_b'] = ((high_52 + low_52) / 2).shift(26)
-    veri['is_9_26_52'] = veri['close'].shift(-26)
+    veri['isb_26'] = ((high_52 + low_52) / 2).shift(26)
+    veri['chk_26'] = veri['close'].shift(-26)
 
+    # MultiIndex sütunları düzleştir (eğer varsa)
+    veri = _flatten_columns(veri)
+
+    # Tüm sütun adlarını küçük harfe çevir (pandas_ta zaten küçük harf döndürüyor olmalı ama emin olalım)
     veri.columns = [col.lower() for col in veri.columns]
+
+    # ATR yüzdesini manuel hesapla (pandas_ta'da doğrudan yok)
+    # Bu hesaplama, sütun adları küçük harfe çevrildikten sonra yapılmalı
+    veri['atrr_14'] = (veri['atr_14'] / veri['close']) * 100
+    
     return veri
 
-def get_fundamental_data(hisse_kodu):
+def get_fundamental_data(hisse_kodu, retries=3, delay=5):
     """Hisse senedi için temel verileri ve finansal tabloları çeker."""
-    try:
-        stock = yf.Ticker(hisse_kodu)
-        info = stock.info
-        financials = stock.financials
-        balance_sheet = stock.balance_sheet
-        cashflow = stock.cashflow
-        if not info:
-            raise ValueError(f"{hisse_kodu} için temel veri bilgisi (info) alınamadı.")
-        return {
-            "info": info,
-            "financials": financials,
-            "balance_sheet": balance_sheet,
-            "cashflow": cashflow
-        }
-    except Exception as e:
-        raise ValueError(f"{hisse_kodu} için temel veriler çekilemedi: {e}")
+    for i in range(retries):
+        try:
+            stock = yf.Ticker(hisse_kodu)
+            info = stock.info
+            if not info:
+                raise DataFetchError(f"{hisse_kodu} için temel veri bilgisi (info) alınamadı.")
+            financials = stock.financials
+            balance_sheet = stock.balance_sheet
+            cashflow = stock.cashflow
+            return {
+                "info": info,
+                "financials": financials,
+                "balance_sheet": balance_sheet,
+                "cashflow": cashflow
+            }
+        except Exception as e:
+            print(f"Attempt {i+1}/{retries} for fundamental data of {hisse_kodu} failed: {e}")
+            if i < retries - 1:
+                time.sleep(delay)
+    raise DataFetchError(f"{hisse_kodu} için temel veriler çekilemedi.")
 
 def filter_data_by_date(veri, time_delta=None, start_date=None, end_date=None):
     """Veriyi seçilen tarih aralığına veya periyoda göre filtreler."""
@@ -156,36 +166,38 @@ def filter_data_by_date(veri, time_delta=None, start_date=None, end_date=None):
         
     return veri
 
-def get_sector_peers(hisse_kodu):
+def get_sector_peers(hisse_kodu, retries=3, delay=2):
     """Bir hissenin sektörünü ve sektördeki benzer şirketleri bulur."""
-    try:
-        stock = yf.Ticker(hisse_kodu)
-        info = stock.info
-        sector = info.get('sector')
-        if not sector:
-            return None, None
-        
-        bist100 = [
-            "AKBNK", "GARAN", "ISCTR", "YKBNK", "VAKBN", "THYAO", "ASELS", "TUPRS", "KCHOL", "BIMAS",
-            "FROTO", "SISE", "ENKAI", "PETKM", "KOZAL", "TOASO", "KRDMD", "SAHOL", "SASA", "EREGL",
-            "ARCLK", "PGSUS", "ALARK", "HEKTS", "TAVHL", "TCELL", "ODAS", "KORDS", "DOHOL", "ZOREN",
-            "GWIND", "AGHOL", "AKSA", "OYAKC", "CCOLA", "TRKCM", "ADEL", "ULKER", "LOGO", "ISGYO",
-            "MGROS", "GENIL", "ISDMR", "BRISA", "ALKIM", "AKGRT", "BANVT", "CIMSA", "ENJSA", "KARSN",
-            "TTRAK", "GOZDE", "SOKM", "ALFAS", "BIOEN", "QUAGR", "BURCE", "DGNMO", "EKGYO", "GUBRF",
-            "IZMDC", "MPARK", "NETAS", "PENTA", "TMSN", "TUCLK", "ULAS", "VERUS", "YUNSA"
-        ]
-        
-        peers = []
-        for peer_ticker in bist100:
-            if peer_ticker != hisse_kodu.split('.')[0]:
-                try:
-                    peer_info = yf.Ticker(f"{peer_ticker}.IS").info
-                    time.sleep(0.2)
-                    if peer_info.get('sector') == sector:
-                        peers.append(peer_ticker)
-                except Exception:
-                    continue
-        return sector, peers
-    except Exception as e:
-        print(f"Sektör verileri çekilirken hata: {e}")
-        return None, None
+    for i in range(retries):
+        try:
+            stock = yf.Ticker(hisse_kodu)
+            info = stock.info
+            if not info:
+                print(f"Sektör bilgisi {hisse_kodu} için bulunamadı.")
+                return None, None
+            sector = info.get('sector')
+            if not sector:
+                print(f"Sektör bilgisi {hisse_kodu} için bulunamadı.")
+                return None, None
+            
+            # Bu liste bir dış kaynaktan veya konfigürasyon dosyasından alınabilir.
+            bist100 = HISSE_GRUPPARI["BIST 100 Hisseleri"]
+            
+            peers = []
+            for peer_ticker in bist100:
+                if peer_ticker != hisse_kodu.split('.')[0]:
+                    try:
+                        peer_info = yf.Ticker(f"{peer_ticker}.IS").info
+                        time.sleep(0.2) # API'ye saygılı olmak için küçük bir bekleme
+                        if peer_info and peer_info.get('sector') == sector:
+                            peers.append(peer_ticker)
+                    except Exception:
+                        print(f"Peer {peer_ticker} için bilgi alınamadı, atlanıyor.")
+                        continue
+            return sector, peers
+        except Exception as e:
+            print(f"Attempt {i+1}/{retries} for sector peers of {hisse_kodu} failed: {e}")
+            if i < retries - 1:
+                time.sleep(delay)
+    print(f"Sektör verileri {hisse_kodu} için tüm denemelerden sonra çekilemedi.")
+    return None, None
