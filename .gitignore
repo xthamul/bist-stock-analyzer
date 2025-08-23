@@ -1,5 +1,4 @@
 # Genel
-log.txt
 *.html
 
 # Python
@@ -9,6 +8,12 @@ __pycache__/
 # Sanal Ortam
 venv/
 .venv/
+
+# Veritabanı ve Loglar
+*.db
+*.sqlite
+*.sqlite3
+*.log
 
 # Arşivler
 *.rar
@@ -22,9 +27,3 @@ venv/
 temp/
 tmp/
 temp_*
-
-# Test Dosyaları (isteğe bağlı)
-# test_*
-
-# Application specific
-app.log
