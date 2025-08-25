@@ -28,7 +28,9 @@ def _flatten_columns(df):
 
 @st.cache_data
 def get_stock_data(hisse_kodu, interval, retries=3, delay=5):
-    """Belirtilen hisse senedi için yfinance'ten veri çeker."""
+    """
+    Belirtilen hisse senedi için yfinance'ten veri çeker.
+    """
     period = "2y" if interval in ["1h", "4h"] else "max"
     print(
         f"Attempting to fetch data for {hisse_kodu} with interval {interval} and period {period}"
@@ -69,20 +71,27 @@ def calculate_indicators(veri):
     # Zaten get_stock_data içinde küçük harfe çevriliyor.
 
     # EMA'lar
-    veri.ta.ema(length=8, append=True)
-    veri.ta.ema(length=13, append=True)
-    veri.ta.ema(length=21, append=True)
-    veri.ta.ema(length=50, append=True)
-    veri.ta.ema(length=200, append=True)
+    veri['ema_5'] = veri.ta.ema(close=veri['close'], length=5)
+    veri['ema_8'] = veri.ta.ema(close=veri['close'], length=8)
+    veri['ema_20'] = veri.ta.ema(close=veri['close'], length=20)
+    veri['ema_50'] = veri.ta.ema(close=veri['close'], length=50)
+    veri['ema_100'] = veri.ta.ema(close=veri['close'], length=100)
+    veri['ema_200'] = veri.ta.ema(close=veri['close'], length=200)
 
     # Bollinger Bantları
-    veri.ta.bbands(length=20, append=True)
+    bbands = veri.ta.bbands(close=veri['close'], length=20)
+    veri['bbl_20_2'] = bbands['BBL_20_2']
+    veri['bbm_20_2'] = bbands['BBM_20_2']
+    veri['bbu_20_2'] = bbands['BBU_20_2']
 
     # RSI
-    veri.ta.rsi(length=14, append=True)
+    veri['rsi_14'] = veri.ta.rsi(close=veri['close'], length=14)
 
     # MACD
-    veri.ta.macd(append=True)
+    macd_data = veri.ta.macd(close=veri['close'])
+    veri['macd'] = macd_data['MACD_12_26_9']
+    veri['macdh'] = macd_data['MACDH_12_26_9']
+    veri['macds'] = macd_data['MACDS_12_26_9']
 
     # ATR
     high_low = veri["high"] - veri["low"]
@@ -94,13 +103,18 @@ def calculate_indicators(veri):
     veri["ATR_14"] = tr.ewm(span=14, adjust=False).mean()
 
     # ADX
-    veri.ta.adx(length=14, append=True)
+    adx_data = veri.ta.adx(high=veri['high'], low=veri['low'], close=veri['close'], length=14)
+    veri['adx_14'] = adx_data['ADX_14']
+    veri['dmp_14'] = adx_data['DMP_14']
+    veri['dmn_14'] = adx_data['DMN_14']
 
     # OBV
-    veri.ta.obv(append=True)
+    veri['obv'] = veri.ta.obv(close=veri['close'], volume=veri['volume'])
 
     # StochRSI
-    veri.ta.stochrsi(append=True)
+    stochrsi_data = veri.ta.stochrsi(close=veri['close'])
+    veri['stochrsi_k'] = stochrsi_data['STOCHRSIk_14_14_3_3']
+    veri['stochrsi_d'] = stochrsi_data['STOCHRSId_14_14_3_3']
 
     # VWAP (Günlük VWAP için pandas_ta'da doğrudan bir fonksiyon yok, manuel tutalım)
     # Ancak, app.py'deki prediction kısmında da VWAP kullanılıyor.
@@ -136,6 +150,26 @@ def calculate_indicators(veri):
     veri["atrr_14"] = (veri["atr_14"] / veri["close"]) * 100
 
     return veri
+
+
+def convert_dataframe_for_streamlit(df):
+    """
+    Converts Timedelta columns and TimedeltaIndex in a DataFrame
+    to a format compatible with Streamlit's Arrow serialization.
+    """
+    if df is None:
+        return df
+
+    # Convert Timedelta columns to total seconds
+    for col in df.columns:
+        if pd.api.types.is_timedelta64_dtype(df[col]):
+            df[col] = df[col].dt.total_seconds()
+
+    # Convert TimedeltaIndex to string
+    if isinstance(df.index, pd.TimedeltaIndex):
+        df.index = df.index.astype(str)
+
+    return df
 
 
 @st.cache_data

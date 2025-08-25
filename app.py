@@ -7,8 +7,9 @@ from helpers.data_handler import (
     get_fundamental_data as get_fundamental_data_native,
     filter_data_by_date,
     calculate_indicators,
+    convert_dataframe_for_streamlit,
 )
-from helpers.plotter import plot_analysis_plotly, plot_financial_trends
+from helpers.plotter import plot_candlestick_chart, plot_financial_trends
 from helpers.ui_components import (
     generate_technical_summary,
     generate_fundamental_summary,
@@ -45,9 +46,9 @@ def get_fundamental_data(hisse_kodu):
 def convert_df_to_csv(df):
     return df.to_csv().encode("utf-8")
 
-def display_technical_analysis(veri, hisse_kodu_yf, interval_display, selected_indicators, show_support_resistance):
+def     display_technical_analysis(veri, hisse_kodu_yf, interval_display, selected_indicators, show_support_resistance, show_fibonacci):
     st.header(f"{hisse_kodu_yf} - Teknik Grafik")
-    plotly_fig = plot_analysis_plotly(veri, hisse_kodu_yf, interval_display, "Detaylı", selected_indicators, show_support_resistance)
+    plotly_fig = plot_candlestick_chart(veri, hisse_kodu_yf, interval_display, "Detaylı", selected_indicators, show_support_resistance, show_fibonacci=show_fibonacci)
     st.plotly_chart(plotly_fig, use_container_width=True)
     csv = convert_df_to_csv(veri)
     st.download_button("📥 Veriyi CSV Olarak İndir", csv, f"{hisse_kodu_yf}_{interval_display}_data.csv", "text/csv")
@@ -66,13 +67,15 @@ def display_fundamental_analysis(hisse_kodu_yf):
             _, key_info_text = generate_fundamental_summary(info, as_markdown=False)
             st.text(key_info_text)
         with ratios_tab:
-            st.dataframe(display_financial_ratios(info, financials, balance_sheet).style.format("{:.2f}"))
+            ratios_df = display_financial_ratios(info, financials, balance_sheet)
+            ratios_df = convert_dataframe_for_streamlit(ratios_df)
+            st.dataframe(ratios_df.style.format("{:.2f}"))
         with charts_tab:
             st.plotly_chart(plot_financial_trends(financials, cashflow), use_container_width=True)
         with statements_tab:
-            st.subheader("Gelir Tablosu"); st.dataframe(financials)
-            st.subheader("Bilanço"); st.dataframe(balance_sheet)
-            st.subheader("Nakit Akış Tablosu"); st.dataframe(cashflow)
+            st.subheader("Gelir Tablosu"); financials = convert_dataframe_for_streamlit(financials); st.dataframe(financials)
+            st.subheader("Bilanço"); balance_sheet = convert_dataframe_for_streamlit(balance_sheet); st.dataframe(balance_sheet)
+            st.subheader("Nakit Akış Tablosu"); cashflow = convert_dataframe_for_streamlit(cashflow); st.dataframe(cashflow)
     else:
         st.warning("Temel veriler alınamadı.")
 
@@ -108,11 +111,11 @@ def display_backtesting(veri, hisse_kodu_yf):
                     backtest_data = veri[['open', 'high', 'low', 'close', 'volume']].copy()
                     if test_mode == "Tekli Test":
                         stats, plot_fig = run_backtest(selected_strategy_class, backtest_data, initial_cash, commission, **params)
-                        st.subheader("Performans Sonuçları"); st.dataframe(stats)
+                        st.subheader("Performans Sonuçları"); stats_df = stats.to_frame(name='Value'); st.dataframe(stats_df)
                         st.subheader("İşlem Grafiği"); st.bokeh_chart(plot_fig, use_container_width=True)
                     else:
                         stats, best_strategy = optimize_strategy(selected_strategy_class, backtest_data, initial_cash, commission, **params)
-                        st.subheader("Optimizasyon Sonuçları"); st.dataframe(stats)
+                        st.subheader("Optimizasyon Sonuçları"); stats = convert_dataframe_for_streamlit(stats); st.dataframe(stats)
                         st.subheader("En İyi Strateji Parametreleri"); st.write(best_strategy)
                 except Exception as e:
                     st.error(f"{test_mode} sırasında bir hata oluştu: {e}")
@@ -136,6 +139,7 @@ def analyzer_main_page():
     available_indicators = ["EMA (8, 13, 21)", "Bollinger Bantları", "VWAP", "Ichimoku Cloud", "RSI", "StochRSI", "MACD", "ADX", "OBV"]
     selected_indicators = st.sidebar.multiselect("Göstergeler:", available_indicators, default=available_indicators)
     show_support_resistance = st.sidebar.checkbox("Destek/Direnç Göster", value=True)
+    show_fibonacci = st.sidebar.checkbox("Fibonacci Geri Çekilme Seviyeleri Göster", value=False)
 
     if st.sidebar.button("Analiz Et", use_container_width=True, type="primary"):
         if start_date > end_date:
@@ -148,6 +152,7 @@ def analyzer_main_page():
             st.session_state.interval_display = interval_display
             st.session_state.selected_indicators = selected_indicators
             st.session_state.show_support_resistance = show_support_resistance
+            st.session_state.show_fibonacci = show_fibonacci
             st.rerun()
 
     if st.session_state.get('analysis_requested', False):
@@ -165,7 +170,7 @@ def analyzer_main_page():
                 st.success(f"{hisse_kodu_yf} analizi tamamlandı.")
                 ana_tab, temel_tab, backtest_tab = st.tabs(["📈 Teknik Analiz", "🏢 Temel Analiz", "🧪 Strateji Testi"])
                 with ana_tab:
-                    display_technical_analysis(veri_filtrelenmis, hisse_kodu_yf, st.session_state.interval_display, st.session_state.selected_indicators, st.session_state.show_support_resistance)
+                    display_technical_analysis(veri_filtrelenmis, hisse_kodu_yf, st.session_state.interval_display, st.session_state.selected_indicators, st.session_state.show_support_resistance, st.session_state.show_fibonacci)
                 with temel_tab:
                     display_fundamental_analysis(hisse_kodu_yf)
                 with backtest_tab:
@@ -210,6 +215,7 @@ def portfolio_manager_page():
     display_df["Maliyet"] = display_df["miktar"] * display_df["alis_fiyati"]
     display_df["Güncel Değer"] = display_df["miktar"] * display_df["Güncel Fiyat"]
     display_df["Kar/Zarar"] = display_df["Güncel Değer"] - display_df["Maliyet"]
+    display_df = convert_dataframe_for_streamlit(display_df)
     st.dataframe(display_df.style.format(precision=2))
 
     total_value = display_df["Güncel Değer"].sum()
