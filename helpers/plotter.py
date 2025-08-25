@@ -438,6 +438,47 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
         except Exception as e:
             logging.warning(f"Fibonacci seviyeleri hesaplanırken bir hata oluştu: {e}")
 
+    # Golden Cross ve Death Cross işaretleri
+    if "Golden/Death Cross" in selected_indicators:
+        golden_cross_data = veri[veri['golden_cross']]
+        death_cross_data = veri[veri['death_cross']]
+
+        if not golden_cross_data.empty:
+            fig.add_trace(
+                go.Scatter(
+                    x=golden_cross_data.index,
+                    y=golden_cross_data['ema_50'], # veya 'close'
+                    mode='markers+text',
+                    marker=dict(symbol='triangle-up', size=15, color='green'),
+                    text=['GC'] * len(golden_cross_data), # Kısa etiket
+                    textposition='top center',
+                    name='Golden Cross',
+                    showlegend=True
+                ),
+                row=1, col=1
+            )
+            # Dikey çizgiler
+            for date in golden_cross_data.index:
+                fig.add_vline(x=date, line_width=1, line_dash="dash", line_color="green", row=1, col=1)
+
+        if not death_cross_data.empty:
+            fig.add_trace(
+                go.Scatter(
+                    x=death_cross_data.index,
+                    y=death_cross_data['ema_50'], # veya 'close'
+                    mode='markers+text',
+                    marker=dict(symbol='triangle-down', size=15, color='red'),
+                    text=['DC'] * len(death_cross_data), # Kısa etiket
+                    textposition='bottom center',
+                    name='Death Cross',
+                    showlegend=True
+                ),
+                row=1, col=1
+            )
+            # Dikey çizgiler
+            for date in death_cross_data.index:
+                fig.add_vline(x=date, line_width=1, line_dash="dash", line_color="red", row=1, col=1)
+
     fig.update_layout(
         title=f"{hisse_kodu} Teknik Analiz ({interval_display} - {analysis_type})",
         height=250 * rows,  # Yüksekliği dinamik yap

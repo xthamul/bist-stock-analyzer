@@ -145,6 +145,27 @@ def calculate_indicators(veri):
     # Bu hesaplama, sütun adları küçük harfe çevrildikten sonra yapılmalı
     veri["atrr_14"] = (veri["atr_14"] / veri["close"]) * 100
 
+    # Golden Cross ve Death Cross
+    # Golden Cross: Kısa vadeli EMA (örn. EMA 50) uzun vadeli EMA'yı (örn. EMA 200) yukarı doğru kestiğinde
+    # Death Cross: Kısa vadeli EMA (örn. EMA 50) uzun vadeli EMA'yı (örn. EMA 200) aşağı doğru kestiğinde
+
+    # Kesişimleri bulmak için shift() kullanacağız
+    veri['ema_50_prev'] = veri['ema_50'].shift(1)
+    veri['ema_200_prev'] = veri['ema_200'].shift(1)
+
+    # Golden Cross sinyali: ema_50, ema_200'ü aşağıdan yukarıya keserse
+    veri['golden_cross'] = ((veri['ema_50_prev'] < veri['ema_200_prev']) &
+                            (veri['ema_50'] > veri['ema_200']))
+
+    # Death Cross sinyali: ema_50, ema_200'ü yukarıdan aşağıya keserse
+    veri['death_cross'] = ((veri['ema_50_prev'] > veri['ema_200_prev']) &
+                           (veri['ema_50'] < veri['ema_200']))
+
+    # Geçici sütunları kaldır
+    veri = veri.drop(columns=['ema_50_prev', 'ema_200_prev'])
+
+    # Son satırları temizle (göstergeler için yeterli veri olmayan satırlar)
+    veri = veri.dropna()
     return veri
 
 
