@@ -71,24 +71,24 @@ def calculate_indicators(veri):
     # Zaten get_stock_data içinde küçük harfe çevriliyor.
 
     # EMA'lar
-    veri['ema_5'] = veri.ta.ema(close=veri['close'], length=5)
-    veri['ema_8'] = veri.ta.ema(close=veri['close'], length=8)
-    veri['ema_20'] = veri.ta.ema(close=veri['close'], length=20)
-    veri['ema_50'] = veri.ta.ema(close=veri['close'], length=50)
-    veri['ema_100'] = veri.ta.ema(close=veri['close'], length=100)
-    veri['ema_200'] = veri.ta.ema(close=veri['close'], length=200)
+    veri['ema_5'] = ta.ema(close=veri['close'], length=5)
+    veri['ema_8'] = ta.ema(close=veri['close'], length=8)
+    veri['ema_20'] = ta.ema(close=veri['close'], length=20)
+    veri['ema_50'] = ta.ema(close=veri['close'], length=50)
+    veri['ema_100'] = ta.ema(close=veri['close'], length=100)
+    veri['ema_200'] = ta.ema(close=veri['close'], length=200)
 
     # Bollinger Bantları
-    bbands = veri.ta.bbands(close=veri['close'], length=20)
-    veri['bbl_20_2'] = bbands['BBL_20_2']
-    veri['bbm_20_2'] = bbands['BBM_20_2']
-    veri['bbu_20_2'] = bbands['BBU_20_2']
+    bbands = ta.bbands(close=veri['close'], length=20)
+    veri['bbl_20_2'] = bbands['BBL_20_2.0']
+    veri['bbm_20_2'] = bbands['BBM_20_2.0']
+    veri['bbu_20_2'] = bbands['BBU_20_2.0']
 
     # RSI
-    veri['rsi_14'] = veri.ta.rsi(close=veri['close'], length=14)
+    veri['rsi_14'] = ta.rsi(close=veri['close'], length=14)
 
     # MACD
-    macd_data = veri.ta.macd(close=veri['close'])
+    macd_data = ta.macd(close=veri['close'])
     veri['macd'] = macd_data['MACD_12_26_9']
     veri['macdh'] = macd_data['MACDH_12_26_9']
     veri['macds'] = macd_data['MACDS_12_26_9']
@@ -103,16 +103,16 @@ def calculate_indicators(veri):
     veri["ATR_14"] = tr.ewm(span=14, adjust=False).mean()
 
     # ADX
-    adx_data = veri.ta.adx(high=veri['high'], low=veri['low'], close=veri['close'], length=14)
+    adx_data = ta.adx(high=veri['high'], low=veri['low'], close=veri['close'], length=14)
     veri['adx_14'] = adx_data['ADX_14']
     veri['dmp_14'] = adx_data['DMP_14']
     veri['dmn_14'] = adx_data['DMN_14']
 
     # OBV
-    veri['obv'] = veri.ta.obv(close=veri['close'], volume=veri['volume'])
+    veri['obv'] = ta.obv(close=veri['close'], volume=veri['volume'])
 
     # StochRSI
-    stochrsi_data = veri.ta.stochrsi(close=veri['close'])
+    stochrsi_data = ta.stochrsi(close=veri['close'])
     veri['stochrsi_k'] = stochrsi_data['STOCHRSIk_14_14_3_3']
     veri['stochrsi_d'] = stochrsi_data['STOCHRSId_14_14_3_3']
 
