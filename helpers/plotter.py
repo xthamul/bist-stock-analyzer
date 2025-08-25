@@ -7,17 +7,9 @@ from scipy.signal import find_peaks
 import logging
 
 
-def plot_analysis_plotly(
-    veri,
-    hisse_kodu,
-    interval_display,
-    analysis_type,
-    selected_indicators=None,
-    show_support_resistance=False,
-):
+def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, selected_indicators, show_support_resistance, show_fibonacci=False):
     """Ana teknik analiz grafiğini oluşturur."""
-    if selected_indicators is None:
-        selected_indicators = []
+    
 
     # Göstergelerin hangi alt grafiğe ait olduğunu ve başlıklarını tanımla
     indicator_subplot_map = {
@@ -111,12 +103,14 @@ def plot_analysis_plotly(
 
     else:  # Detaylı
         # Fiyat paneli göstergeleri (her zaman ana panelde)
-        if "EMA (8, 13, 21)" in selected_indicators:
+        
+
+        if "EMA (5, 20, 50, 200)" in selected_indicators:
             fig.add_trace(
                 go.Scatter(
                     x=veri.index,
-                    y=veri["ema_8"],
-                    name="EMA 8",
+                    y=veri["ema_5"],
+                    name="EMA 5",
                     line=dict(color="blue", width=1),
                 ),
                 row=1,
@@ -125,8 +119,8 @@ def plot_analysis_plotly(
             fig.add_trace(
                 go.Scatter(
                     x=veri.index,
-                    y=veri["ema_13"],
-                    name="EMA 13",
+                    y=veri["ema_20"],
+                    name="EMA 20",
                     line=dict(color="purple", width=1),
                 ),
                 row=1,
@@ -135,9 +129,19 @@ def plot_analysis_plotly(
             fig.add_trace(
                 go.Scatter(
                     x=veri.index,
-                    y=veri["ema_21"],
-                    name="EMA 21",
+                    y=veri["ema_50"],
+                    name="EMA 50",
                     line=dict(color="orange", width=1),
+                ),
+                row=1,
+                col=1,
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=veri.index,
+                    y=veri["ema_200"],
+                    name="EMA 200",
+                    line=dict(color="red", width=1),
                 ),
                 row=1,
                 col=1,
@@ -356,7 +360,7 @@ def plot_analysis_plotly(
             fig.add_trace(
                 go.Scatter(
                     x=veri.index[peak_indices],
-                    y=veri["high"][peak_indices],
+                    y=veri["high"].iloc[peak_indices],
                     mode="markers",
                     marker=dict(symbol="triangle-down", color="red", size=10),
                     name="Tepe",
@@ -365,7 +369,7 @@ def plot_analysis_plotly(
             fig.add_trace(
                 go.Scatter(
                     x=veri.index[trough_indices],
-                    y=veri["low"][trough_indices],
+                    y=veri["low"].iloc[trough_indices],
                     mode="markers",
                     marker=dict(symbol="triangle-up", color="green", size=10),
                     name="Dip",
@@ -403,6 +407,36 @@ def plot_analysis_plotly(
             logging.warning(
                 f"Destek/Direnç seviyeleri hesaplanırken bir hata oluştu: {e}"
             )
+
+    # Fibonacci Geri Çekilme Seviyeleri
+    if show_fibonacci:
+        try:
+            max_price = veri['high'].max()
+            min_price = veri['low'].min()
+            diff = max_price - min_price
+
+            fib_levels = {
+                "0%": max_price,
+                "23.6%": max_price - 0.236 * diff,
+                "38.2%": max_price - 0.382 * diff,
+                "50%": max_price - 0.5 * diff,
+                "61.8%": max_price - 0.618 * diff,
+                "78.6%": max_price - 0.786 * diff,
+                "100%": min_price,
+            }
+
+            colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+            for i, (level_name, level_value) in enumerate(fib_levels.items()):
+                fig.add_hline(
+                    y=level_value,
+                    line_dash="dot",
+                    line_color=colors[i % len(colors)],
+                    annotation_text=f"Fib {level_name} ({level_value:.2f})",
+                    annotation_position="top right",
+                    row=1, col=1
+                )
+        except Exception as e:
+            logging.warning(f"Fibonacci seviyeleri hesaplanırken bir hata oluştu: {e}")
 
     fig.update_layout(
         title=f"{hisse_kodu} Teknik Analiz ({interval_display} - {analysis_type})",
@@ -482,9 +516,10 @@ def plot_analysis_mpl(veri, hisse_kodu, interval_display, analysis_type):
         apds.extend(
             [
                 # Panel 0: Fiyat ve Ortalamalar
-                mpf.make_addplot(veri["EMA_8"], color="#007bff", panel=0),
-                mpf.make_addplot(veri["EMA_13"], color="#6f42c1", panel=0),
-                mpf.make_addplot(veri["EMA_21"], color="#fd7e14", panel=0),
+                mpf.make_addplot(veri["ema_5"], color="#007bff", panel=0),
+                mpf.make_addplot(veri["ema_20"], color="#6f42c1", panel=0),
+                mpf.make_addplot(veri["ema_50"], color="#fd7e14", panel=0),
+                mpf.make_addplot(veri["ema_200"], color="#ff00ff", panel=0),
                 mpf.make_addplot(
                     veri["BBL_20_2.0"], color="#28a745", linestyle="--", panel=0
                 ),

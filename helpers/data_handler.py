@@ -1,3 +1,4 @@
+import pandas_ta as ta
 import yfinance as yf
 import pandas as pd
 import time
@@ -72,10 +73,8 @@ def calculate_indicators(veri):
 
     # EMA'lar
     veri['ema_5'] = ta.ema(close=veri['close'], length=5)
-    veri['ema_8'] = ta.ema(close=veri['close'], length=8)
     veri['ema_20'] = ta.ema(close=veri['close'], length=20)
     veri['ema_50'] = ta.ema(close=veri['close'], length=50)
-    veri['ema_100'] = ta.ema(close=veri['close'], length=100)
     veri['ema_200'] = ta.ema(close=veri['close'], length=200)
 
     # Bollinger Bantları
@@ -88,10 +87,7 @@ def calculate_indicators(veri):
     veri['rsi_14'] = ta.rsi(close=veri['close'], length=14)
 
     # MACD
-    macd_data = ta.macd(close=veri['close'])
-    veri['macd'] = macd_data['MACD_12_26_9']
-    veri['macdh'] = macd_data['MACDH_12_26_9']
-    veri['macds'] = macd_data['MACDS_12_26_9']
+    ta.macd(close=veri['close'], append=True)
 
     # ATR
     high_low = veri["high"] - veri["low"]

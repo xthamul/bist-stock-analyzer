@@ -53,6 +53,10 @@ def run_backtest(strategy_class, data, cash=100000, commission=0.002, **strategy
     daily_data = _prepare_data_for_backtesting(data)
     bt = Backtest(daily_data, strategy_class, cash=cash, commission=commission)
     stats = bt.run(**strategy_params)
+    if pd.api.types.is_timedelta64_dtype(stats):
+        stats = stats.apply(lambda x: x.total_seconds())
+    if isinstance(stats.index, pd.TimedeltaIndex):
+        stats.index = stats.index.astype(str)
     return stats, bt.plot(open_browser=False)
 
 def optimize_strategy(strategy_class, data, cash=100000, commission=0.002, **optimization_params):
@@ -60,4 +64,15 @@ def optimize_strategy(strategy_class, data, cash=100000, commission=0.002, **opt
     daily_data = _prepare_data_for_backtesting(data)
     bt = Backtest(daily_data, strategy_class, cash=cash, commission=commission)
     stats = bt.optimize(**optimization_params, maximize='Equity Final [$]')
+    if isinstance(stats, pd.Series):
+        if pd.api.types.is_timedelta64_dtype(stats):
+            stats = stats.apply(lambda x: x.total_seconds())
+        if isinstance(stats.index, pd.TimedeltaIndex):
+            stats.index = stats.index.astype(str)
+    elif isinstance(stats, pd.DataFrame):
+        for col in stats.columns:
+            if pd.api.types.is_timedelta64_dtype(stats[col]):
+                stats[col] = stats[col].dt.total_seconds()
+        if isinstance(stats.index, pd.TimedeltaIndex):
+            stats.index = stats.index.astype(str)
     return stats, stats._strategy

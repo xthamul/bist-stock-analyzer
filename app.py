@@ -136,7 +136,7 @@ def analyzer_main_page():
     start_date = st.sidebar.date_input('Başlangıç Tarihi', today - timedelta(days=365))
     end_date = st.sidebar.date_input('Bitiş Tarihi', today)
     interval_display = st.sidebar.selectbox("Zaman Aralığı:", list(ZAMAN_ARALIKLARI.keys()), index=3)
-    available_indicators = ["EMA (8, 13, 21)", "Bollinger Bantları", "VWAP", "Ichimoku Cloud", "RSI", "StochRSI", "MACD", "ADX", "OBV"]
+    available_indicators = ["EMA (5, 20, 50, 200)", "Bollinger Bantları", "VWAP", "Ichimoku Cloud", "RSI", "StochRSI", "MACD", "ADX", "OBV"]
     selected_indicators = st.sidebar.multiselect("Göstergeler:", available_indicators, default=available_indicators)
     show_support_resistance = st.sidebar.checkbox("Destek/Direnç Göster", value=True)
     show_fibonacci = st.sidebar.checkbox("Fibonacci Geri Çekilme Seviyeleri Göster", value=False)
