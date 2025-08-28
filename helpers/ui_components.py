@@ -312,3 +312,41 @@ def display_financial_ratios(info, financials, balance_sheet):
     df_ratios = pd.DataFrame.from_dict(ratios, orient="index", columns=["Değer"])
     df_ratios.index.name = "Oran"
     return df_ratios
+
+def display_sector_comparison(company_ratios, sector_averages):
+    """
+    Creates a DataFrame to compare a company's ratios with sector averages.
+    """
+    if sector_averages is None or sector_averages.empty:
+        return None
+
+    # Create a DataFrame from the company's ratios Series
+    company_df = company_ratios.to_frame(name='Şirket Değeri')
+
+    # Create a DataFrame for the comparison
+    comparison_df = pd.DataFrame(index=sector_averages.index)
+    comparison_df['Sektör Ortalaması'] = sector_averages
+    comparison_df['Şirket Değeri'] = company_df['Şirket Değeri']
+
+    # Drop rows where both values are NaN and format the display
+    comparison_df.dropna(how='all', inplace=True)
+    
+    # Highlight differences
+    def highlight_diff(row):
+        style = [''] * len(row)
+        if pd.notna(row['Şirket Değeri']) and pd.notna(row['Sektör Ortalaması']):
+            # For ratios where lower is better (like P/E, P/B), highlight green if company is lower
+            if any(metric in row.name for metric in ['F/K', 'PD/DD', 'Borç/Özkaynak']):
+                if row['Şirket Değeri'] < row['Sektör Ortalaması']:
+                    style[0] = 'background-color: #2a5c2a' # Green
+                else:
+                    style[0] = 'background-color: #6e2b2b' # Red
+            # For ratios where higher is better (like margins, ROE), highlight green if company is higher
+            elif any(metric in row.name for metric in ['Marjı', 'ROE']):
+                 if row['Şirket Değeri'] > row['Sektör Ortalaması']:
+                    style[0] = 'background-color: #2a5c2a' # Green
+                 else:
+                    style[0] = 'background-color: #6e2b2b' # Red
+        return style
+
+    return comparison_df.style.apply(highlight_diff, axis=1).format("{:.2f}")

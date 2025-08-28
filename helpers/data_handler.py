@@ -79,15 +79,20 @@ def calculate_indicators(veri):
 
     # Bollinger Bantları
     bbands = ta.bbands(close=veri['close'], length=20)
-    veri['bbl_20_2'] = bbands['BBL_20_2.0']
-    veri['bbm_20_2'] = bbands['BBM_20_2.0']
-    veri['bbu_20_2'] = bbands['BBU_20_2.0']
+    veri['BBL_20_2.0'] = bbands['BBL_20_2.0']
+    veri['BBM_20_2.0'] = bbands['BBM_20_2.0']
+    veri['BBU_20_2.0'] = bbands['BBU_20_2.0']
 
     # RSI
     veri['rsi_14'] = ta.rsi(close=veri['close'], length=14)
 
     # MACD
-    ta.macd(close=veri['close'], append=True)
+    # MACD
+    # MACD
+    macd_data = ta.macd(close=veri['close'])
+    veri['macd_12_26_9'] = macd_data['MACD_12_26_9']
+    veri['macdh_12_26_9'] = macd_data['MACDh_12_26_9']
+    veri['macds_12_26_9'] = macd_data['MACDs_12_26_9']
 
     # ATR
     high_low = veri["high"] - veri["low"]
@@ -109,8 +114,8 @@ def calculate_indicators(veri):
 
     # StochRSI
     stochrsi_data = ta.stochrsi(close=veri['close'])
-    veri['stochrsi_k'] = stochrsi_data['STOCHRSIk_14_14_3_3']
-    veri['stochrsi_d'] = stochrsi_data['STOCHRSId_14_14_3_3']
+    veri['STOCHRSIk_14_14_3_3'] = stochrsi_data['STOCHRSIk_14_14_3_3']
+    veri['STOCHRSId_14_14_3_3'] = stochrsi_data['STOCHRSId_14_14_3_3']
 
     # VWAP (Günlük VWAP için pandas_ta'da doğrudan bir fonksiyon yok, manuel tutalım)
     # Ancak, app.py'deki prediction kısmında da VWAP kullanılıyor.
@@ -189,25 +194,32 @@ def convert_dataframe_for_streamlit(df):
     return df
 
 
-@st.cache_data
+@st.cache_data(ttl=86400) # Cache for a day
 def get_fundamental_data(hisse_kodu, retries=3, delay=5):
     """Hisse senedi için temel verileri ve finansal tabloları çeker."""
     for i in range(retries):
         try:
             stock = yf.Ticker(hisse_kodu)
             info = stock.info
-            if not info:
+            if not info or info.get('quoteType') != 'EQUITY':
                 raise DataFetchError(
-                    f"{hisse_kodu} için temel veri bilgisi (info) alınamadı."
+                    f"{hisse_kodu} için temel veri bilgisi (info) alınamadı veya hisse senedi değil."
                 )
+            
+            # Fetch all data points
             financials = stock.financials
             balance_sheet = stock.balance_sheet
             cashflow = stock.cashflow
+            dividends = stock.dividends
+            actions = stock.actions
+
             return {
                 "info": info,
                 "financials": financials,
                 "balance_sheet": balance_sheet,
                 "cashflow": cashflow,
+                "dividends": dividends,
+                "actions": actions,
             }
         except Exception as e:
             print(
@@ -272,3 +284,54 @@ def get_sector_peers(hisse_kodu, retries=3, delay=2):
                 time.sleep(delay)
     print(f"Sektör verileri {hisse_kodu} için tüm denemelerden sonra çekilemedi.")
     return None, None
+
+
+@st.cache_data(ttl=86400) # Cache for a day
+def get_sector_comparison_data(hisse_kodu):
+    """Fetches key ratios for sector peers and calculates the average."""
+    sector, peers = get_sector_peers(hisse_kodu)
+    if not sector or not peers:
+        return sector, None
+
+    peer_ratios = []
+    # Limit the number of peers to avoid very long loading times
+    peers_to_process = peers[:15] 
+    
+    progress_bar = st.progress(0, text=f"{sector} sektörü için benzer şirket verileri toplanıyor...")
+
+    for i, peer_ticker in enumerate(peers_to_process):
+        try:
+            peer_info = yf.Ticker(f"{peer_ticker}.IS").info
+            # Extract ratios that are commonly available in the info dict
+            ratios = {
+                'Hisse': peer_ticker,
+                'F/K': peer_info.get('trailingPE'),
+                'PD/DD': peer_info.get('priceToBook'),
+                'Kâr Marjı': peer_info.get('profitMargins'),
+                'FAVÖK Marjı': peer_info.get('ebitdaMargins'),
+                'Borç/Özkaynak': peer_info.get('debtToEquity'),
+            }
+            peer_ratios.append(ratios)
+            time.sleep(0.1) # Be polite to the API
+        except Exception as e:
+            print(f"Could not fetch data for peer {peer_ticker}: {e}")
+        finally:
+            progress_bar.progress((i + 1) / len(peers_to_process), text=f"{peer_ticker} verisi işlendi...")
+
+    progress_bar.empty() # Clean up the progress bar
+
+    if not peer_ratios:
+        return sector, None
+
+    df = pd.DataFrame(peer_ratios).set_index('Hisse')
+    # Convert all columns to numeric, coercing errors
+    for col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
+    
+    # Drop rows where all ratio values are NaN
+    df.dropna(how='all', inplace=True)
+
+    if df.empty:
+        return sector, None
+
+    return sector, df.mean()

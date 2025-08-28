@@ -1,0 +1,72 @@
+# Yapılacaklar Listesi
+
+Bu liste, BIST Hisse Senedi Analiz Platformu'nun geliştirilmesi için önerilen özellikleri ve iyileştirmeleri içermektedir.
+
+**I. Temel İşlevsellik ve Veri:**
+1.  Daha Fazla Veri Kaynağı: Gerçek zamanlı veriler, daha fazla geçmiş veri veya alternatif veriler için daha fazla veri sağlayıcıyla entegrasyon.
+2.  Temel Veri Genişletme:
+    *   Daha ayrıntılı finansal tablolar (üç aylık/yıllık raporlar).
+    *   Sektör karşılaştırmaları.
+    *   Analist derecelendirmeleri ve tahminleri.
+    *   Haber ve duygu analizi.
+3.  Teknik Göstergeler Genişletme: Daha geniş bir teknik gösterge yelpazesi ekleme (örn. Fibonacci geri çekilmeleri, Gann açıları, daha fazla hacim göstergesi).
+4.  Gerçek Zamanlı Veri ve Uyarılar:
+    *   Gerçek zamanlı hisse senedi fiyatlarını yayınlama.
+    *   Fiyat uyarıları veya gösterge tabanlı uyarılar ayarlama.
+    *   Ekonomik Takvim Entegrasyonu: Piyasayı etkileyebilecek ilgili ekonomik olayları gösterme.
+
+**II. Geri Test ve Strateji Geliştirme:**
+1.  Gelişmiş Geri Test Özellikleri:
+    *   İleriye dönük optimizasyon (walk-forward optimization).
+    *   Monte Carlo simülasyonları için sağlamlık testi.
+    *   Kayma ve komisyon modellemesi.
+    *   Tek bir geri testte birden fazla varlık için destek (portföy geri testi).
+2.  Strateji Oluşturucu Kullanıcı Arayüzü: Kullanıcıların kod yazmadan kendi stratejilerini oluşturmaları ve birleştirmeleri için daha sezgisel bir kullanıcı arayüzü.
+3.  Hazır Stratejiler: Bilinen ticaret stratejilerinden oluşan bir kütüphane sunma.
+4.  Performans Metrikleri: Daha ayrıntılı performans metrikleri (örn. maksimum düşüş, Sharpe oranı, Sortino oranı, Calmar oranı).
+
+**III. Makine Öğrenimi ve Tahmin:**
+1.  Daha Gelişmiş ML Modelleri: Zaman serisi tahmini için derin öğrenme modellerini (LSTM'ler, Transformer'lar) keşfetme.
+2.  Özellik Mühendisliği Otomasyonu: ML modelleri için ilgili özellikleri otomatik olarak oluşturma ve seçme.
+3.  Topluluk Modelleri (Ensemble Models): Potansiyel olarak daha iyi tahminler için birden fazla ML modelini birleştirme.
+4.  Açıklanabilir Yapay Zeka (XAI): ML modelinin neden belirli bir tahmin yaptığını gösteren içgörüler sağlama (örn. belirli tahminler için özellik önemi).
+5.  Duygu Analizi Entegrasyonu: Haber ve sosyal medya duyarlılığını tahmin modelleri için özellik olarak kullanma.
+
+**IV. Portföy Yönetimi:**
+1.  İşlem Geçmişi ve Raporlama: Tüm işlemler, kar/zarar ve zaman içindeki portföy performansı hakkında ayrıntılı raporlar.
+2.  Portföy Yeniden Dengeleme: Kullanıcıların hedef tahsislerine göre portföylerini yeniden dengeleme araçları.
+3.  Risk Yönetimi:
+    *   Riske Maruz Değer (VaR) hesaplamaları.
+    *   Zarar durdurma ve kar alma takibi.
+4.  Çeşitlendirme Analizi: Sektörler, coğrafyalar vb. arasında portföy çeşitlendirmesini analiz etmek için araçlar.
+5.  Aracı Kurumlarla Entegrasyon: (Gelişmiş ve karmaşık) Kullanıcıların doğrudan ticaret veya portföy senkronizasyonu için aracı kurum hesaplarını bağlamalarına izin verme.
+
+**V. Kullanıcı Deneyimi (UX) ve Arayüz:**
+1.  Özelleştirilebilir Panolar: Kullanıcıların pano düzenlerini ve widget'larını özelleştirmelerine izin verme.
+2.  Geliştirilmiş Görselleştirmeler: Daha etkileşimli ve özelleştirilebilir grafikler (örn. ısı haritaları, ağaç haritaları).
+3.  Kullanıcı Hesapları ve Kaydetme: Kullanıcıların hesap oluşturmasına, analizlerini, portföylerini ve özel stratejilerini kaydetmelerine izin verme.
+4.  Duyarlı Tasarım: Uygulamanın farklı cihazlarda tamamen duyarlı olmasını sağlama.
+5.  Eğitimler ve İlk Kullanım Rehberliği: Yeni kullanıcılar için rehberli turlar ve açıklamalar sağlama.
+
+**VI. Dağıtım ve Ölçeklenebilirlik:**
+1.  Bulut Dağıtımı: Daha iyi ölçeklenebilirlik ve erişilebilirlik için uygulamayı bir bulut platformuna (AWS, Azure, GCP) dağıtma.
+2.  Veritabanı Optimizasyonu: Daha büyük veri kümeleri için daha sağlam veritabanı çözümlerini (örn. PostgreSQL, InfluxDB gibi zaman serisi veritabanları) değerlendirme.
+3.  API Uç Noktaları: Harici entegrasyon için belirli işlevleri API'ler olarak sunma.
+4. Konteynerleştirme: Uygulamayı Docker kullanarak konteynerleştirmek, dağıtımı ve yönetimi kolaylaştırır.
+5. Mikroservis Mimarisi: Büyük ve karmaşık işlevleri daha küçük, bağımsız hizmetlere bölmek, ölçeklenebilirliği ve bakımı artırır.
+6. Yük Dengeleme: Yüksek trafik durumlarında performansı artırmak için yük dengeleyiciler kullanma.
+
+**VII. Güvenlik ve Bakım:**
+1. Kullanıcı Kimlik Doğrulama ve Yetkilendirme: Güvenli kullanıcı girişi ve farklı yetkilendirme seviyeleri (örn. yönetici, standart kullanıcı).
+2. Veri Şifreleme: Hassas verileri hem aktarım sırasında hem de depolama sırasında şifreleme.
+3. Güvenlik Denetimleri: Düzenli güvenlik açığı taramaları ve sızma testleri.
+4. Hata Günlüğü ve İzleme: Uygulama hatalarını ve performans sorunlarını izlemek için kapsamlı günlük kaydı ve izleme sistemleri.
+5. Yedekleme ve Kurtarma: Veri kaybını önlemek için düzenli veri yedeklemeleri ve felaket kurtarma planları.
+6. Güncellemeler ve Bakım: Bağımlılıkları ve sistem bileşenlerini düzenli olarak güncelleme.
+
+**VIII. Geliştirme Ortamı ve Süreçleri:**
+1. Sürüm Kontrolü: Git ve GitHub/GitLab gibi platformlar kullanarak kod tabanını yönetme.
+2. Sürekli Entegrasyon/Sürekli Dağıtım (CI/CD): Otomatik testler ve dağıtım süreçleri kurma.
+3. Kod Kalitesi: Statik kod analizi araçları (örn. SonarQube, Pylint) ve kod inceleme süreçleri uygulama.
+4. Dokümantasyon: API dokümantasyonu, kullanıcı kılavuzları ve geliştirici dokümantasyonu oluşturma.
+5. Test Otomasyonu: Birim testleri, entegrasyon testleri ve uçtan uca testler için otomatik test çerçeveleri kullanma.

@@ -105,7 +105,7 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
         # Fiyat paneli göstergeleri (her zaman ana panelde)
         
 
-        if "EMA (5, 20, 50, 200)" in selected_indicators:
+        if "EMA KISA (5, 20)" in selected_indicators:
             fig.add_trace(
                 go.Scatter(
                     x=veri.index,
@@ -126,6 +126,8 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
                 row=1,
                 col=1,
             )
+
+        if "EMA UZUN (50, 200)" in selected_indicators:
             fig.add_trace(
                 go.Scatter(
                     x=veri.index,
@@ -760,5 +762,172 @@ def plot_prediction_results(test_results, close_prices):
         height=600,
         template="plotly_dark",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_backtesting_results(equity_curve, signals, data, strategy_name, initial_cash):
+    """Backtesting sonuçlarını görselleştiren bir grafik oluşturur."""
+    fig = make_subplots(
+        rows=2,
+        cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.05,
+        row_heights=[0.7, 0.3],
+        subplot_titles=(
+            f"{strategy_name} Stratejisi - Varlık Eğrisi ve İşlemler",
+            "Sinyaller",
+        ),
+    )
+
+    # Panel 1: Varlık Eğrisi ve Fiyat
+    fig.add_trace(
+        go.Scatter(
+            x=equity_curve.index,
+            y=equity_curve,
+            name="Varlık Değeri",
+            line=dict(color="blue"),
+        ),
+        row=1,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=data.index,
+            y=data["close"],
+            name="Kapanış Fiyatı",
+            line=dict(color="grey", dash="dot"),
+            opacity=0.7,
+        ),
+        row=1,
+        col=1,
+    )
+
+    # Alış ve Satış Sinyallerini İşaretle
+    buy_signals = signals[signals["signal"] == 1]
+    sell_signals = signals[signals["signal"] == -1]
+
+    fig.add_trace(
+        go.Scatter(
+            x=buy_signals.index,
+            y=data.loc[buy_signals.index]["close"],
+            mode="markers",
+            marker=dict(symbol="triangle-up", color="green", size=10),
+            name="Alış Sinyali",
+        ),
+        row=1,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=sell_signals.index,
+            y=data.loc[sell_signals.index]["close"],
+            mode="markers",
+            marker=dict(symbol="triangle-down", color="red", size=10),
+            name="Satış Sinyali",
+        ),
+        row=1,
+        col=1,
+    )
+
+    # Panel 2: Sinyaller
+    fig.add_trace(
+        go.Scatter(
+            x=signals.index,
+            y=signals["signal"],
+            name="Sinyal Değeri",
+            line=dict(color="orange"),
+        ),
+        row=2,
+        col=1,
+    )
+
+    fig.update_layout(
+        title=f"Backtesting Sonuçları: {strategy_name}",
+        height=800,
+        template="plotly_dark",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    fig.update_yaxes(title_text="Varlık Değeri (TL)", row=1, col=1)
+    fig.update_yaxes(title_text="Sinyal (1: Al, -1: Sat)", row=2, col=1)
+
+    return fig
+
+
+def plot_balance_sheet_details(balance_sheet):
+    """Creates a stacked bar chart for balance sheet composition."""
+    # yfinance usually has years as columns, most recent first. Reverse for chronological order.
+    df = balance_sheet.iloc[:, ::-1]
+    
+    # Select key asset and liability items that are commonly available
+    asset_items = ['Cash And Cash Equivalents', 'Receivables', 'Inventory', 'Other Current Assets', 'Net Ppe', 'Other Non Current Assets']
+    liability_items = ['Accounts Payable', 'Other Current Liabilities', 'Long Term Debt', 'Other Non Current Liabilities']
+    
+    # Filter items that exist in the dataframe
+    asset_items = [item for item in asset_items if item in df.index]
+    liability_items = [item for item in liability_items if item in df.index]
+
+    if not asset_items and not liability_items:
+        return go.Figure().update_layout(title_text="Detaylı Bilanço Verisi Bulunamadı", template='plotly_dark')
+
+    fig = make_subplots(rows=1, cols=2, subplot_titles=('Varlıkların Dağılımı', 'Yükümlülüklerin Dağılımı'))
+
+    # Assets
+    for item in asset_items:
+        fig.add_trace(go.Bar(name=item, x=df.columns.year, y=df.loc[item], text=df.loc[item]), row=1, col=1)
+        
+    # Liabilities
+    for item in liability_items:
+        fig.add_trace(go.Bar(name=item, x=df.columns.year, y=df.loc[item], text=df.loc[item]), row=1, col=2)
+
+    fig.update_layout(barmode='stack', title_text='Detaylı Bilanço Analizi', template='plotly_dark', height=500)
+    fig.update_traces(texttemplate='%{y:.2s}', textposition='inside')
+    return fig
+
+def plot_per_share_values(financials, balance_sheet, info):
+    """Calculates and plots EPS and Book Value Per Share."""
+    shares_outstanding = info.get('sharesOutstanding')
+    if not shares_outstanding:
+        return go.Figure().update_layout(title_text="Hisse Sayısı Bilgisi Bulunamadığı İçin Hisse Başına Değerler Hesaplanamadı", template='plotly_dark')
+
+    fin_df = financials.iloc[:, ::-1]
+    bs_df = balance_sheet.iloc[:, ::-1]
+    
+    eps = pd.Series(dtype='float64')
+    if 'Net Income' in fin_df.index:
+        eps = fin_df.loc['Net Income'] / shares_outstanding
+
+    bvps = pd.Series(dtype='float64')
+    if 'Total Stockholder Equity' in bs_df.index:
+        bvps = bs_df.loc['Total Stockholder Equity'] / shares_outstanding
+
+    if eps.empty and bvps.empty:
+        return go.Figure().update_layout(title_text="Hisse Başına Değerler Hesaplanamadı", template='plotly_dark')
+
+    fig = make_subplots(rows=1, cols=2, subplot_titles=('Hisse Başına Kâr (EPS)', 'Hisse Başına Defter Değeri (BVPS)'))
+
+    if not eps.empty:
+        fig.add_trace(go.Bar(name='EPS', x=eps.index.year, y=eps, text=eps), row=1, col=1)
+    if not bvps.empty:
+        fig.add_trace(go.Bar(name='BVPS', x=bvps.index.year, y=bvps, text=bvps), row=1, col=2)
+
+    fig.update_layout(title_text='Hisse Başına Değerlerin Yıllık Değişimi', template='plotly_dark', height=400)
+    fig.update_traces(texttemplate='%{y:.2f}', textposition='auto')
+    return fig
+
+def plot_dividend_history(dividends):
+    """Creates a bar chart of historical dividend payments."""
+    if dividends is None or dividends.empty:
+        return go.Figure().update_layout(title_text="Şirketin Geçmiş Temettü Ödemesi Bulunmamaktadır", template='plotly_dark')
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=dividends.index, y=dividends, name='Hisse Başına Temettü'))
+    
+    fig.update_layout(
+        title_text='Yıllara Göre Hisse Başına Temettü Ödemeleri (TL)',
+        xaxis_title='Tarih',
+        yaxis_title='Temettü (TL)',
+        template='plotly_dark',
+        height=400
     )
     return fig
