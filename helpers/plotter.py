@@ -496,31 +496,7 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
     return fig
 
 
-def plot_comparison_plotly(data1, data2, hisse1, hisse2):
-    """İki hissenin normalize edilmiş fiyat performansını karşılaştırır."""
-    # Fiyatları başlangıç noktasına göre normalize et (Yüzdesel Değişim)
-    norm_data1 = (data1["close"] / data1["close"].iloc[0] - 1) * 100
-    norm_data2 = (data2["close"] / data2["close"].iloc[0] - 1) * 100
 
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(x=norm_data1.index, y=norm_data1, name=hisse1, line=dict(width=2))
-    )
-    fig.add_trace(
-        go.Scatter(x=norm_data2.index, y=norm_data2, name=hisse2, line=dict(width=2))
-    )
-
-    fig.update_layout(
-        title=f"{hisse1} vs. {hisse2} Normalize Edilmiş Performans",
-        yaxis_title="Yüzdesel Değişim (%)",
-        height=600,
-        template="plotly_dark",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    )
-    fig.update_yaxes(zeroline=True, zerolinewidth=2, zerolinecolor="Gray")
-
-    return fig
 
 
 def plot_analysis_mpl(veri, hisse_kodu, interval_display, analysis_type):
@@ -714,144 +690,10 @@ def plot_financial_trends(financials, cashflow):
     return fig
 
 
-def plot_prediction_results(test_results, close_prices):
-    """Tahmin sonuçlarını görselleştirir."""
-    fig = go.Figure()
-
-    # Gerçek kapanış fiyatları
-    fig.add_trace(
-        go.Scatter(
-            x=close_prices.index,
-            y=close_prices,
-            name="Gerçek Kapanış Fiyatı",
-            line=dict(color="blue"),
-        )
-    )
-
-    # Doğru tahminler için yeşil, yanlış tahminler için kırmızı noktalar
-    correct_predictions = test_results[
-        test_results["actual"] == test_results["predicted"]
-    ]
-    incorrect_predictions = test_results[
-        test_results["actual"] != test_results["predicted"]
-    ]
-
-    fig.add_trace(
-        go.Scatter(
-            x=correct_predictions.index,
-            y=close_prices.loc[correct_predictions.index],
-            mode="markers",
-            name="Doğru Tahmin",
-            marker=dict(color="green", size=8, symbol="circle"),
-        )
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=incorrect_predictions.index,
-            y=close_prices.loc[incorrect_predictions.index],
-            mode="markers",
-            name="Yanlış Tahmin",
-            marker=dict(color="red", size=8, symbol="x"),
-        )
-    )
-
-    fig.update_layout(
-        title="Model Tahminlerinin Görselleştirilmesi",
-        xaxis_title="Tarih",
-        yaxis_title="Fiyat",
-        height=600,
-        template="plotly_dark",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    )
-    return fig
 
 
-def plot_backtesting_results(equity_curve, signals, data, strategy_name, initial_cash):
-    """Backtesting sonuçlarını görselleştiren bir grafik oluşturur."""
-    fig = make_subplots(
-        rows=2,
-        cols=1,
-        shared_xaxes=True,
-        vertical_spacing=0.05,
-        row_heights=[0.7, 0.3],
-        subplot_titles=(
-            f"{strategy_name} Stratejisi - Varlık Eğrisi ve İşlemler",
-            "Sinyaller",
-        ),
-    )
 
-    # Panel 1: Varlık Eğrisi ve Fiyat
-    fig.add_trace(
-        go.Scatter(
-            x=equity_curve.index,
-            y=equity_curve,
-            name="Varlık Değeri",
-            line=dict(color="blue"),
-        ),
-        row=1,
-        col=1,
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=data.index,
-            y=data["close"],
-            name="Kapanış Fiyatı",
-            line=dict(color="grey", dash="dot"),
-            opacity=0.7,
-        ),
-        row=1,
-        col=1,
-    )
 
-    # Alış ve Satış Sinyallerini İşaretle
-    buy_signals = signals[signals["signal"] == 1]
-    sell_signals = signals[signals["signal"] == -1]
-
-    fig.add_trace(
-        go.Scatter(
-            x=buy_signals.index,
-            y=data.loc[buy_signals.index]["close"],
-            mode="markers",
-            marker=dict(symbol="triangle-up", color="green", size=10),
-            name="Alış Sinyali",
-        ),
-        row=1,
-        col=1,
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=sell_signals.index,
-            y=data.loc[sell_signals.index]["close"],
-            mode="markers",
-            marker=dict(symbol="triangle-down", color="red", size=10),
-            name="Satış Sinyali",
-        ),
-        row=1,
-        col=1,
-    )
-
-    # Panel 2: Sinyaller
-    fig.add_trace(
-        go.Scatter(
-            x=signals.index,
-            y=signals["signal"],
-            name="Sinyal Değeri",
-            line=dict(color="orange"),
-        ),
-        row=2,
-        col=1,
-    )
-
-    fig.update_layout(
-        title=f"Backtesting Sonuçları: {strategy_name}",
-        height=800,
-        template="plotly_dark",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    )
-    fig.update_yaxes(title_text="Varlık Değeri (TL)", row=1, col=1)
-    fig.update_yaxes(title_text="Sinyal (1: Al, -1: Sat)", row=2, col=1)
-
-    return fig
 
 
 def plot_balance_sheet_details(balance_sheet):

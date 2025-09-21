@@ -33,10 +33,10 @@ db.init_db()
 st.set_page_config(page_title="BIST Hisse Senedi Analiz Platformu", page_icon="📊", layout="wide")
 
 # --- Veri Çekme Fonksiyonları (Cache ile) ---
-@st.cache_data(ttl=3600)
-def get_stock_data(hisse_kodu, interval):
+@st.cache_data(ttl=300)
+def get_stock_data(hisse_kodu, interval, end_date=None):
     try:
-        return get_stock_data_native(hisse_kodu, interval)
+        return get_stock_data_native(hisse_kodu, interval, end_date=end_date)
     except Exception as e:
         st.error(f"{hisse_kodu} için teknik veriler çekilirken hata oluştu: {e}")
         return None
@@ -263,126 +263,7 @@ def display_backtesting(veri, hisse_kodu_yf):
                 except Exception as e:
                     st.error(f"{test_mode} sırasında bir hata oluştu: {e}")
 
-def display_backtesting(veri, hisse_kodu_yf):
-    st.header(f"{hisse_kodu_yf} - Strateji Testi ve Optimizasyon")
-    test_mode = st.radio("Çalışma Modu", ["Tekli Test", "Optimizasyon"], horizontal=True)
-    strategy_options = {
-        "EMA Kesişimi": EmaCross, 
-        "RSI Osilatörü": RsiOscillator,
-        "MACD Kesişimi": MacdCross,
-        "Bollinger Bandı Stratejisi": BBandStrategy
-    }
-    selected_strategy_name = st.selectbox("Test Edilecek Strateji:", list(strategy_options.keys()))
-    selected_strategy_class = strategy_options[selected_strategy_name]
 
-    with st.form(key=f"backtest_form_{selected_strategy_name}_{test_mode}"):
-        params = {}
-        
-        st.subheader("Genel Parametreler")
-        initial_cash = st.number_input("Başlangıç Nakiti", 1000, 1000000, 100000, 1000)
-        commission = st.slider("Komisyon Oranı (%)", 0.0, 1.0, 0.2, 0.01) / 100
-
-        st.subheader(f"{selected_strategy_name} Strateji Parametreleri")
-        if selected_strategy_name == "EMA Kesişimi":
-            if test_mode == "Tekli Test":
-                c1, c2 = st.columns(2)
-                params['n1'] = c1.number_input("Kısa EMA", 1, 200, 50)
-                params['n2'] = c2.number_input("Uzun EMA", 1, 500, 200)
-            else:
-                c1, c2, c3 = st.columns(3)
-                params['n1'] = range(c1.number_input("n1 Başla", 1, 200, 10), c2.number_input("n1 Bitir", 1, 200, 50), c3.number_input("n1 Adım", 1, 20, 5))
-                c1, c2, c3 = st.columns(3)
-                params['n2'] = range(c1.number_input("n2 Başla", 1, 500, 100), c2.number_input("n2 Bitir", 1, 500, 200), c3.number_input("n2 Adım", 1, 50, 10))
-        elif selected_strategy_name == "RSI Osilatörü":
-            if test_mode == "Tekli Test":
-                c1, c2, c3 = st.columns(3)
-                params['rsi_window'] = c1.number_input("RSI Periyodu", 1, 100, 14)
-                params['buy_threshold'] = c2.number_input("Alım Eşiği", 1, 100, 30)
-                params['sell_threshold'] = c3.number_input("Satım Eşiği", 1, 100, 70)
-            else:
-                c1, c2, c3 = st.columns(3)
-                params['rsi_window'] = range(c1.number_input("RSI Başla", 5, 50, 10), c2.number_input("RSI Bitir", 5, 50, 20), c3.number_input("RSI Adım", 1, 10, 2))
-        elif selected_strategy_name == "MACD Kesişimi":
-            if test_mode == "Tekli Test":
-                c1, c2, c3 = st.columns(3)
-                params['fast'] = c1.number_input("Hızlı Periyot", 1, 100, 12)
-                params['slow'] = c2.number_input("Yavaş Periyot", 1, 200, 26)
-                params['signal'] = c3.number_input("Sinyal Periyodu", 1, 100, 9)
-            else:
-                c1, c2, c3 = st.columns(3)
-                params['fast'] = range(c1.number_input("Hızlı Başla", 5, 50, 10), c2.number_input("Hızlı Bitir", 5, 50, 20), c3.number_input("Hızlı Adım", 1, 10, 2))
-                c1, c2, c3 = st.columns(3)
-                params['slow'] = range(c1.number_input("Yavaş Başla", 20, 100, 20), c2.number_input("Yavaş Bitir", 20, 100, 50), c3.number_input("Yavaş Adım", 1, 10, 5))
-        elif selected_strategy_name == "Bollinger Bandı Stratejisi":
-            if test_mode == "Tekli Test":
-                c1, c2 = st.columns(2)
-                params['length'] = c1.number_input("Periyot", 1, 100, 20)
-                params['std'] = c2.number_input("Standart Sapma", 0.1, 5.0, 2.0, 0.1)
-            else:
-                c1, c2, c3 = st.columns(3)
-                params['length'] = range(c1.number_input("Periyot Başla", 5, 50, 10), c2.number_input("Periyot Bitir", 5, 50, 30), c3.number_input("Periyot Adım", 1, 10, 5))
-                st.info("Bollinger Bandı stratejisi için Standart Sapma optimizasyonu şu anda desteklenmemektedir.")
-
-        st.subheader("Risk Yönetimi Parametreleri")
-        if test_mode == "Tekli Test":
-            sl_col, tp_col = st.columns(2)
-            sl_val = sl_col.number_input("Stop-Loss (%)", 0.0, 100.0, 5.0, 0.5)
-            tp_val = tp_col.number_input("Take-Profit (%)", 0.0, 100.0, 10.0, 0.5)
-            params['stop_loss'] = sl_val / 100 if sl_val > 0 else None
-            params['take_profit'] = tp_val / 100 if tp_val > 0 else None
-        else: # Optimizasyon
-            st.info("Stop-Loss ve Take-Profit optimizasyonu şu anda desteklenmemektedir.")
-            optimization_metrics = [
-                'Equity Final [$]', 
-                'Return [%]', 
-                'Sharpe Ratio', 
-                'Win Rate [%]',
-                'Profit Factor'
-            ]
-            maximize_metric = st.selectbox(
-                "Optimize Edilecek Metrik:", 
-                optimization_metrics, 
-                index=0
-            )
-
-
-        if st.form_submit_button(f"{test_mode} Çalıştır"):
-            spinner_msg = "Strateji optimize ediliyor..." if test_mode == "Optimizasyon" else "Strateji test ediliyor..."
-            with st.spinner(spinner_msg):
-                try:
-                    backtest_data = veri[['open', 'high', 'low', 'close', 'volume']].copy()
-                    if test_mode == "Tekli Test":
-                        stats, plot_fig = run_backtest(selected_strategy_class, backtest_data, initial_cash, commission, **params)
-                        display_backtest_summary(stats, initial_cash)
-                        st.subheader("İşlem Grafiği")
-                        st.bokeh_chart(plot_fig, use_container_width=True)
-                    else:
-                        heatmap = optimize_strategy(
-                            selected_strategy_class, 
-                            backtest_data, 
-                            initial_cash, 
-                            commission, 
-                            maximize=maximize_metric,
-                            **params
-                        )
-                        
-                        st.subheader("Optimizasyon Sonuçları")
-                        if heatmap.empty:
-                            st.warning("Optimizasyon sonucu bulunamadı. Lütfen parametre aralıklarını kontrol edin.")
-                        else:
-                            results_df = heatmap.reset_index()
-                            results_df = results_df.sort_values(by=maximize_metric, ascending=False)
-                            
-                            st.write(f"En iyi sonuçlar `{maximize_metric}` metriğine göre sıralanmıştır.")
-                            st.dataframe(results_df)
-
-                            best_params = results_df.iloc[0]
-                            st.subheader("En İyi Strateji Parametreleri")
-                            st.json(best_params.to_dict())
-                except Exception as e:
-                    st.error(f"{test_mode} sırasında bir hata oluştu: {e}")
-
-# --- ANA SAYFA YAPILARI ---
 def analyzer_main_page():
     st.sidebar.header("Kontrol Paneli")
     grup_secim = st.sidebar.selectbox("Hisse Grubu:", list(HISSE_GRUPPARI.keys()), index=0)
@@ -421,7 +302,7 @@ def analyzer_main_page():
         hisse_kodu_yf = f"{st.session_state.hisse_secim}.IS"
         interval_code = ZAMAN_ARALIKLARI[st.session_state.interval_display]
         with st.spinner(f"{hisse_kodu_yf} için veriler çekiliyor ve analiz ediliyor..."):
-            veri_raw = get_stock_data(hisse_kodu_yf, interval_code)
+            veri_raw = get_stock_data(hisse_kodu_yf, interval_code, end_date=st.session_state.end_date)
             if veri_raw is not None:
                 veri_hesaplanmis = calculate_indicators(veri_raw.copy())
                 veri_filtrelenmis = filter_data_by_date(veri_hesaplanmis, start_date=st.session_state.start_date, end_date=st.session_state.end_date)
@@ -467,7 +348,7 @@ def portfolio_manager_page():
     current_prices = {}
     with st.spinner("Güncel fiyatlar çekiliyor..."):
         for t in unique_tickers:
-            data = get_stock_data(f"{t}.IS", "1d")
+            data = get_stock_data(f"{t}.IS", "1d", end_date=datetime.today())
             if data is not None and not data.empty:
                 current_prices[t] = data['close'].iloc[-1]
             else:
