@@ -313,6 +313,7 @@ def display_financial_ratios(info, financials, balance_sheet):
     df_ratios.index.name = "Oran"
     return df_ratios
 
+
 def display_sector_comparison(company_ratios, sector_averages):
     """
     Creates a DataFrame to compare a company's ratios with sector averages.
@@ -321,32 +322,190 @@ def display_sector_comparison(company_ratios, sector_averages):
         return None
 
     # Create a DataFrame from the company's ratios Series
-    company_df = company_ratios.to_frame(name='Şirket Değeri')
+    company_df = company_ratios.to_frame(name="Şirket Değeri")
 
     # Create a DataFrame for the comparison
     comparison_df = pd.DataFrame(index=sector_averages.index)
-    comparison_df['Sektör Ortalaması'] = sector_averages
-    comparison_df['Şirket Değeri'] = company_df['Şirket Değeri']
+    comparison_df["Sektör Ortalaması"] = sector_averages
+    comparison_df["Şirket Değeri"] = company_df["Şirket Değeri"]
 
     # Drop rows where both values are NaN and format the display
-    comparison_df.dropna(how='all', inplace=True)
-    
+    comparison_df.dropna(how="all", inplace=True)
+
     # Highlight differences
     def highlight_diff(row):
-        style = [''] * len(row)
-        if pd.notna(row['Şirket Değeri']) and pd.notna(row['Sektör Ortalaması']):
+        style = [""] * len(row)
+        if pd.notna(row["Şirket Değeri"]) and pd.notna(row["Sektör Ortalaması"]):
             # For ratios where lower is better (like P/E, P/B), highlight green if company is lower
-            if any(metric in row.name for metric in ['F/K', 'PD/DD', 'Borç/Özkaynak']):
-                if row['Şirket Değeri'] < row['Sektör Ortalaması']:
-                    style[0] = 'background-color: #2a5c2a' # Green
+            if any(metric in row.name for metric in ["F/K", "PD/DD", "Borç/Özkaynak"]):
+                if row["Şirket Değeri"] < row["Sektör Ortalaması"]:
+                    style[0] = "background-color: #2a5c2a"  # Green
                 else:
-                    style[0] = 'background-color: #6e2b2b' # Red
+                    style[0] = "background-color: #6e2b2b"  # Red
             # For ratios where higher is better (like margins, ROE), highlight green if company is higher
-            elif any(metric in row.name for metric in ['Marjı', 'ROE']):
-                 if row['Şirket Değeri'] > row['Sektör Ortalaması']:
-                    style[0] = 'background-color: #2a5c2a' # Green
-                 else:
-                    style[0] = 'background-color: #6e2b2b' # Red
+            elif any(metric in row.name for metric in ["Marjı", "ROE"]):
+                if row["Şirket Değeri"] > row["Sektör Ortalaması"]:
+                    style[0] = "background-color: #2a5c2a"  # Green
+                else:
+                    style[0] = "background-color: #6e2b2b"  # Red
         return style
 
     return comparison_df.style.apply(highlight_diff, axis=1).format("{:.2f}")
+
+
+import pandas as pd
+import numpy as np
+
+# Bu dosya, hem Streamlit hem de Tkinter uygulamaları için metin tabanlı özetler üretir.
+
+# ... (generate_fundamental_summary, generate_technical_summary, display_financial_ratios, display_sector_comparison functions remain the same) ...
+
+def display_sector_comparison(company_ratios, sector_averages):
+    """
+    Creates a DataFrame to compare a company's ratios with sector averages.
+    """
+    if sector_averages is None or sector_averages.empty:
+        return None
+
+    # Create a DataFrame from the company's ratios Series
+    company_df = company_ratios.to_frame(name="Şirket Değeri")
+
+    # Create a DataFrame for the comparison
+    comparison_df = pd.DataFrame(index=sector_averages.index)
+    comparison_df["Sektör Ortalaması"] = sector_averages
+    comparison_df["Şirket Değeri"] = company_df["Şirket Değeri"]
+
+    # Drop rows where both values are NaN and format the display
+    comparison_df.dropna(how="all", inplace=True)
+
+    # Highlight differences
+    def highlight_diff(row):
+        style = [""] * len(row)
+        if pd.notna(row["Şirket Değeri"]) and pd.notna(row["Sektör Ortalaması"]):
+            # For ratios where lower is better (like P/E, P/B), highlight green if company is lower
+            if any(metric in row.name for metric in ["F/K", "PD/DD", "Borç/Özkaynak"]):
+                if row["Şirket Değeri"] < row["Sektör Ortalaması"]:
+                    style[0] = "background-color: #2a5c2a"  # Green
+                else:
+                    style[0] = "background-color: #6e2b2b"  # Red
+            # For ratios where higher is better (like margins, ROE), highlight green if company is higher
+            elif any(metric in row.name for metric in ["Marjı", "ROE"]):
+                if row["Şirket Değeri"] > row["Sektör Ortalaması"]:
+                    style[0] = "background-color: #2a5c2a"  # Green
+                else:
+                    style[0] = "background-color: #6e2b2b"  # Red
+        return style
+
+    return comparison_df.style.apply(highlight_diff, axis=1).format("{:.2f}")
+
+
+def generate_ai_analysis(veri):
+    """Daha akıllı ve detaylı yapay zeka destekli teknik analiz üretir."""
+    if veri.empty or len(veri) < 2:
+        return "Veri Yetersiz", {}
+
+    son_veri = veri.iloc[-1]
+    onceki_veri = veri.iloc[-2]
+
+    # Sinyalleri ve skorları saklamak için yapılar
+    trend_sinyalleri = {}
+    momentum_sinyalleri = {}
+    hacim_sinyalleri = {}
+    
+    # --- Trend Sinyalleri ---
+    # EMA Trend
+    ema_score = 0
+    if son_veri['close'] > son_veri['ema_20']: ema_score += 1
+    if son_veri['close'] > son_veri['ema_50']: ema_score += 1
+    if son_veri['ema_50'] > son_veri['ema_200']: ema_score += 2 # Golden Cross durumu daha ağırlıklı
+    trend_sinyalleri['EMA Trend'] = {'skor': ema_score, 'yorum': f"Fiyatın EMA'lara göre konumu ve EMA sıralaması (Skor: {ema_score})"}
+    
+    # SuperTrend
+    st_skor = 0
+    if 'supertd_7_3.0' in son_veri and not pd.isna(son_veri['supertd_7_3.0']):
+        if son_veri['supertd_7_3.0'] == 1:
+            st_skor = 2
+            yorum = "SuperTrend 'Yükseliş' sinyali veriyor."
+        else:
+            st_skor = -2
+            yorum = "SuperTrend 'Düşüş' sinyali veriyor."
+        trend_sinyalleri['SuperTrend'] = {'skor': st_skor, 'yorum': yorum}
+
+    # ADX Trend Gücü
+    adx_skor = 0
+    if son_veri['adx_14'] > 25:
+        adx_skor = np.sign(son_veri['dmp_14'] - son_veri['dmn_14']) * 2
+        yorum = f"ADX ({son_veri['adx_14']:.1f}) güçlü bir trende işaret ediyor. Yön: {'Pozitif' if adx_skor > 0 else 'Negatif'}."
+    else:
+        yorum = f"ADX ({son_veri['adx_14']:.1f}) zayıf veya trendsiz bir piyasa gösteriyor."
+    trend_sinyalleri['ADX'] = {'skor': adx_skor, 'yorum': yorum}
+
+    # --- Momentum Sinyalleri ---
+    # RSI
+    rsi_skor = 0
+    if son_veri['rsi_14'] > 70: rsi_skor = -2
+    elif son_veri['rsi_14'] < 30: rsi_skor = 2
+    elif son_veri['rsi_14'] > 50: rsi_skor = 1
+    else: rsi_skor = -1
+    momentum_sinyalleri['RSI'] = {'skor': rsi_skor, 'yorum': f"RSI değeri {son_veri['rsi_14']:.2f}. Aşırı alım/satım ve 50 çizgisine göre momentum (Skor: {rsi_skor})"}
+
+    # MACD
+    macd_skor = 0
+    if son_veri['macd_12_26_9'] > son_veri['macds_12_26_9']: macd_skor += 1
+    else: macd_skor -=1
+    if son_veri['macdh_12_26_9'] > onceki_veri['macdh_12_26_9']: macd_skor += 1
+    else: macd_skor -= 1
+    momentum_sinyalleri['MACD'] = {'skor': macd_skor, 'yorum': f"MACD kesişimi ve histogram momentumu (Skor: {macd_skor})"}
+
+    # Stokastik RSI
+    stoch_skor = 0
+    k, d = son_veri['stochrsik_14_14_3_3'], son_veri['stochrsid_14_14_3_3']
+    prev_k, prev_d = onceki_veri['stochrsik_14_14_3_3'], onceki_veri['stochrsid_14_14_3_3']
+    if k > d and prev_k < prev_d and k < 20: stoch_skor = 2 # Alım kesişimi
+    elif k < d and prev_k > prev_d and k > 80: stoch_skor = -2 # Satım kesişimi
+    momentum_sinyalleri['Stokastik RSI'] = {'skor': stoch_skor, 'yorum': f"Stokastik RSI {('alım' if stoch_skor > 0 else 'satım' if stoch_skor < 0 else 'nötr')} sinyali üretiyor (Skor: {stoch_skor})."}
+
+
+    # --- Hacim ve Volatilite Sinyalleri ---
+    # Hacim
+    hacim_skor = 0
+    if son_veri['volume'] > son_veri['volume_ma_20'] * 1.5: # Ortalamanın %50 üzerindeyse
+        hacim_skor = np.sign(son_veri['close'] - onceki_veri['close']) # Fiyat artıyorsa pozitif, düşüyorsa negatif
+        yorum = f"Hacim ortalamanın üzerinde ve fiyat {'yükseliyor' if hacim_skor > 0 else 'düşüyor'}."
+    else:
+        yorum = "Hacim normal seviyelerde."
+    hacim_sinyalleri['Hacim'] = {'skor': hacim_skor, 'yorum': yorum}
+
+    # Bollinger Bantları
+    bb_skor = 0
+    if son_veri['close'] > son_veri['bbu_20_2.0']: bb_skor = -1 # Direnç
+    elif son_veri['close'] < son_veri['bbl_20_2.0']: bb_skor = 1 # Destek
+    
+    # BBW ile sıkışma kontrolü
+    if 'bbw_20_2.0' in veri.columns and son_veri['bbw_20_2.0'] < veri['bbw_20_2.0'].quantile(0.1):
+        yorum = f"Fiyat Bollinger bantları içinde. Bant genişliği çok düşük (sıkışma var)."
+    else:
+        yorum = f"Fiyat Bollinger bantları {'üstünde' if bb_skor < 0 else 'altında' if bb_skor > 0 else 'içinde'}."
+    hacim_sinyalleri['Bollinger Bantları'] = {'skor': bb_skor, 'yorum': yorum}
+
+    # --- Toplam Skor ve Sonuç ---
+    toplam_skor = sum(s['skor'] for kat in [trend_sinyalleri, momentum_sinyalleri, hacim_sinyalleri] for s in kat.values())
+
+    if toplam_skor >= 7:
+        sonuc = "Güçlü Al"
+    elif toplam_skor >= 3:
+        sonuc = "Al"
+    elif toplam_skor <= -7:
+        sonuc = "Güçlü Sat"
+    elif toplam_skor <= -3:
+        sonuc = "Sat"
+    else:
+        sonuc = "Nötr"
+
+    analiz_ozeti = {
+        "Trend": [f"{k}: {v['yorum']}" for k, v in trend_sinyalleri.items()],
+        "Momentum": [f"{k}: {v['yorum']}" for k, v in momentum_sinyalleri.items()],
+        "Hacim ve Volatilite": [f"{k}: {v['yorum']}" for k, v in hacim_sinyalleri.items()],
+    }
+
+    return sonuc, analiz_ozeti

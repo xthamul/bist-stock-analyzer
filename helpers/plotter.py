@@ -1,15 +1,23 @@
 import plotly.graph_objects as go
+import plotly.express as px
 from plotly.subplots import make_subplots
-import mplfinance as mpf
 import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
 import logging
+import streamlit as st
 
 
-def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, selected_indicators, show_support_resistance, show_fibonacci=False):
+def plot_candlestick_chart(
+    veri,
+    hisse_kodu,
+    interval_display,
+    analysis_type,
+    selected_indicators,
+    show_support_resistance,
+    show_fibonacci=False,
+):
     """Ana teknik analiz grafiğini oluşturur."""
-    
 
     # Göstergelerin hangi alt grafiğe ait olduğunu ve başlıklarını tanımla
     indicator_subplot_map = {
@@ -103,7 +111,6 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
 
     else:  # Detaylı
         # Fiyat paneli göstergeleri (her zaman ana panelde)
-        
 
         if "EMA KISA (5, 20)" in selected_indicators:
             fig.add_trace(
@@ -234,6 +241,28 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
                     mode="lines",
                     line_color="rgba(255,0,0,0.1)",
                     name="Senkou B",
+                ),
+                row=1,
+                col=1,
+            )
+
+        if "Super Trend" in selected_indicators:
+            fig.add_trace(
+                go.Scatter(
+                    x=veri.index,
+                    y=veri["supertl_7_3.0"],
+                    name="Super Trend Long",
+                    line=dict(color="green", width=2),
+                ),
+                row=1,
+                col=1,
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=veri.index,
+                    y=veri["superts_7_3.0"],
+                    name="Super Trend Short",
+                    line=dict(color="red", width=2),
                 ),
                 row=1,
                 col=1,
@@ -413,8 +442,8 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
     # Fibonacci Geri Çekilme Seviyeleri
     if show_fibonacci:
         try:
-            max_price = veri['high'].max()
-            min_price = veri['low'].min()
+            max_price = veri["high"].max()
+            min_price = veri["low"].min()
             diff = max_price - min_price
 
             fib_levels = {
@@ -435,51 +464,68 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
                     line_color=colors[i % len(colors)],
                     annotation_text=f"Fib {level_name} ({level_value:.2f})",
                     annotation_position="top right",
-                    row=1, col=1
+                    row=1,
+                    col=1,
                 )
         except Exception as e:
             logging.warning(f"Fibonacci seviyeleri hesaplanırken bir hata oluştu: {e}")
 
     # Golden Cross ve Death Cross işaretleri
     if "Golden/Death Cross" in selected_indicators:
-        golden_cross_data = veri[veri['golden_cross']]
-        death_cross_data = veri[veri['death_cross']]
+        golden_cross_data = veri[veri["golden_cross"]]
+        death_cross_data = veri[veri["death_cross"]]
 
         if not golden_cross_data.empty:
             fig.add_trace(
                 go.Scatter(
                     x=golden_cross_data.index,
-                    y=golden_cross_data['ema_50'], # veya 'close'
-                    mode='markers+text',
-                    marker=dict(symbol='triangle-up', size=15, color='green'),
-                    text=['GC'] * len(golden_cross_data), # Kısa etiket
-                    textposition='top center',
-                    name='Golden Cross',
-                    showlegend=True
+                    y=golden_cross_data["ema_50"],  # veya 'close'
+                    mode="markers+text",
+                    marker=dict(symbol="triangle-up", size=15, color="green"),
+                    text=["GC"] * len(golden_cross_data),  # Kısa etiket
+                    textposition="top center",
+                    name="Golden Cross",
+                    showlegend=True,
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
             # Dikey çizgiler
             for date in golden_cross_data.index:
-                fig.add_vline(x=date, line_width=1, line_dash="dash", line_color="green", row=1, col=1)
+                fig.add_vline(
+                    x=date,
+                    line_width=1,
+                    line_dash="dash",
+                    line_color="green",
+                    row=1,
+                    col=1,
+                )
 
         if not death_cross_data.empty:
             fig.add_trace(
                 go.Scatter(
                     x=death_cross_data.index,
-                    y=death_cross_data['ema_50'], # veya 'close'
-                    mode='markers+text',
-                    marker=dict(symbol='triangle-down', size=15, color='red'),
-                    text=['DC'] * len(death_cross_data), # Kısa etiket
-                    textposition='bottom center',
-                    name='Death Cross',
-                    showlegend=True
+                    y=death_cross_data["ema_50"],  # veya 'close'
+                    mode="markers+text",
+                    marker=dict(symbol="triangle-down", size=15, color="red"),
+                    text=["DC"] * len(death_cross_data),  # Kısa etiket
+                    textposition="bottom center",
+                    name="Death Cross",
+                    showlegend=True,
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
             # Dikey çizgiler
             for date in death_cross_data.index:
-                fig.add_vline(x=date, line_width=1, line_dash="dash", line_color="red", row=1, col=1)
+                fig.add_vline(
+                    x=date,
+                    line_width=1,
+                    line_dash="dash",
+                    line_color="red",
+                    row=1,
+                    col=1,
+                )
 
     fig.update_layout(
         title=f"{hisse_kodu} Teknik Analiz ({interval_display} - {analysis_type})",
@@ -496,128 +542,26 @@ def plot_candlestick_chart(veri, hisse_kodu, interval_display, analysis_type, se
     return fig
 
 
-
-
-
-def plot_analysis_mpl(veri, hisse_kodu, interval_display, analysis_type):
-    """Matplotlib/mplfinance kullanarak teknik analiz grafiği oluşturur."""
-    veri.index.name = "Date"
-    apds = []  # addplot listesi
-
-    # Panelleri ve oranları dinamik olarak ayarla
-    if analysis_type == "Basit":
-        apds.extend(
-            [
-                mpf.make_addplot(veri["EMA_50"], color="orange", panel=0),
-                mpf.make_addplot(veri["EMA_200"], color="purple", panel=0),
-                mpf.make_addplot(
-                    veri["volume"], panel=1, type="bar", color="gray", ylabel="Hacim"
-                ),
-                mpf.make_addplot(veri["RSI_14"], panel=2, color="blue", ylabel="RSI"),
-                mpf.make_addplot(
-                    pd.Series(70, index=veri.index),
-                    panel=2,
-                    color="gray",
-                    linestyle="--",
-                    width=0.7,
-                ),
-                mpf.make_addplot(
-                    pd.Series(30, index=veri.index),
-                    panel=2,
-                    color="gray",
-                    linestyle="--",
-                    width=0.7,
-                ),
-            ]
-        )
-        panel_ratios = (3, 1, 1)
-    else:  # Detaylı
-        apds.extend(
-            [
-                # Panel 0: Fiyat ve Ortalamalar
-                mpf.make_addplot(veri["ema_5"], color="#007bff", panel=0),
-                mpf.make_addplot(veri["ema_20"], color="#6f42c1", panel=0),
-                mpf.make_addplot(veri["ema_50"], color="#fd7e14", panel=0),
-                mpf.make_addplot(veri["ema_200"], color="#ff00ff", panel=0),
-                mpf.make_addplot(
-                    veri["BBL_20_2.0"], color="#28a745", linestyle="--", panel=0
-                ),
-                mpf.make_addplot(
-                    veri["BBU_20_2.0"], color="#dc3545", linestyle="--", panel=0
-                ),
-                mpf.make_addplot(veri["vwap_d"], color="cyan", linestyle="-.", panel=0),
-                # Ichimoku Bulutu
-                mpf.make_addplot(veri["its_9"], color="#00bcd4", panel=0),
-                mpf.make_addplot(veri["kjs_26"], color="#ff9800", panel=0),
-                mpf.make_addplot(
-                    veri["chk_26"], color="#e91e63", linestyle="dotted", panel=0
-                ),
-                mpf.make_addplot(
-                    veri["isa_9"],
-                    color="rgba(0,255,0,0.1)",
-                    panel=0,
-                    fill_between=dict(y2=veri["isb_26"], color="rgba(255,0,0,0.1)"),
-                ),
-                mpf.make_addplot(veri["isb_26"], color="rgba(255,0,0,0.1)", panel=0),
-                # Panel 1: Hacim
-                mpf.make_addplot(
-                    veri["volume"], panel=1, type="bar", color="gray", ylabel="Hacim"
-                ),
-                # Panel 2: RSI & StochRSI
-                mpf.make_addplot(
-                    veri["RSI_14"], panel=2, color="blue", ylabel="RSI/Stoch"
-                ),
-                mpf.make_addplot(
-                    pd.Series(70, index=veri.index),
-                    panel=2,
-                    color="gray",
-                    linestyle="--",
-                    width=0.7,
-                ),
-                mpf.make_addplot(
-                    pd.Series(30, index=veri.index),
-                    panel=2,
-                    color="gray",
-                    linestyle="--",
-                    width=0.7,
-                ),
-                mpf.make_addplot(veri["STOCHRSIk_14_14_3_3"], panel=2, color="cyan"),
-                mpf.make_addplot(veri["STOCHRSId_14_14_3_3"], panel=2, color="magenta"),
-                # Panel 3: MACD
-                mpf.make_addplot(
-                    veri["MACD_12_26_9"], panel=3, color="blue", ylabel="MACD"
-                ),
-                mpf.make_addplot(veri["MACDS_12_26_9"], panel=3, color="orange"),
-                mpf.make_addplot(
-                    veri["MACDH_12_26_9"], type="bar", panel=3, color="gray"
-                ),
-                # Panel 4: ADX
-                mpf.make_addplot(
-                    veri["ADX_14"], panel=4, color="#ffc107", ylabel="ADX"
-                ),
-                mpf.make_addplot(veri["DMP_14"], panel=4, color="#28a745"),
-                mpf.make_addplot(veri["DMN_14"], panel=4, color="#dc3545"),
-                # Panel 5: OBV
-                mpf.make_addplot(veri["OBV"], panel=5, color="#ffc107", ylabel="OBV"),
-            ]
-        )
-        panel_ratios = (6, 1, 2, 2, 2, 2)
-
-    s = mpf.make_mpf_style(base_mpf_style="yahoo", rc={"figure.facecolor": "white"})
-    fig, axes = mpf.plot(
+def display_candlestick_chart(
+    veri,
+    hisse_kodu,
+    interval_display,
+    analysis_type,
+    selected_indicators,
+    show_support_resistance,
+    show_fibonacci=False,
+):
+    """Generates and displays the candlestick chart in Streamlit."""
+    fig = plot_candlestick_chart(
         veri,
-        type="candle",
-        style=s,
-        title=f"{hisse_kodu} Teknik Analiz ({interval_display} - {analysis_type})",
-        ylabel="Fiyat",
-        volume=False,  # Hacim ayrı panelde
-        addplot=apds,
-        panel_ratios=panel_ratios,
-        figscale=1.5,
-        returnfig=True,
-        columns=["open", "high", "low", "close", "volume"],
+        hisse_kodu,
+        interval_display,
+        analysis_type,
+        selected_indicators,
+        show_support_resistance,
+        show_fibonacci,
     )
-    return fig, axes
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_financial_trends(financials, cashflow):
@@ -690,86 +634,202 @@ def plot_financial_trends(financials, cashflow):
     return fig
 
 
-
-
-
-
+def display_financial_trends_chart(financials, cashflow):
+    """Generates and displays the financial trends chart in Streamlit."""
+    fig = plot_financial_trends(financials, cashflow)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_balance_sheet_details(balance_sheet):
     """Creates a stacked bar chart for balance sheet composition."""
     # yfinance usually has years as columns, most recent first. Reverse for chronological order.
     df = balance_sheet.iloc[:, ::-1]
-    
+
     # Select key asset and liability items that are commonly available
-    asset_items = ['Cash And Cash Equivalents', 'Receivables', 'Inventory', 'Other Current Assets', 'Net Ppe', 'Other Non Current Assets']
-    liability_items = ['Accounts Payable', 'Other Current Liabilities', 'Long Term Debt', 'Other Non Current Liabilities']
-    
+    asset_items = [
+        "Cash And Cash Equivalents",
+        "Receivables",
+        "Inventory",
+        "Other Current Assets",
+        "Net Ppe",
+        "Other Non Current Assets",
+    ]
+    liability_items = [
+        "Accounts Payable",
+        "Other Current Liabilities",
+        "Long Term Debt",
+        "Other Non Current Liabilities",
+    ]
+
     # Filter items that exist in the dataframe
     asset_items = [item for item in asset_items if item in df.index]
     liability_items = [item for item in liability_items if item in df.index]
 
     if not asset_items and not liability_items:
-        return go.Figure().update_layout(title_text="Detaylı Bilanço Verisi Bulunamadı", template='plotly_dark')
+        return go.Figure().update_layout(
+            title_text="Detaylı Bilanço Verisi Bulunamadı", template="plotly_dark"
+        )
 
-    fig = make_subplots(rows=1, cols=2, subplot_titles=('Varlıkların Dağılımı', 'Yükümlülüklerin Dağılımı'))
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Varlıkların Dağılımı", "Yükümlülüklerin Dağılımı"),
+    )
 
     # Assets
     for item in asset_items:
-        fig.add_trace(go.Bar(name=item, x=df.columns.year, y=df.loc[item], text=df.loc[item]), row=1, col=1)
-        
+        fig.add_trace(
+            go.Bar(name=item, x=df.columns.year, y=df.loc[item], text=df.loc[item]),
+            row=1,
+            col=1,
+        )
+
     # Liabilities
     for item in liability_items:
-        fig.add_trace(go.Bar(name=item, x=df.columns.year, y=df.loc[item], text=df.loc[item]), row=1, col=2)
+        fig.add_trace(
+            go.Bar(name=item, x=df.columns.year, y=df.loc[item], text=df.loc[item]),
+            row=1,
+            col=2,
+        )
 
-    fig.update_layout(barmode='stack', title_text='Detaylı Bilanço Analizi', template='plotly_dark', height=500)
-    fig.update_traces(texttemplate='%{y:.2s}', textposition='inside')
+    fig.update_layout(
+        barmode="stack",
+        title_text="Detaylı Bilanço Analizi",
+        template="plotly_dark",
+        height=500,
+    )
+    fig.update_traces(texttemplate="%{y:.2s}", textposition="inside")
     return fig
+
+
+def display_balance_sheet_details_chart(balance_sheet):
+    """Generates and displays the balance sheet details chart in Streamlit."""
+    fig = plot_balance_sheet_details(balance_sheet)
+    st.plotly_chart(fig, use_container_width=True)
+
 
 def plot_per_share_values(financials, balance_sheet, info):
     """Calculates and plots EPS and Book Value Per Share."""
-    shares_outstanding = info.get('sharesOutstanding')
+    shares_outstanding = info.get("sharesOutstanding")
     if not shares_outstanding:
-        return go.Figure().update_layout(title_text="Hisse Sayısı Bilgisi Bulunamadığı İçin Hisse Başına Değerler Hesaplanamadı", template='plotly_dark')
+        return go.Figure().update_layout(
+            title_text="Hisse Sayısı Bilgisi Bulunamadığı İçin Hisse Başına Değerler Hesaplanamadı",
+            template="plotly_dark",
+        )
 
     fin_df = financials.iloc[:, ::-1]
     bs_df = balance_sheet.iloc[:, ::-1]
-    
-    eps = pd.Series(dtype='float64')
-    if 'Net Income' in fin_df.index:
-        eps = fin_df.loc['Net Income'] / shares_outstanding
 
-    bvps = pd.Series(dtype='float64')
-    if 'Total Stockholder Equity' in bs_df.index:
-        bvps = bs_df.loc['Total Stockholder Equity'] / shares_outstanding
+    eps = pd.Series(dtype="float64")
+    if "Net Income" in fin_df.index:
+        eps = fin_df.loc["Net Income"] / shares_outstanding
+
+    bvps = pd.Series(dtype="float64")
+    if "Total Stockholder Equity" in bs_df.index:
+        bvps = bs_df.loc["Total Stockholder Equity"] / shares_outstanding
 
     if eps.empty and bvps.empty:
-        return go.Figure().update_layout(title_text="Hisse Başına Değerler Hesaplanamadı", template='plotly_dark')
+        return go.Figure().update_layout(
+            title_text="Hisse Başına Değerler Hesaplanamadı", template="plotly_dark"
+        )
 
-    fig = make_subplots(rows=1, cols=2, subplot_titles=('Hisse Başına Kâr (EPS)', 'Hisse Başına Defter Değeri (BVPS)'))
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Hisse Başına Kâr (EPS)", "Hisse Başına Defter Değeri (BVPS)"),
+    )
 
     if not eps.empty:
-        fig.add_trace(go.Bar(name='EPS', x=eps.index.year, y=eps, text=eps), row=1, col=1)
+        fig.add_trace(
+            go.Bar(name="EPS", x=eps.index.year, y=eps, text=eps), row=1, col=1
+        )
     if not bvps.empty:
-        fig.add_trace(go.Bar(name='BVPS', x=bvps.index.year, y=bvps, text=bvps), row=1, col=2)
+        fig.add_trace(
+            go.Bar(name="BVPS", x=bvps.index.year, y=bvps, text=bvps), row=1, col=2
+        )
 
-    fig.update_layout(title_text='Hisse Başına Değerlerin Yıllık Değişimi', template='plotly_dark', height=400)
-    fig.update_traces(texttemplate='%{y:.2f}', textposition='auto')
+    fig.update_layout(
+        title_text="Hisse Başına Değerlerin Yıllık Değişimi",
+        template="plotly_dark",
+        height=400,
+    )
+    fig.update_traces(texttemplate="%{y:.2f}", textposition="auto")
     return fig
+
+
+def display_per_share_values_chart(financials, balance_sheet, info):
+    """Generates and displays the per-share values chart in Streamlit."""
+    fig = plot_per_share_values(financials, balance_sheet, info)
+    st.plotly_chart(fig, use_container_width=True)
+
 
 def plot_dividend_history(dividends):
     """Creates a bar chart of historical dividend payments."""
     if dividends is None or dividends.empty:
-        return go.Figure().update_layout(title_text="Şirketin Geçmiş Temettü Ödemesi Bulunmamaktadır", template='plotly_dark')
+        return go.Figure().update_layout(
+            title_text="Şirketin Geçmiş Temettü Ödemesi Bulunmamaktadır",
+            template="plotly_dark",
+        )
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=dividends.index, y=dividends, name='Hisse Başına Temettü'))
-    
+    fig.add_trace(go.Bar(x=dividends.index, y=dividends, name="Hisse Başına Temettü"))
+
     fig.update_layout(
-        title_text='Yıllara Göre Hisse Başına Temettü Ödemeleri (TL)',
-        xaxis_title='Tarih',
-        yaxis_title='Temettü (TL)',
-        template='plotly_dark',
-        height=400
+        title_text="Yıllara Göre Hisse Başına Temettü Ödemeleri (TL)",
+        xaxis_title="Tarih",
+        yaxis_title="Temettü (TL)",
+        template="plotly_dark",
+        height=400,
     )
     return fig
+
+
+def display_dividend_history_chart(dividends):
+    """Generates and displays the dividend history chart in Streamlit."""
+    fig = plot_dividend_history(dividends)
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def display_portfolio_performance_chart(portfolio_history):
+    """Generates and displays the portfolio performance chart."""
+    if portfolio_history.empty:
+        st.info("Portföy geçmişi grafiği oluşturmak için yeterli veri bulunmuyor.")
+        return
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=portfolio_history.index,
+            y=portfolio_history["Total Value"],
+            mode="lines",
+            name="Portföy Değeri",
+            fill="tozeroy",
+        )
+    )
+
+    fig.update_layout(
+        title="Portföy Değerinin Zaman İçindeki Değişimi",
+        xaxis_title="Tarih",
+        yaxis_title="Toplam Değer (TL)",
+        template="plotly_dark",
+        height=500,
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def display_asset_allocation_chart(summary_df):
+    """Generates and displays the asset allocation pie chart."""
+    if summary_df.empty or 'Güncel Değer' not in summary_df.columns or 'hisse' not in summary_df.columns:
+        st.info("Varlık dağılımı grafiği için veri bulunmuyor.")
+        return
+
+    fig = px.pie(
+        summary_df, 
+        values='Güncel Değer', 
+        names='hisse', 
+        title='Portföy Varlık Dağılımı',
+        hole=.3
+    )
+    fig.update_traces(textposition='inside', textinfo='percent+label')
+    fig.update_layout(template="plotly_dark")
+    st.plotly_chart(fig, use_container_width=True)

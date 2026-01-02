@@ -2,8 +2,6 @@ numpy==1.26.4
 bokeh==2.4.3
 pandas==2.2.2
 yfinance==0.2.65
-matplotlib==3.8.4
-mplfinance==0.12.9b7
 scipy==1.13.1
 streamlit==1.34.0
 plotly==5.22.0
