@@ -1,4 +1,7 @@
 import pandas as pd
+import streamlit as st
+from helpers.data_handler import get_fundamental_data
+import numpy as np
 
 # Bu dosya, hem Streamlit hem de Tkinter uygulamaları için metin tabanlı özetler üretir.
 
@@ -353,52 +356,6 @@ def display_sector_comparison(company_ratios, sector_averages):
     return comparison_df.style.apply(highlight_diff, axis=1).format("{:.2f}")
 
 
-import pandas as pd
-import numpy as np
-
-# Bu dosya, hem Streamlit hem de Tkinter uygulamaları için metin tabanlı özetler üretir.
-
-# ... (generate_fundamental_summary, generate_technical_summary, display_financial_ratios, display_sector_comparison functions remain the same) ...
-
-def display_sector_comparison(company_ratios, sector_averages):
-    """
-    Creates a DataFrame to compare a company's ratios with sector averages.
-    """
-    if sector_averages is None or sector_averages.empty:
-        return None
-
-    # Create a DataFrame from the company's ratios Series
-    company_df = company_ratios.to_frame(name="Şirket Değeri")
-
-    # Create a DataFrame for the comparison
-    comparison_df = pd.DataFrame(index=sector_averages.index)
-    comparison_df["Sektör Ortalaması"] = sector_averages
-    comparison_df["Şirket Değeri"] = company_df["Şirket Değeri"]
-
-    # Drop rows where both values are NaN and format the display
-    comparison_df.dropna(how="all", inplace=True)
-
-    # Highlight differences
-    def highlight_diff(row):
-        style = [""] * len(row)
-        if pd.notna(row["Şirket Değeri"]) and pd.notna(row["Sektör Ortalaması"]):
-            # For ratios where lower is better (like P/E, P/B), highlight green if company is lower
-            if any(metric in row.name for metric in ["F/K", "PD/DD", "Borç/Özkaynak"]):
-                if row["Şirket Değeri"] < row["Sektör Ortalaması"]:
-                    style[0] = "background-color: #2a5c2a"  # Green
-                else:
-                    style[0] = "background-color: #6e2b2b"  # Red
-            # For ratios where higher is better (like margins, ROE), highlight green if company is higher
-            elif any(metric in row.name for metric in ["Marjı", "ROE"]):
-                if row["Şirket Değeri"] > row["Sektör Ortalaması"]:
-                    style[0] = "background-color: #2a5c2a"  # Green
-                else:
-                    style[0] = "background-color: #6e2b2b"  # Red
-        return style
-
-    return comparison_df.style.apply(highlight_diff, axis=1).format("{:.2f}")
-
-
 def generate_ai_analysis(veri):
     """Daha akıllı ve detaylı yapay zeka destekli teknik analiz üretir."""
     if veri.empty or len(veri) < 2:
@@ -435,7 +392,7 @@ def generate_ai_analysis(veri):
     adx_skor = 0
     if son_veri['adx_14'] > 25:
         adx_skor = np.sign(son_veri['dmp_14'] - son_veri['dmn_14']) * 2
-        yorum = f"ADX ({son_veri['adx_14']:.1f}) güçlü bir trende işaret ediyor. Yön: {'Pozitif' if adx_skor > 0 else 'Negatif'}."
+        yorum = f"ADX ({son_veri['adx_14']:.1f}) güçlü bir trende işaret ediyor. Yön: {'Pozitif' if adx_skor > 0 else 'Negatif'}. "
     else:
         yorum = f"ADX ({son_veri['adx_14']:.1f}) zayıf veya trendsiz bir piyasa gösteriyor."
     trend_sinyalleri['ADX'] = {'skor': adx_skor, 'yorum': yorum}
@@ -471,7 +428,7 @@ def generate_ai_analysis(veri):
     hacim_skor = 0
     if son_veri['volume'] > son_veri['volume_ma_20'] * 1.5: # Ortalamanın %50 üzerindeyse
         hacim_skor = np.sign(son_veri['close'] - onceki_veri['close']) # Fiyat artıyorsa pozitif, düşüyorsa negatif
-        yorum = f"Hacim ortalamanın üzerinde ve fiyat {'yükseliyor' if hacim_skor > 0 else 'düşüyor'}."
+        yorum = f"Hacim ortalamanın üzerinde ve fiyat {'yükseliyor' if hacim_skor > 0 else 'düşüyor'} "
     else:
         yorum = "Hacim normal seviyelerde."
     hacim_sinyalleri['Hacim'] = {'skor': hacim_skor, 'yorum': yorum}
@@ -485,7 +442,7 @@ def generate_ai_analysis(veri):
     if 'bbw_20_2.0' in veri.columns and son_veri['bbw_20_2.0'] < veri['bbw_20_2.0'].quantile(0.1):
         yorum = f"Fiyat Bollinger bantları içinde. Bant genişliği çok düşük (sıkışma var)."
     else:
-        yorum = f"Fiyat Bollinger bantları {'üstünde' if bb_skor < 0 else 'altında' if bb_skor > 0 else 'içinde'}."
+        yorum = f"Fiyat Bollinger bantları {'üstünde' if bb_skor < 0 else 'altında' if bb_skor > 0 else 'içinde'} "
     hacim_sinyalleri['Bollinger Bantları'] = {'skor': bb_skor, 'yorum': yorum}
 
     # --- Toplam Skor ve Sonuç ---
@@ -509,3 +466,63 @@ def generate_ai_analysis(veri):
     }
 
     return sonuc, analiz_ozeti
+
+def display_key_metrics_comparison(hisse_list):
+    """
+    Fetches and displays a comparison table of key fundamental metrics for a list of stocks.
+    """
+    metrics_data = []
+    
+    st.subheader("Temel Metrikler Karşılaştırması")
+    
+    progress_text = "Temel metrikler çekiliyor..."
+    progress_bar = st.progress(0, text=progress_text)
+    
+    for i, hisse in enumerate(hisse_list):
+        hisse_yf = f"{hisse}.IS"
+        try:
+            data = get_fundamental_data(hisse_yf)
+            if data and data.get("info"):
+                info = data["info"]
+                metrics = {
+                    "Hisse": hisse,
+                    "Piy. Değ. (mn)": info.get("marketCap", 0) / 1_000_000,
+                    "F/K": info.get("trailingPE"),
+                    "PD/DD": info.get("priceToBook"),
+                    "Kâr Marjı (%)": info.get("profitMargins", 0) * 100,
+                    "Özkaynak Kâr. (%)": info.get("returnOnEquity", 0) * 100,
+                    "Borç/Özkaynak": info.get("debtToEquity"),
+                }
+                metrics_data.append(metrics)
+            else:
+                metrics_data.append({"Hisse": hisse, "F/K": "Veri Yok"})
+        except Exception as e:
+            st.warning(f"{hisse} için temel veriler alınırken hata oluştu: {e}")
+            metrics_data.append({"Hisse": hisse, "F/K": "Hata"})
+            
+        progress_bar.progress((i + 1) / len(hisse_list), text=f"{progress_text} ({hisse} tamamlandı)")
+
+    progress_bar.empty()
+
+    if not metrics_data:
+        st.warning("Karşılaştırma için hiçbir hisseden veri alınamadı.")
+        return
+
+    df = pd.DataFrame(metrics_data)
+    df = df.set_index("Hisse")
+    
+    # Sütunları formatla
+    st.dataframe(
+        df.style.format({
+            "Piy. Değ. (mn)": "{:,.0f}",
+            "F/K": "{:.2f}",
+            "PD/DD": "{:.2f}",
+            "Kâr Marjı (%)": "{:.2f}%",
+            "Özkaynak Kâr. (%)": "{:.2f}%",
+            "Borç/Özkaynak": "{:.2f}",
+        }).background_gradient(
+            cmap='viridis', subset=["F/K", "PD/DD", "Borç/Özkaynak"]
+        ).background_gradient(
+            cmap='viridis_r', subset=["Kâr Marjı (%)", "Özkaynak Kâr. (%)"]
+        )
+    )

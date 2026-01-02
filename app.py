@@ -4,6 +4,8 @@ import logging
 import traceback
 import streamlit_bokeh as st_bokeh
 import pandas as pd
+import plotly.express as px
+
 from helpers.data_handler import (
     get_stock_data,
     get_fundamental_data,
@@ -19,6 +21,8 @@ from helpers.plotter import (
     display_per_share_values_chart,
     display_dividend_history_chart,
     display_portfolio_performance_chart,
+    display_asset_allocation_chart,
+    plot_price_performance_comparison,
 )
 from helpers.ui_components import (
     generate_technical_summary,
@@ -26,6 +30,7 @@ from helpers.ui_components import (
     display_financial_ratios,
     display_sector_comparison,
     generate_ai_analysis,
+    display_key_metrics_comparison,
 )
 from helpers.backtester import (
     run_backtest,
@@ -37,6 +42,9 @@ from helpers.backtester import (
 )
 import helpers.database as db
 from constants import HISSE_GRUPPARI, ZAMAN_ARALIKLARI
+from helpers.news_handler import fetch_news_from_rss, analyze_sentiment
+from helpers.portfolio_analyzer import calculate_portfolio_metrics, plot_portfolio_vs_benchmark
+
 
 # --- Kurulumlar ---
 logging.basicConfig(
@@ -379,20 +387,122 @@ def display_backtesting(veri, hisse_kodu_yf):
                 except Exception as e:
                     st.error(f"{test_mode} sırasında bir hata oluştu: {e}")
 
+def display_comparison(hisse_list, interval, start_date, end_date):
+    """Hisselerin karşılaştırmalı analizini gösterir."""
+    st.header("Hisse Karşılaştırma Analizi")
+    
+    hisse_list_yf = [f"{hisse}.IS" for hisse in hisse_list]
+    
+    with st.spinner("Karşılaştırma için veriler çekiliyor..."):
+        all_data = get_stock_data(hisse_list_yf, interval, start_date, end_date)
+    
+    if all_data is None or all_data.empty:
+        st.error("Karşılaştırma için veriler çekilemedi.")
+        return
+        
+    # Fiyat Performans Grafiği
+    close_prices = all_data['close']
+    close_prices.columns = close_prices.columns.str.replace('.IS', '')
+    plot_price_performance_comparison(close_prices)
+    
+    st.divider()
+    
+    # Temel Metrikler Tablosu
+    display_key_metrics_comparison(hisse_list)
+
+def display_news_and_sentiment(hisse_kodu):
+    """İlgili hisse için haberleri ve duyarlılık analizini gösterir."""
+    st.header(f"{hisse_kodu} için Haberler ve Piyasa Duyarlılığı")
+
+    # RSS kaynağı - Bu URL'yi daha dinamik hale getirebilir veya daha fazla kaynak ekleyebilirsiniz.
+    # Hisse kodunu içeren bir arama yapmak için, haber kaynağının bunu desteklemesi gerekir.
+    # Şimdilik genel piyasa haberlerini alıyoruz.
+    feed_url = "https://www.yatirimrehberi.com.tr/rss/piyasalar"
+    
+    with st.spinner("Haberler ve duyarlılık analizi yükleniyor..."):
+        news_items = fetch_news_from_rss(feed_url)
+        
+        if not news_items:
+            st.warning("İlgili haber bulunamadı.")
+            return
+
+        sentiments = []
+        for item in news_items:
+            # Hisse kodu haber başlığında veya özetinde geçiyorsa daha ilgili kabul edilebilir
+            # Bu basit bir filtreleme, daha gelişmiş yöntemler kullanılabilir
+            if hisse_kodu.lower() in item.title.lower() or hisse_kodu.lower() in item.summary.lower():
+                item['relevant'] = True # İlgili olarak işaretle
+                sentiment = analyze_sentiment(item.title)
+                item['sentiment'] = sentiment
+                sentiments.append(sentiment)
+            else:
+                item['relevant'] = False
+                item['sentiment'] = "N/A"
+
+    relevant_news = [item for item in news_items if item['relevant']]
+    
+    if not relevant_news:
+        st.info(f"'{hisse_kodu}' için spesifik bir haber bulunamadı. Genel piyasa haberleri gösteriliyor.")
+        # İlgili haber yoksa tüm haberleri göster
+        relevant_news = news_items 
+        sentiments = [analyze_sentiment(item.title) for item in relevant_news]
+
+
+    # Duyarlılık Dağılımı Grafiği
+    if sentiments:
+        sentiment_counts = pd.Series(sentiments).value_counts()
+        fig = px.pie(
+            sentiment_counts, 
+            values=sentiment_counts.values, 
+            names=sentiment_counts.index, 
+            title='Haberlerin Duyarlılık Dağılımı',
+            color=sentiment_counts.index,
+            color_discrete_map={'Pozitif':'green', 'Negatif':'red', 'Nötr':'gray', 'Analiz Edilemedi': 'black'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Haberleri Listele
+    st.subheader("Haber Başlıkları")
+    for item in relevant_news:
+        sentiment = item.get('sentiment', 'N/A')
+        icon = "🟢" if sentiment == 'Pozitif' else "🔴" if sentiment == 'Negatif' else "⚪"
+        st.markdown(f"<h5>{icon} <a href='{item.link}' target='_blank'>{item.title}</a></h5>", unsafe_allow_html=True)
+        with st.expander("Özeti Oku"):
+            st.markdown(item.summary, unsafe_allow_html=True)
+
 
 def analyzer_main_page():
     st.sidebar.header("Kontrol Paneli")
-    grup_secim = st.sidebar.selectbox(
-        "Hisse Grubu:", list(HISSE_GRUPPARI.keys()), index=0
+
+    # --- Kişiselleştirme Verilerini Yükle ---
+    favorite_stocks = db.get_preference("favorite_stocks", [])
+    default_indicators = db.get_preference(
+        "default_indicators",
+        [
+            "EMA KISA (5, 20)",
+            "EMA UZUN (50, 200)",
+            "Bollinger Bantları",
+            "RSI",
+            "MACD",
+        ],
     )
-    hisseler = sorted(HISSE_GRUPPARI.get(grup_secim, []))
 
-    default_hisse_index = 0
-    if "hisse_secim" in st.session_state and st.session_state.hisse_secim in hisseler:
-        default_hisse_index = hisseler.index(st.session_state.hisse_secim)
+    # Hisse gruplarına Favorileri dinamik olarak ekle
+    hisse_gruplari_dynamic = HISSE_GRUPPARI.copy()
+    if favorite_stocks:
+        hisse_gruplari_dynamic["⭐ Favorilerim"] = favorite_stocks
 
-    hisse_secim = st.sidebar.selectbox(
-        "Hisse Senedi:", hisseler, index=default_hisse_index
+    grup_secim = st.sidebar.selectbox(
+        "Hisse Grubu:", list(hisse_gruplari_dynamic.keys()), index=0
+    )
+    hisseler = sorted(hisse_gruplari_dynamic.get(grup_secim, []))
+
+    # Çoklu hisse seçimi için multiselect kullan
+    hisse_secim_list = st.sidebar.multiselect(
+        "Hisse Senedi/Senetleri:",
+        hisseler,
+        default=st.session_state.get("hisse_secim_list", []),
+        max_selections=5,  # Karşılaştırma için bir limit belirle
     )
 
     today = datetime.today()
@@ -401,38 +511,61 @@ def analyzer_main_page():
     interval_display = st.sidebar.selectbox(
         "Zaman Aralığı:", list(ZAMAN_ARALIKLARI.keys()), index=3
     )
-    available_indicators = [
-        "EMA KISA (5, 20)",
-        "EMA UZUN (50, 200)",
-        "Bollinger Bantları",
-        "VWAP",
-        "Ichimoku Cloud",
-        "RSI",
-        "StochRSI",
-        "MACD",
-        "ADX",
-        "OBV",
-        "Golden/Death Cross",
-        "Super Trend",
-    ]
-    selected_indicators = st.sidebar.multiselect(
-        "Göstergeler:",
-        available_indicators,
-        default=[
+    
+    is_single_stock_mode = len(hisse_secim_list) == 1
+    
+    # --- Ayarlar ve Butonlar ---
+    if is_single_stock_mode:
+        st.sidebar.subheader("Kişiselleştirme")
+        if st.sidebar.button("⭐ Seçili Hisseyi Favorilere Ekle/Kaldır", use_container_width=True):
+            stock_to_toggle = hisse_secim_list[0]
+            if stock_to_toggle in favorite_stocks:
+                favorite_stocks.remove(stock_to_toggle)
+                st.sidebar.success(f"{stock_to_toggle} favorilerden kaldırıldı.")
+            else:
+                favorite_stocks.append(stock_to_toggle)
+                st.sidebar.success(f"{stock_to_toggle} favorilere eklendi.")
+            db.set_preference("favorite_stocks", sorted(favorite_stocks))
+            st.rerun()
+
+    # Çoklu seçimde bazı UI elemanlarını gizle
+    selected_indicators = []
+    show_support_resistance = False
+    show_fibonacci = False
+
+    if is_single_stock_mode:
+        st.sidebar.subheader("Tekli Hisse Ayarları")
+        available_indicators = [
             "EMA KISA (5, 20)",
             "EMA UZUN (50, 200)",
             "Bollinger Bantları",
+            "VWAP",
+            "Ichimoku Cloud",
             "RSI",
+            "StochRSI",
             "MACD",
-        ],
-    )
-    show_support_resistance = st.sidebar.checkbox("Destek/Direnç Göster", value=True)
-    show_fibonacci = st.sidebar.checkbox(
-        "Fibonacci Geri Çekilme Seviyeleri Göster", value=False
-    )
+            "ADX",
+            "OBV",
+            "Golden/Death Cross",
+            "Super Trend",
+        ]
+        selected_indicators = st.sidebar.multiselect(
+            "Göstergeler:",
+            available_indicators,
+            default=default_indicators,
+        )
+        show_support_resistance = st.sidebar.checkbox("Destek/Direnç Göster", value=True)
+        show_fibonacci = st.sidebar.checkbox(
+            "Fibonacci Geri Çekilme Seviyeleri Göster", value=False
+        )
+        if st.sidebar.button("Bu Göstergeleri Varsayılan Yap", use_container_width=True):
+            db.set_preference("default_indicators", selected_indicators)
+            st.sidebar.success("Varsayılan göstergeler kaydedildi!")
 
     if st.sidebar.button("Analiz Et", use_container_width=True, type="primary"):
-        if start_date > end_date:
+        if not hisse_secim_list:
+            st.sidebar.warning("Lütfen en az bir hisse senedi seçin.")
+        elif start_date > end_date:
             st.sidebar.error("Hata: Başlangıç tarihi, bitiş tarihinden sonra olamaz.")
         else:
             interval_code = ZAMAN_ARALIKLARI[interval_display]
@@ -450,7 +583,7 @@ def analyzer_main_page():
                 )
 
             st.session_state.analysis_requested = True
-            st.session_state.hisse_secim = hisse_secim
+            st.session_state.hisse_secim_list = hisse_secim_list
             st.session_state.start_date = start_date
             st.session_state.end_date = end_date
             st.session_state.interval_display = interval_display
@@ -460,67 +593,69 @@ def analyzer_main_page():
             st.rerun()
 
     if st.session_state.get("analysis_requested", False):
-        hisse_kodu_yf = f"{st.session_state.hisse_secim}.IS"
-        interval_code = ZAMAN_ARALIKLARI[st.session_state.interval_display]
-        with st.spinner(
-            f"{hisse_kodu_yf} için veriler çekiliyor ve analiz ediliyor..."
-        ):
-            veri_raw = get_stock_data(
-                hisse_kodu_yf,
-                interval_code,
-                start_date=st.session_state.start_date,
-                end_date=st.session_state.end_date,
-            )
-            if veri_raw is not None:
-                veri_hesaplanmis = calculate_indicators(veri_raw.copy())
-                veri_filtrelenmis = filter_data_by_date(
-                    veri_hesaplanmis,
-                    start_date=st.session_state.start_date,
-                    end_date=st.session_state.end_date,
-                )
-                if veri_filtrelenmis.empty:
-                    st.warning("Seçilen tarih aralığı için veri bulunamadı.")
-                    return
+        # Session state'den bilgileri al
+        hisse_list = st.session_state.hisse_secim_list
+        start = st.session_state.start_date
+        end = st.session_state.end_date
+        interval_disp = st.session_state.interval_display
+        interval_code = ZAMAN_ARALIKLARI[interval_disp]
 
-                st.success(f"{hisse_kodu_yf} analizi tamamlandı.")
-                ana_tab, temel_tab, backtest_tab = st.tabs(
-                    ["📈 Teknik Analiz", "🏢 Temel Analiz", "🧪 Strateji Testi"]
+        if len(hisse_list) > 1:
+            # Karşılaştırma Modu
+            display_comparison(hisse_list, interval_code, start, end)
+        
+        elif len(hisse_list) == 1:
+            # Tekli Hisse Modu
+            hisse_kodu = hisse_list[0]
+            hisse_kodu_yf = f"{hisse_kodu}.IS"
+            
+            with st.spinner(
+                f"{hisse_kodu_yf} için veriler çekiliyor ve analiz ediliyor..."
+            ):
+                veri_raw = get_stock_data(
+                    hisse_kodu_yf,
+                    interval_code,
+                    start_date=start,
+                    end_date=end,
                 )
-                with ana_tab:
-                    display_technical_analysis(
-                        veri_filtrelenmis,
-                        hisse_kodu_yf,
-                        st.session_state.interval_display,
-                        st.session_state.selected_indicators,
-                        st.session_state.show_support_resistance,
-                        st.session_state.show_fibonacci,
+                if veri_raw is not None and not veri_raw.empty:
+                    veri_hesaplanmis = calculate_indicators(veri_raw.copy())
+                    veri_filtrelenmis = filter_data_by_date(
+                        veri_hesaplanmis,
+                        start_date=start,
+                        end_date=end,
                     )
-                with temel_tab:
-                    display_fundamental_analysis(hisse_kodu_yf)
-                with backtest_tab:
-                    display_backtesting(veri_filtrelenmis, hisse_kodu_yf)
-            else:
-                st.error("Veri çekilemedi.")
+                    if veri_filtrelenmis.empty:
+                        st.warning("Seçilen tarih aralığı için veri bulunamadı.")
+                        return
+
+                    st.success(f"{hisse_kodu_yf} analizi tamamlandı.")
+                    
+                    tab_titles = ["📈 Teknik Analiz", "🏢 Temel Analiz", "🧪 Strateji Testi", "📰 Haberler & Duyarlılık"]
+                    ana_tab, temel_tab, backtest_tab, haber_tab = st.tabs(tab_titles)
+
+                    with ana_tab:
+                        display_technical_analysis(
+                            veri_filtrelenmis,
+                            hisse_kodu_yf,
+                            interval_disp,
+                            st.session_state.selected_indicators,
+                            st.session_state.show_support_resistance,
+                            st.session_state.show_fibonacci,
+                        )
+                    with temel_tab:
+                        display_fundamental_analysis(hisse_kodu_yf)
+                    with backtest_tab:
+                        display_backtesting(veri_filtrelenmis, hisse_kodu_yf)
+                    with haber_tab:
+                        display_news_and_sentiment(hisse_kodu)
+                else:
+                    st.error(f"{hisse_kodu} için veri çekilemedi.")
     else:
         st.info(
-            "Lütfen sol taraftaki menüden bir hisse seçip 'Analiz Et' butonuna tıklayın."
+            "Lütfen sol taraftaki menüden bir veya daha fazla hisse seçip 'Analiz Et' butonuna tıklayın."
         )
 
-
-import pandas as pd
-
-# ... (other imports)
-
-from helpers.plotter import (
-    display_candlestick_chart,
-    display_financial_trends_chart,
-    display_balance_sheet_details_chart,
-    display_per_share_values_chart,
-    display_dividend_history_chart,
-    display_portfolio_performance_chart,
-)
-
-# ... (rest of the file until portfolio_manager_page)
 
 def portfolio_manager_page():
     st.header("💼 Portföy Yönetimi")
@@ -543,42 +678,56 @@ def portfolio_manager_page():
         st.info("Portföyünüz boş. Başlamak için yukarıdan bir işlem ekleyin.")
         return
 
-    # --- Portföy Geçmişi ve Grafik ---
-    st.subheader("Portföy Performansı")
-
     transactions = portfolio_df.copy()
     transactions["tarih"] = pd.to_datetime(transactions["tarih"])
-
     start_date = transactions["tarih"].min()
     unique_tickers = transactions["hisse"].unique()
-
+    
     all_prices = pd.DataFrame()
-    with st.spinner("Portföy geçmişi için fiyat verileri çekiliyor..."):
-        for ticker in unique_tickers:
-            try:
-                data = get_stock_data(
-                    f"{ticker}.IS", "1d", start_date=start_date, end_date=datetime.today()
-                )
-                if data is not None and not data.empty:
-                    all_prices[ticker] = data["close"]
-            except Exception as e:
-                st.warning(f"{ticker} için geçmiş fiyat verisi çekilemedi: {e}")
 
+    # --- Optimize Edilmiş Toplu Veri Çekme ---
+    with st.spinner("Portföy için geçmiş fiyat verileri toplu olarak çekiliyor..."):
+        # Bütün ticker'ları .IS formatına getirip tek bir string'de birleştir
+        ticker_list_yf = [f"{ticker}.IS" for ticker in unique_tickers]
+        
+        if ticker_list_yf:
+            try:
+                # Tek bir API çağrısı ile tüm hisselerin verisini al
+                all_prices_raw = get_stock_data(
+                    ticker_list_yf, "1d", start_date=start_date, end_date=datetime.today()
+                )
+
+                if all_prices_raw is None or all_prices_raw.empty:
+                    st.warning("Portföydeki hisseler için fiyat verisi çekilemedi.")
+                    # All prices kalacak boş, aşağıdaki logic handle edecek
+                else:
+                    # yfinance'den dönen MultiIndex'li sütunları düzenle
+                    # Sadece 'close' fiyatlarına ihtiyacımız var
+                    all_prices = all_prices_raw.get('close', pd.DataFrame())
+                    if not all_prices.empty:
+                        # Sütun isimlerinden '.IS' uzantısını kaldır
+                        all_prices.columns = all_prices.columns.str.replace('.IS', '')
+                
+            except Exception as e:
+                st.error(f"Geçmiş fiyat verileri çekilirken bir hata oluştu: {e}")
+                # Hata durumunda boş all_prices ile devam et
+    
+    # --- Portföy Geçmişi ve Grafik ---
+    st.subheader("Portföy Performansı")
     if not all_prices.empty:
-        all_prices = all_prices.ffill()
+        all_prices.ffill(inplace=True)
 
         date_range = pd.date_range(start=start_date, end=datetime.today(), freq='D')
         daily_positions = pd.DataFrame(0.0, index=date_range, columns=unique_tickers)
 
-        # Calculate position changes on transaction dates
         position_changes = transactions.pivot_table(index='tarih', columns='hisse', values='miktar', aggfunc='sum').fillna(0)
         daily_positions.update(position_changes)
         
-        # Cumulatively sum positions
         daily_positions = daily_positions.cumsum().ffill()
 
-
-        daily_values = daily_positions.multiply(all_prices, axis="columns").ffill()
+        # Ensure columns match for multiplication
+        shared_tickers = [ticker for ticker in unique_tickers if ticker in all_prices.columns]
+        daily_values = daily_positions[shared_tickers].multiply(all_prices[shared_tickers], axis="columns").ffill()
         
         portfolio_history = pd.DataFrame(index=date_range)
         portfolio_history["Total Value"] = daily_values.sum(axis=1)
@@ -588,32 +737,31 @@ def portfolio_manager_page():
     # --- Mevcut Portföy Tablosu ---
     st.subheader("Mevcut Portföy Özeti")
     
-    # Calculate weighted average cost and total quantity
     summary_df = transactions.groupby('hisse').apply(lambda x: pd.Series({
         'Miktar': x['miktar'].sum(),
         'Ortalama_Maliyet': (x['alis_fiyati'] * x['miktar']).sum() / x['miktar'].sum()
     })).reset_index()
 
-
+    # --- Optimize Edilmiş Güncel Fiyat Alma ---
     current_prices = {}
-    with st.spinner("Güncel fiyatlar çekiliyor..."):
-        for t in unique_tickers:
-            if t in all_prices and not all_prices[t].dropna().empty:
-                 current_prices[t] = all_prices[t].dropna().iloc[-1]
-            else:
-                # Fallback if historical data failed for some reason
+    if not all_prices.empty:
+        current_prices = all_prices.iloc[-1].to_dict()
+    else:
+        # Toplu çekme başarısız olduysa tekli deneme (fallback)
+        with st.spinner("Güncel fiyatlar tek tek çekiliyor..."):
+            for t in unique_tickers:
                 data = get_stock_data(f"{t}.IS", "1d")
                 if data is not None and not data.empty:
                     current_prices[t] = data['close'].iloc[-1]
                 else:
                     current_prices[t] = 0
-    
-    summary_df["Güncel Fiyat"] = summary_df['hisse'].map(current_prices)
+
+    summary_df["Güncel Fiyat"] = summary_df['hisse'].map(current_prices).fillna(0)
     summary_df["Toplam Maliyet"] = summary_df["Miktar"] * summary_df["Ortalama_Maliyet"]
     summary_df["Güncel Değer"] = summary_df["Miktar"] * summary_df["Güncel Fiyat"]
     summary_df["Kar/Zarar"] = summary_df["Güncel Değer"] - summary_df["Toplam Maliyet"]
     
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([3, 2]) # Tabloya daha fazla yer ver
     with col1:
         st.dataframe(summary_df.style.format({
             "Ortalama_Maliyet": "{:,.2f} TL",
@@ -621,10 +769,29 @@ def portfolio_manager_page():
             "Toplam Maliyet": "{:,.2f} TL",
             "Güncel Değer": "{:,.2f} TL",
             "Kar/Zarar": "{:,.2f} TL"
-        }))
+        }), use_container_width=True)
     with col2:
         display_asset_allocation_chart(summary_df)
 
+    st.divider()
+
+    # --- Gelişmiş Portföy Analizi ---
+    st.subheader("Gelişmiş Risk ve Getiri Analizi")
+    
+    # Benchmark verisini çek
+    benchmark_data = get_stock_data("XU100.IS", "1d", start_date, datetime.today())
+    
+    if 'portfolio_history' in locals() and portfolio_history is not None and not portfolio_history.empty and benchmark_data is not None:
+        metrics = calculate_portfolio_metrics(portfolio_history['Total Value'], benchmark_data['close'])
+        
+        if metrics:
+            m_col1, m_col2, m_col3 = st.columns(3)
+            m_col1.metric("Portföy Beta", f"{metrics.get('beta', 0):.2f}", help="Portföyün piyasaya (BIST 100) göre volatilitesi. 1'den büyük olması daha volatil, küçük olması daha az volatil olduğunu gösterir.")
+            m_col2.metric("Yıllık Volatilite", f"{metrics.get('annualized_volatility', 0):.2%}", help="Portföy getirisinin yıllık standart sapması. Yüksek değer daha fazla risk anlamına gelir.")
+            m_col3.metric("Sharpe Oranı", f"{metrics.get('sharpe_ratio', 0):.2f}", help="Risk başına getiri ölçüsü. Daha yüksek bir Sharpe oranı, daha iyi bir risk-ayarlı getiri anlamına gelir.")
+            
+            # Karşılaştırma grafiği
+            st.plotly_chart(plot_portfolio_vs_benchmark(portfolio_history['Total Value'], benchmark_data['close']), use_container_width=True)
 
     total_value = summary_df["Güncel Değer"].sum()
     total_cost = summary_df["Toplam Maliyet"].sum()
@@ -633,9 +800,8 @@ def portfolio_manager_page():
 
     val_col, pnl_col, ret_col = st.columns(3)
     val_col.metric("Toplam Portföy Değeri", f"{total_value:,.2f} TL")
-    pnl_col.metric("Toplam Kar/Zarar", f"{total_pnl:,.2f} TL")
+    pnl_col.metric("Toplam Kar/Zarar", f"{total_pnl:,.2f} TL", delta=f"{total_return:.2f}%")
     ret_col.metric("Toplam Getiri", f"{total_return:.2f}%")
-
 
     # --- İşlem Silme ---
     with st.expander("İşlem Geçmişi ve Silme"):
@@ -647,18 +813,84 @@ def portfolio_manager_page():
             db.remove_transactions(ids_to_remove)
             st.rerun()
 
+def alarm_manager_page():
+    """Alarmları yönetmek için kullanıcı arayüzü."""
+    st.header("🔔 Fiyat Alarmları Yönetimi")
+
+    st.info(
+        """
+        Bu özellik, belirlediğiniz bir hisse senedi hedef fiyata ulaştığında size **masaüstü bildirimi** gönderir.
+        
+        **Kullanım:**
+        1. Aşağıdaki formu kullanarak bir veya daha fazla alarm kurun.
+        2. Alarmların aktif olarak kontrol edilmesi için, bu Streamlit uygulamasının çalıştığı terminale ek olarak **yeni bir terminal penceresi** açın.
+        3. Yeni terminalde `python alarm_checker.py` komutunu çalıştırın.
+        
+        *Bu komutu çalıştırdığınız pencere açık kaldığı sürece alarmlarınız kontrol edilecektir.*
+        """
+    )
+    
+    st.subheader("Yeni Alarm Kur")
+    with st.form("new_alarm_form", clear_on_submit=True):
+        all_stocks = sorted(list(set(stock for group in HISSE_GRUPPARI.values() for stock in group)))
+        
+        c1, c2, c3 = st.columns(3)
+        hisse = c1.selectbox("Hisse Kodu", all_stocks)
+        condition = c2.selectbox("Koşul", ["Fiyat >=", "Fiyat <="])
+        value = c3.number_input("Hedef Fiyat", min_value=0.01, format="%.2f")
+        
+        if st.form_submit_button("Alarm Kur", use_container_width=True):
+            if hisse and condition and value > 0:
+                db.add_alarm(hisse, condition, value)
+                st.success(f"{hisse} için alarm başarıyla kuruldu: {condition} {value}")
+                st.rerun()
+            else:
+                st.warning("Lütfen tüm alanları doğru bir şekilde doldurun.")
+
+    st.divider()
+
+    st.subheader("Mevcut Alarmlar")
+    all_alarms_df = db.get_all_alarms()
+
+    if all_alarms_df.empty:
+        st.info("Henüz kurulmuş bir alarmınız yok.")
+    else:
+        # Silme butonları için her satırı işle
+        for index, row in all_alarms_df.iterrows():
+            col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 1])
+            col1.text(row['hisse'])
+            col2.text(f"{row['condition_type']} {row['value']:.2f}")
+            
+            status = row['status']
+            if status == 'active':
+                col3.success("Aktif")
+            elif status == 'triggered':
+                col3.error("Tetiklendi")
+            else:
+                col3.write(status)
+                
+            col4.text(pd.to_datetime(row['created_at']).strftime('%Y-%m-%d %H:%M'))
+            
+            # Her satır için benzersiz bir anahtar ile silme butonu
+            if col5.button("Sil", key=f"delete_{row['id']}"):
+                db.delete_alarm(row['id'])
+                st.rerun()
 
 
 # --- ANA UYGULAMA AKIŞI ---
 def main():
     st.title("📊 BIST Hisse Senedi Analiz ve Portföy Platformu")
-    analysis_tab, portfolio_tab = st.tabs(
-        ["📈 Analiz Platformu", "💼 Portföy Yönetimi"]
+    
+    # Ana sekmeleri oluştur
+    analysis_tab, portfolio_tab, alarm_tab = st.tabs(
+        ["📈 Analiz Platformu", "💼 Portföy Yönetimi", "🔔 Alarmlar"]
     )
     with analysis_tab:
         analyzer_main_page()
     with portfolio_tab:
         portfolio_manager_page()
+    with alarm_tab:
+        alarm_manager_page()
 
 
 if __name__ == "__main__":

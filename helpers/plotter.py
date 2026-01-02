@@ -833,3 +833,32 @@ def display_asset_allocation_chart(summary_df):
     fig.update_traces(textposition='inside', textinfo='percent+label')
     fig.update_layout(template="plotly_dark")
     st.plotly_chart(fig, use_container_width=True)
+
+def plot_price_performance_comparison(data):
+    """
+    Plots the normalized price performance for multiple stocks.
+    """
+    if data.empty:
+        return go.Figure().update_layout(
+            title_text="Karşılaştırma için fiyat verisi bulunamadı.", template="plotly_dark"
+        )
+        
+    # Normalize the price data
+    normalized_data = (data / data.iloc[0] * 100)
+    
+    fig = px.line(
+        normalized_data,
+        x=normalized_data.index,
+        y=normalized_data.columns,
+        title="Seçilen Hisselerin Normalize Edilmiş Fiyat Performansı (Başlangıç = 100)",
+    )
+    
+    fig.update_layout(
+        yaxis_title="Normalize Edilmiş Fiyat",
+        xaxis_title="Tarih",
+        legend_title="Hisseler",
+        template="plotly_dark",
+        height=500,
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
